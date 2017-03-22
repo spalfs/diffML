@@ -1,0 +1,1105 @@
+Z_RGM_FORMAT_CPANEL_RECIPE_REPORT
+Button_1_1_1_1,0
+Button_1_3_1,1
+Button_1_3_2_1_1_1,1
+Z_PERMANENT_BAR
+Text verknüpfen_5,0
+Multibin_1,0
+Button_1,0
+Button_2,0
+Button_3,0
+Button_4,0
+Button_5,0
+Button_6,0
+Text verknüpfen_5_1,0
+Button_7_1,0
+Zahlenwert_1,0
+Z_DIAG_ASI_P1_BIWI
+022_PARAMETER_SERVO
+Button_1_1_8_3_16_4,2
+Button_1_1_8_3_16_4_1,1
+Button_1_1_8_3_16_4_2,2
+Button_1_1_8_3_16_4_3_1,2
+Button_1_1_8_3_16_4_3_2,2
+Button_1_1_1_4,2
+Button_1_1_1_5,2
+Button_1_1_1_6,2
+Z_COUNTER
+Z_RGM_FORMAT_CPANEL_VIEW
+Button_1_1_1_1,0
+Button_1_3_1,1
+Button_1_3_2_1_1_1,1
+000 COUNTER STATISTIC
+Bitmap Button_1,0
+Schalter_4,1
+Z_DIAG_ASI_DOUBLE_MASTER
+Zahlenwert (150)_286,0
+Zahlenwert (150)_287,0
+Zahlenwert (150)_288,0
+Zahlenwert (150)_289,0
+Zahlenwert (150)_290,0
+Zahlenwert (150)_291,0
+Zahlenwert (150)_292,0
+Text verknüpfen (150)_293,0
+Text verknüpfen (150)_294,0
+Text verknüpfen (150)_295,0
+Text verknüpfen (150)_296,0
+Text verknüpfen (150)_297,0
+Text verknüpfen (150)_298,0
+Text verknüpfen (150)_299,0
+Zahlenwert_16,0
+Zahlenwert_16_1,0
+Zahlenwert_16_1_1,0
+Zahlenwert_16_1_2,0
+Zahlenwert_16_1_3,0
+Zahlenwert_16_1_4,0
+Zahlenwert_16_1_5,0
+Zahlenwert_17,0
+Zahlenwert_18,0
+Zahlenwert_19,0
+Zahlenwert_20,0
+Zahlenwert_21,0
+Zahlenwert_22,0
+Zahlenwert_23,0
+Zahlenwert_24,0
+Zahlenwert_25,0
+Zahlenwert_16_2,0
+Zahlenwert_16_1_6,0
+Zahlenwert_16_1_1_1,0
+Zahlenwert_16_1_2_1,0
+Zahlenwert_16_1_3_1,0
+Zahlenwert_16_1_4_1,0
+Zahlenwert_16_1_5_1,0
+Zahlenwert_17_1,0
+Zahlenwert_18_1,0
+Text verknüpfen_25,0
+Text verknüpfen_26,0
+Text verknüpfen_27,0
+Text verknüpfen_28,0
+Text verknüpfen_29,0
+Text verknüpfen_30,0
+Text verknüpfen_31,0
+Text verknüpfen_32,0
+Text verknüpfen_33,0
+Bitmap Button_1_1,2
+Bitmap Button_1,2
+Schalter (51)_88,2
+Bitmap Button (43)_169_1_1,2
+Bitmap Button (43)_172_1,2
+Bitmap Button (43)_169_1,2
+Button_2,0
+Button_2_1,0
+Button_2_1_1,0
+Z_CPANEL_HARDCOPY
+Button_Close,0
+003 CATHETER_FEEDING
+Button_1_1_8_3,2
+021_SHIFTREGISTER
+Z_RGM_FORMAT_FORMATDATA
+Button_1_3_2,2
+Button_1_3_2_1,2
+Button_1_3_2_2,2
+Button_1_3_2_3,2
+Button_1_3_2_4,2
+Button_1_3_2_5,2
+Button_1_3_2_6,2
+Button_1_3_2_7,2
+Button_1_3_2_1_1_2_1_5,2
+Button_1_3_2_1_1_2_1_4,2
+Button_1_3_2_1_1_2_1_3,2
+Button_1_3_2_1_1_2_1_2,2
+Button_1_3_2_1_1_2_1_1,2
+Button_1_3_2_1_1_2_1,2
+Button_1_3_2_1_1_2,2
+Button_1_3_2_1_1_2_2,2
+Button_1_3_2_1_1_2_3,2
+Button_1_3_2_1_1_2_4,2
+Button_1_3_2_1_1_2_5,2
+Z_RGM_FORMAT_CPANEL_IMPORT_REQUEST
+Button_1_1_1_1,0
+Button_1_3_1,4
+Button_1_3_2,0
+Z_BATCH_AUDIT_History
+019_INPUT_OUTPUT_HOLLISTER
+Z_SYSTEM_CPANEL_MAIN_MEMORY
+Button_Close,0
+000 COUNTER GENERAL
+Zahlenwert_1,0
+Zahlenwert_1_1,0
+015_Tip_Counters_1_CH10_12
+Z_BATCH_ALARM_History
+Z_ELAU_CPANEL_USER_CURRENT
+Zahlenwert_1_2_1_1_1_1_2,3
+Zahlenwert_2_1_1_1_1_1_2,0
+Text verknüpfen_1_1,0
+Zahlenwert_1_2_1_1_1_1,3
+Zahlenwert_2_1_1_1_1_1,0
+Zahlenwert (14)_1629_1_2_1,0
+Zahlenwert_1_2_1_1_1_1_1,3
+Zahlenwert_2_1_1_1_1_1_1,0
+Zahlenwert (14)_1629_1_2_1_1,0
+Zahlenwert_1_2_1_1_1_1_1_1,3
+Zahlenwert_2_1_1_1_1_1_1_1,0
+Zahlenwert (14)_1629_1_2_1_1_1,0
+Zahlenwert (14)_1629_1_2,0
+Text verknüpfen_1_1_1,0
+Button_1_1_1,3
+Button_1_1,3
+Button_1,3
+Button_1_1_1_1_1,3
+Button_1_1_2_1,3
+Button_1_2_1,3
+Button_1_1_1_1_2,3
+Button_1_1_2_2,3
+Button_1_2_2,3
+Button_1_1_1_1_3,3
+Button_1_1_2_3,3
+Button_1_2_3,3
+Button_2,0
+015_PARAMETER_Ultrasonics
+Button_1_1_8,2
+Zahlenwert_2_1,0
+Zahlenwert_2_2_1,0
+Zahlenwert_2_2_2_2,0
+Zahlenwert_2_2_2_1_1,0
+Zahlenwert_2_1_1,0
+Zahlenwert_2_1_2,0
+Zahlenwert_2_1_3,0
+Zahlenwert_2_1_4,0
+Zahlenwert_2_1_5,0
+Zahlenwert_2_1_6,0
+Schalter_6_1_3,2
+Schalter_6_1_3_1,2
+Schalter_6_1_3_2,2
+Schalter_6_1_3_3,2
+005_SHIFTREGISTER
+021 DISCHARGE_CATHETER
+Bitmap Button_1_1,0
+Bitmap Button_2,1
+Bitmap Button_1_1_1,2
+Button_1_1_8_3_16,2
+Text verknüpfen (28)_300,0
+Z_CHART_DB_MAINTENANCE
+015_PARAMETER_Load_Cell
+SETSTRINGKBD_CZ
+Text Button_5,0
+Button_1,0
+Bitmap Button_1,0
+Button_2,0
+017_PARAMETER_INFO
+Z_DIAG_FAULT
+Z_DIAG_INPUT
+Button_Navi_1,0
+Button_Navi_2,0
+Button_Navi_3,0
+Button_2,3
+000 COUNTER STATION
+015_INPUT_OUTPUT_HOLLISTER
+Bitmap Button (60)_330,0
+005_INPUT_OUTPUT_HOLLISTER
+015_SHIFTREGISTER
+023 CATHETER REJECT
+Bitmap Button_1_1,0
+Button_1_1_8_3_16_4_3,2
+Button_1_1_8_3_16_4_3_1,2
+Z_CHART_GRAPHMAIN_CPANEL_INFO_1
+Button_1,0
+Z_LINEBATCH_CLIENT_LOCAL_BATCH_DATA
+Z_RGM_FORMAT_CPANEL_IMPORT
+Button_1_1_1_1,0
+Button_1_3_1,4
+Button_1_3_2,4
+021_MANUAL_FUNCTION
+Button_1_1_8_3_16,2
+Button_1_1_8_3_16_1,2
+Button_1_1_8_3_16_2,2
+Button_1_1_8_3_16_3,2
+Button_1_1_8_3_16_4,2
+Button_1_1_8_3_16_4_1,2
+Button_1_1_8_3_16_4_2,2
+Button_1_1_8_3_16_4_3,2
+Button_1_1_8_3_16_4_4,2
+Button_1_1_8_3_16_4_5,2
+Button_1_1_8_3_16_4_6,2
+Button_1_1_8_3_16_4_7,2
+Button_1_1_8_3_16_4_8,2
+Button_1_1_8_3_16_4_9,2
+Button_1_1_8_3_16_4_10,2
+Button_1_1_8_3_16_4_11,2
+Button_1_1_8_3_16_4_12,2
+Button_1_1_8_3_16_4_13,2
+Button_1_1_8_3_16_4_14,2
+Button_1_1_8_3_16_4_15,2
+Z_RGM_FORMAT_CPANEL_DOWNLOAD
+Button_1_1_1_1_1,0
+Button_1_3_1,1
+015_PARAMETER_LEFT
+Z_BATCH_SERVICE
+Z_CPANEL_Calib0
+Button_Close,0
+023_SHIFTREGISTER
+009 CATHETER_GRIPPER
+Bitmap Button_1_1,0
+Bitmap Button_2,1
+Bitmap Button_1_1_1,2
+Zahlenwert_1_2,2
+Bitmap Button_1_2,2
+Zahlenwert_2,0
+Zahlenwert_1_1_1,2
+Bitmap Button_1_2_1,2
+Zahlenwert_2_1,0
+Zahlenwert_1_2_1,2
+Zahlenwert (2)_26,0
+Bitmap Button_1_2_2,2
+Zahlenwert_2_2,0
+Zahlenwert_1_2_1_1,2
+Bitmap Button_1_2_2_1,2
+Zahlenwert_2_2_1,0
+Zahlenwert_1_1_1_1,2
+Bitmap Button_1_2_1_1,2
+Zahlenwert_2_1_1,0
+Button_1_1_1,2
+Bitmap Button_1_1_2,2
+Text verknüpfen (28)_300,0
+SETSTRINGKBD_GR
+Text Button_5,0
+Button_1,0
+Bitmap Button_1,0
+SETSTRINGKBD_DE
+Bitmap Button (1)_5,0
+Text Button_2,0
+Text Button_3,0
+Text Button_4,0
+Text Button_5,0
+Button_1,0
+Button_2,0
+Button_3,0
+001_PARAMETER_SERVO
+Button_1_1,2
+Button_1_1_1,1
+Combielement_1_1,0
+Button_1_1_1_1,2
+Button_1_1_1_2,2
+Button_1_1_1_3,2
+Button_1_1_1_4,0
+Button_1_1_1_5,0
+Button_1_1_1_6,0
+Zahlenwert (4)_47,0
+Zahlenwert (4)_47_1,0
+Zahlenwert (4)_47_2,0
+Zahlenwert (4)_47_3,0
+009_INPUT_OUTPUT_HOLLISTER
+Bitmap Button (60)_330,0
+Z_HOME_CPANEL_SELECT_PRODMODE_1
+Button_Close,0
+Button_1_1_2,0
+019 VISION_SYSTEM_INSIDE
+Button_1_1_8_3,2
+Button_1_1_8_3_1,2
+Button_1_1_8_3_2,2
+Button_1_1_8_3_3,2
+Button_1_1_8_3_4,2
+Button_1_1_8_1_1,2
+Text verknüpfen (28)_300,0
+017_SHIFTREGISTER
+Z_DIAG_SERVO
+017_POSITION_VALUES
+007_INPUT_OUTPUT_HOLLISTER
+Z_DB_MAINTENANCE_CPANEL_CLEANUP
+Button_Close,0
+015_Tip_Counters_2
+014 CHECK_COLOUR_MANDREL
+Bitmap Button_1_1,0
+Text verknüpfen (28)_300,0
+Text verknüpfen (28)_300_1,0
+Button_1_1,2
+Combielement_1_1,0
+Combielement_1_1_1,0
+Combielement_1_1_1_1,0
+Combielement_1_1_1_2,0
+Combielement_1_1_1_3,0
+Combielement_1_1_1_3_1,0
+Combielement_1_1_1_3_2,0
+Combielement_1_1_1_3_3,0
+Combielement_1_1_2,0
+Combielement_1_1_1_4,0
+Combielement_1_1_1_1_1,0
+Combielement_1_1_1_2_1,0
+Combielement_1_1_1_3_4,0
+Combielement_1_1_1_3_1_1,0
+Combielement_1_1_1_3_2_1,0
+Combielement_1_1_1_3_3_3,0
+Schalter_1,2
+Button_1_1_1,2
+Multibin_2,0
+Multibin_1_2,0
+Z_SETUP_OVERVIEW_1
+015_Tip_Counters_1
+001 TRANSPORT
+Bitmap Button_1_1,0
+Bitmap Button_2,0
+Button_1_1,0
+Zahlenwert (52)_14,0
+Z_ADMIN
+SETSTRINGKBD_ES
+Text Button_5,0
+Button_1,0
+Bitmap Button_1,0
+Button_2,0
+001_INPUT_OUTPUT_HOLLISTER
+Z_CPANEL_Calib1
+Button_Close,0
+015_INPUT_OUTPUT_HOLLISTER_2
+Bitmap Button (60)_331,0
+Z_CHART_GRAPHMAIN
+Schalter_1_1_1,0
+Button_1,0
+Button_1_1,0
+Z_DIAG_INPUT_OUTPUT_ELAU_ISH
+000 COUNTER MANDREL
+Bitmap Button_1,0
+Schalter_4_1_1,1
+Schalter_4_1_1_1,1
+Schalter_4_1_1_1_1,1
+Schalter_4_1_1_1_1_1,1
+Schalter_4_1_1_1_1_1_1,1
+Schalter_4_1_1_1_1_1_1_1,1
+Schalter_4_1_1_1_1_1_1_1_1,1
+Schalter_4_1_1_1_1_1_1_1_1_1,1
+Zahlenwert_19_1_1,0
+Zahlenwert_19_1_1_2,0
+Zahlenwert_19_2_1,0
+Zahlenwert_19_2_1_1,0
+Zahlenwert_19_1_1_1,0
+Zahlenwert_19_1_1_2_1,0
+Zahlenwert_19_2_1_2,0
+Zahlenwert_19_2_1_1_1,0
+Zahlenwert_19_1_1_3,0
+Zahlenwert_19_1_1_2_2,0
+Zahlenwert_19_2_1_3,0
+Zahlenwert_19_2_1_1_2,0
+Zahlenwert_19_1_1_4,0
+Zahlenwert_19_1_1_2_3,0
+Zahlenwert_19_2_1_4,0
+Zahlenwert_19_2_1_1_3,0
+Schalter_4_1_1_2,1
+Schalter_4_1_1_1_2,1
+Schalter_4_1_1_1_1_2,1
+Schalter_4_1_1_1_1_1_2,1
+Schalter_4_1_1_1_1_1_1_2,1
+Schalter_4_1_1_1_1_1_1_1_2,1
+Schalter_4_1_1_1_1_1_1_1_1_2,1
+Schalter_4_1_1_1_1_1_1_1_1_1_1,1
+Zahlenwert_19_2_1_1_4,0
+Z_SHUTDOWN_RUNTIME
+Z_PDFVIEW_CPANEL_SELECT_PDF_SORT_OPTION
+Button_1,0
+017_PARAMETER_GENERAL
+Z_DIAG_INPUT_ELAU
+Z_BATCH_CPANEL_OPERATION_FAILED
+Button_Close,0
+SETSTRINGKBD_PT
+Text Button_5,0
+Button_1,0
+Bitmap Button_1,0
+Button_2,0
+Z_RGM_FORMAT_CPANEL_EXPORT
+Button_1_1_1_1,0
+Button_1_3_1,4
+Z_CHART_DS_MAINTENANCE
+007 VERIFICATION
+Bitmap Button_1_1,0
+Button_1_1_8_3_1,2
+Combielement_1_1_1,0
+Combielement_1_1_1_1,0
+Combielement_1_1_1_1_1,0
+Multibin_2,0
+Multibin_1_2,0
+Z_RGM_FORMAT_CPANEL_OPERATION_INPROGRESS
+Button_1_1_1_1,0
+013 CHECK_STRAIGHTNESS_MANDREL
+Bitmap Button_1_1,0
+Button_1_1,2
+Button_1_1_1,2
+Button_1_1_2,2
+Button_1_1_3,2
+Button_1_1_4,2
+Text verknüpfen (28)_300,0
+Z_LINEBATCH_CLIENT_CPANEL_BATCH_INFO_1
+Bitmap Button_2,0
+Button_1,0
+Button_1_1_1_1_1,0
+015_MANUAL_FUNCTION
+Button_1_1,2
+Button_1_1_1,2
+Button_1_1_2,2
+Button_1_1_3,2
+Button_1_1_4,2
+Button_1_1_5,2
+Button_1_1_6,2
+Button_1_1_7,2
+Button_1_1_8,2
+Button_1_1_8_1,2
+Button_1_1_8_2,2
+Button_1_1_8_3,2
+005_PARAMETER_SERVO
+Combielement_1_1,0
+Button_1_1_8_3,2
+Button_1_1_8_3_1,1
+Button_1_1_8_3_2,2
+Button_1_1_8_3_3,2
+Button_1_1_8_3_4,2
+Button_1_1_1_4,2
+Button_1_1_1_5,2
+Button_1_1_1_6,2
+SETSTRINGKBD_FR
+Bitmap Button_1,0
+Button_1,0
+Button_2,0
+Button_3,0
+Button_4,0
+Z_PDFVIEW_CPANEL_FILE_COPIED_TO_USB
+Button_1,0
+Z_RGM_FORMAT_CPANEL_DELETE_PARAMETER_REPORTS
+Button_1_1_1_1_1,0
+Button_1_3_1,4
+Button_1_3_2,0
+014_INPUT_OUTPUT_HOLLISTER
+Z_STDREPORT_CPANEL_INFO_1
+Button_1,0
+Button_2,0
+001_SHIFTREGISTER
+SETSTRINGKBD_TR
+Text Button_5,0
+Button_1,0
+Bitmap Button_1,0
+Button_2,0
+Z_CHART_GRAPH_CPANEL_PARAMETER
+Button_1,0
+015_PARAMETER_LINMOT
+Button_1_1_8,1
+Button_1_1_8_1,2
+Button_1_1_8_2,2
+Button_1_1_8_3,1
+Button_1_1_8_1_1,2
+Button_1_1_8_2_1,2
+Button_1_1_8_4,1
+Button_1_1_8_1_2,2
+Button_1_1_8_2_2,2
+Button_1_1_8_3_1,1
+Button_1_1_8_1_1_1,2
+Button_1_1_8_2_1_1,2
+Combielement_1_1,0
+Combielement_1_1_1,0
+Combielement_1_1_1_1,0
+Combielement_1_1_1_2,0
+Z_CLEANSCREEN
+Button_Close,0
+015_PARAMETER_GRIPPER
+Button_1_1_8,1
+Button_1_1_8_1,2
+Button_1_1_8_2,2
+Combielement_1_1_1,0
+Button_1_1_8_3,1
+Button_1_1_8_1_1,2
+Button_1_1_8_2_1,2
+Combielement_1_1_1_1,0
+Button_1_1_8_2_2,2
+Button_1_1_8_2_2_1,2
+Z_RGM_FORMAT_CPANEL_MESSAGEPANEL
+Bitmap Button_2,0
+Button_1_1_1_1,0
+017_INPUT_OUTPUT_HOLLISTER
+Z_RGM_FORMAT_CPANEL_INFO_2
+Bitmap Button_2,0
+Button_1_1_1_1,0
+Z_PDFVIEW_DOCU_SELECTION
+Z_PDFVIEW_CPANEL_SELECT_PRINTER
+Z_SETUP_1
+Button_Navi_1,0
+Button_Navi_2,0
+Button_Navi_3,0
+Multibin (1)_2,0
+Button_1_1,0
+Multibin (1)_4,0
+Multibin (1)_2_1,0
+Button_1_1_1,0
+Multibin (1)_4_1,0
+Multibin (1)_2_2,0
+Button_1_1_2,0
+Multibin (1)_4_2,0
+Multibin (1)_2_3,0
+Button_1_1_3,0
+Multibin (1)_4_3,0
+Multibin (1)_2_4,0
+Button_1_1_4,0
+Multibin (1)_4_4,0
+Combielement_1_1,0
+Combielement_1_1_1,0
+Combielement_1_1_1_1,0
+Combielement_1_1_1_2,0
+Combielement_1_1_1_3,0
+Combielement_1_1_1_4,0
+Combielement_1_1_1_4_1,0
+Combielement_1_1_1_4_2,0
+Combielement_1_1_1_4_3,0
+Combielement_1_1_1_5,0
+Combielement_1_1_1_5_1,0
+Combielement_1_1_1_5_2,0
+Combielement_1_1_1_5_3,0
+Combielement_1_1_1_5_4,0
+Zahlenwert_1_2_1_1_1_1_2,0
+Zahlenwert_1_2_1_1_1_1_2_1,0
+Zahlenwert_1_2_1_1_1_1_1_1,0
+Zahlenwert_1_2_1_1_1_1_1_1_1,0
+Zahlenwert_1_2_1_1_1_1,0
+Zahlenwert_1_2_1_1_1_1_1,0
+Zahlenwert_1_2_2_1,0
+Zahlenwert_1_2_2_1_1,0
+Zahlenwert_1_2_1_2_1,0
+Zahlenwert_1_2_1_2_1_1,0
+Z_DIAG_INPUT_CPANEL_DIAG_OUTPUT_ONBOARD
+Z_SPLASHSCREEN_CPANEL_ABORT
+Button_1,0
+Z_BATCH_CPANEL_OPERATION_SUCCEEDED
+Button_Close,0
+014_SHIFTREGISTER
+009_MANUAL_FUNCTION
+Button_1_1_8_3,2
+Button_1_1_8_3_1,2
+Button_1_1_8_3_2,2
+Button_1_1_8_3_3,2
+Button_1_1_8_3_4,2
+Button_1_1_8_3_5,2
+Button_1_1_8_3_6,2
+Button_1_1_8_3_7,2
+Button_1_1_8_3_8,2
+Button_1_1_8_3_9,2
+Button_1_1_8_3_10,2
+Button_1_1_8_3_11,2
+Button_1_1_8_3_12,2
+Button_1_1_8_3_13,2
+Button_1_1_8_3_14,2
+Button_1_1_8_3_15,2
+Button_1_1_8_3_16,2
+Button_1_1_8_3_16_1,2
+Button_1_1_8_3_16_2,2
+Button_1_1_8_3_16_3,2
+Button_1_1_8_3_16_4,2
+Button_1_1_8_3_16_5,2
+Button_1_1_8_3_16_6,2
+Button_1_1_8_3_16_7,2
+Button_1_1_8_3_16_1_1,2
+Button_1_1_8_3_16_2_1,2
+Button_1_1_8_3_16_3_1,2
+Button_1_1_8_3_16_4_1,2
+015_Tip_Counters
+015_Tip_Counters_1_CH14_16
+CPAN_CalibResul2
+Button_Close,0
+Z_SYSTEM_CPANEL_SET_DATE_MAN
+Button_Close,0
+Z_CPANEL_PLC_COMMUNICATION
+Button_Close,0
+015_Tip_Counters_2_CH14_16
+Z_SHUTDOWN_SYSTEM
+Z_SETUP
+Button_1,0
+Button_Navi_1,0
+Button_Navi_2,0
+Button_Navi_3,0
+Button_Navi_4,0
+Button_Navi_4_1_2,0
+Multibin (1)_2,0
+Button_1_1,0
+Multibin (1)_4,0
+Multibin (1)_2_1,0
+Button_1_1_1,0
+Multibin (1)_4_1,0
+Multibin (1)_2_3,0
+Button_1_1_3,0
+Multibin (1)_4_3,0
+Multibin (1)_2_4,0
+Button_1_1_4,0
+Multibin (1)_4_4,0
+Combielement_1_1,0
+Combielement_1_1_1,0
+Combielement_1_1_1_1,0
+Combielement_1_1_1_2,0
+Combielement_1_1_1_3,0
+Combielement_1_1_1_4,0
+Combielement_1_1_1_4_2,0
+Combielement_1_1_1_4_3,0
+Combielement_1_1_1_5,0
+Combielement_1_1_1_5_1,0
+Combielement_1_1_1_5_2,0
+Combielement_1_1_1_5_3,0
+Combielement_1_1_1_5_4,0
+Combielement_1_1_1_4_2_1,0
+Zahlenwert_1_2_1_1_1_1_2_2,0
+Zahlenwert_1_2_1_1_1_1_2_1_1,0
+Zahlenwert_1_2_1_1_1_1_1_1_2,0
+Zahlenwert_1_2_1_1_1_1_1_1_1_1,0
+Zahlenwert_1_2_1_1_1_1_3,0
+Zahlenwert_1_2_1_1_1_1_1_2,0
+Zahlenwert_1_2_2_1_2,0
+Zahlenwert_1_2_2_1_1_1,0
+Zahlenwert_1_2_1_2_1_2,0
+Zahlenwert_1_2_1_2_1_1_1,0
+Combielement_1_1_1_4_2_1_1,0
+Combielement_1_1_1_4_2_1_2,0
+Combielement_1_1_1_4_2_1_1_1,0
+Combielement_1_1_1_4_2_1_2_1,0
+Combielement_1_1_1_4_2_1_1_1_1,0
+Combielement_1_1_1_4_2_1_2_1_1,0
+Combielement_1_1_1_4_2_1_2_1_1_1,0
+Combielement_1_1_1_4_2_1_2_1_1_2,0
+Combielement_1_1_1_4_2_1_2_1_1_1_1,0
+SETSTRINGKBD_NO
+Text Button_5,0
+Button_1,0
+Bitmap Button_1,0
+Button_2,0
+001 PARAMETER
+Z_LINEBATCH_CLIENT_DATA
+Button_1,0
+Button_1_1,0
+SETSTRINGKBD_IT
+Text Button_5,0
+Button_1,0
+Bitmap Button_1,0
+Button_2,0
+015_Tip_Counters_2_CH10_12
+SETSTRINGKBD_PL
+Text Button_5,0
+Button_1,0
+Bitmap Button_1,0
+Z_CPANEL_CONTROLPANEL_SMALL_1
+Button_Close,0
+Z_SPLASHSCREEN
+Button_Close,0
+031_Station
+Button_Navi_5,0
+Multibin_1,0
+Multibin_2,0
+Multibin_1_2,0
+Bitmap Button_1_1,0
+Z_SYSTEM_CPANEL_DISC_SPACE_EXPORT_FOLDER
+Button_Close,0
+Z_BATCH_CPANEL_BATCH_FORMAT_NOT_CHECKED
+Button_Close,0
+025_BY_PASS_OUTFEED
+Button_1_1_8_3_16_4_3,0
+Z_CPANEL_FAULT_FILTER
+Button_1,0
+009_INPUT_OUTPUT_HOLLISTER_2
+Bitmap Button (60)_331,0
+015_PARAMETER_RIGHT
+013_SHIFTREGISTER
+Z_PDFVIEW_VIEWPDF
+Button_7,0
+Button_7_3,0
+Button_7_4,0
+Button_7_3_1,0
+Button_7_4_1,0
+Button_7_1,0
+Button_7_3_2,0
+Z_RGM_FORMAT_CPANEL_PARAM_REPORT
+Button_1_1_1_1,0
+Button_1_3_1,1
+Button_1_3_2_1_1_1,1
+003_INPUT_OUTPUT_HOLLISTER
+Z_RGM_FORMAT_CPANEL_DELETE_FORMAT_REPORTS
+Button_1_1_1_1,0
+Button_1_3_1,4
+Button_1_3_2,0
+009_SHIFTREGISTER
+009_LINMOT_POSITION
+Zahlenwert (16)_79_1_3,0
+Zahlenwert_19_1_1_2,0
+Zahlenwert (16)_77_1_1_1,0
+Zahlenwert_19_2_1_1,0
+Zahlenwert_17_2_2_3_1,0
+Zahlenwert (16)_79_1_1_2,0
+Zahlenwert (16)_79_1_1_1_1,0
+Zahlenwert (16)_79_1_2_2,0
+Zahlenwert (16)_79_1_2_1_1,0
+Zahlenwert_19_1_1_1_1,0
+Zahlenwert (16)_79_1_3_1,0
+Zahlenwert_19_1_1_2_1,0
+Zahlenwert (16)_77_1_1_1_1,0
+Zahlenwert_19_2_1_1_1,0
+Zahlenwert_17_2_2_3_1_1,0
+Zahlenwert (16)_79_1_1_2_1,0
+Zahlenwert (16)_79_1_1_1_1_1,0
+Zahlenwert (16)_79_1_2_2_1,0
+Zahlenwert (16)_79_1_2_1_1_1,0
+Zahlenwert_19_1_1_1_1_1,0
+Combielement_1_1,0
+Combielement_1_1_1,0
+Combielement_1_1_1_1,0
+Combielement_1_1_1_2,0
+Combielement_1_1_1_3,0
+Combielement_1_1_1_3_1,0
+Combielement_1_1_1_3_2,0
+Combielement_1_1_1_3_3,0
+Combielement_1_1_1_3_3_1,0
+Combielement_1_1_1_3_3_2,0
+Combielement_1_1_2,0
+Combielement_1_1_1_4,0
+Combielement_1_1_1_1_1,0
+Combielement_1_1_1_2_1,0
+Combielement_1_1_1_3_4,0
+Combielement_1_1_1_3_1_1,0
+Combielement_1_1_1_3_2_1,0
+Combielement_1_1_1_3_3_3,0
+Combielement_1_1_1_3_3_1_1,0
+Combielement_1_1_1_3_3_2_1,0
+Z_PDFVIEW_CPANEL_SELECT_PDFFILE
+Text verknüpfen_2,0
+SETSTRINGKBD_GB
+Text Button_5,0
+Button_1,0
+Bitmap Button_1,0
+Z_RGM_FORMAT_CPANEL_OPERATION_SUCCEEDED
+Button_1_1_1_1,0
+Button_1_3_1,0
+Kopie 0 von Z_PERMANENT_BAR
+Text verknüpfen_5,0
+Multibin_1,0
+Button_1,0
+Button_2,0
+Button_3,0
+Button_4,0
+Button_5,0
+Button_6,0
+Button_7,0
+Button_8,0
+Dynamischer Text_1,0
+Zahlenwert_1,0
+Z_SETUP_GENERAL_1
+Button_1,2
+Button_2,2
+Button_Navi_1,0
+Button_1_2,2
+Button_1_2_1,2
+Button_1_2_1_1,2
+Button_1_2_1_2,2
+Button_1_2_1_3,2
+Button_1_2_1_4,2
+Button_1_2_1_5,2
+Button_1_2_1_6,2
+Button_1_2_1_7,2
+Z_HOME_CPANEL_SELECT_OPMODE_1
+Button_Close,0
+Z_BATCH_CPANEL_STOP_BATCH
+Button_Close,0
+SETSTRINGKBD_RU
+Button_1,0
+Bitmap Button_1,0
+017 VISION_SYSTEM_OUTSIDE
+Button_1_1_8,2
+Button_1_1_8_1,2
+Button_1_1_8_2,2
+Button_1_1_8_3_1,2
+Button_1_1_8_3_2,2
+Button_1_1_8_1_1,2
+Combielement_1_1_1_1,0
+Combielement_1_1_1_1_1,0
+Text verknüpfen (28)_300,0
+Z_BATCH_CPANEL_GENERAL_RESET
+Button_Close,0
+021_INPUT_OUTPUT_HOLLISTER_2
+Bitmap Button (60)_331,0
+015_Tip_Counters_New
+Z_ELAU_USER_CURRENT_TEST_21_40
+Zahlenwert_3,0
+Z_CHART_CPANEL_INFO_1
+Button_Close,0
+Z_DIAG_OUTPUT_ELAU
+SETSTRINGKBD_FI
+Text Button_5,0
+Button_1,0
+Bitmap Button_1,0
+Button_2,0
+Z_LINEFORMAT_CPANEL_LINEFORMAT_DOWNLOAD
+Text verknüpfen (39)_411,0
+Text verknüpfen (39)_411_1,0
+Button_1_1_1_1,0
+022 CATHETER TRANSFER OUT
+Bitmap Button_2,1
+Button_1_1_8_3_16_4,2
+Button_1_1_8_3_16_4_1,2
+Button_1_1_8_3_16_4_2,2
+Button_1_1_8_3_16_4_3,2
+Button_1_1_8_3_16_4_4,2
+Button_1_1_8_3_16_4_5,2
+Button_1_1_8_3_16_4_6,2
+019_PARAMETER_GENERAL
+Z_BATCH_CPANEL_BATCH_FORMAT_DIFFERENCE
+Button_Close,0
+Z_BATCH_CPANEL_BATCH_INFO_1
+Button_Close,0
+Button_1,0
+021_PARAMETER_LINMOT
+Button_1_1_8_3_16_1,1
+Button_1_1_8_3_16_2,2
+Button_1_1_8_3_16_3,2
+Button_1_1_8_3_16_1_1,1
+Button_1_1_8_3_16_2_1,2
+Button_1_1_8_3_16_3_1,2
+Combielement_1_1_1,0
+Combielement_1_1_1_1,0
+Z_RGM_FORMAT_CPANEL_FORMAT_INFO_NOTOK
+Text verknüpfen_1_1_1,0
+Text verknüpfen_1_1_1_1,0
+Text verknüpfen_1_1_1_1_1,0
+Text verknüpfen_1_1,0
+Text verknüpfen_1_1_1_2,0
+Button_1_1_1_1,0
+Button_1_3_1,0
+Z_CHART_GRAPH_CPANEL_TEST
+Button_1,0
+Zahlenwert_1_2_1_1_1_1_3_1_1_1_5,0
+Zahlenwert_1_2_1_1_1_1_3_1_1_1_5_1,0
+Zahlenwert_1_2_1_1_1_1_3_1_1_1_5_2,0
+Zahlenwert_1_2_1_1_1_1_3_1_1_1_5_1_1,0
+Zahlenwert_1_2_1_1_1_1_3_1_1_1_5_2_1,0
+Zahlenwert_1_2_1_1_1_1_3_1_1_1_5_1_1_1,0
+Zahlenwert_1_2_1_1_1_1_3_1_1_1_5_2_1_1,0
+Zahlenwert_1_2_1_1_1_1_3_1_1_1_5_1_1_1_1,0
+Zahlenwert_1_2_1_1_1_1_3_1_1_1_5_2_1_1_1,0
+Zahlenwert_1_2_1_1_1_1_3_1_1_1_5_1_1_1_1_1,0
+Button_2,0
+Button_2_1,0
+Button_2_1_1,0
+Button_2_1_1_1,0
+Button_2_1_1_1_1,0
+Button_2_2,0
+Button_2_3,0
+Button_2_3_1,0
+Button_2_3_1_1,0
+023_INPUT_OUTPUT_HOLLISTER
+Z_RGM_FORMAT_CPANEL_DELETE_FORMATREQUEST
+Text verknüpfen (39)_411,0
+Text verknüpfen (39)_411_1,0
+Button_1_1_1,0
+Button_1_3_1,4
+Button_1_3_2,0
+Z_BATCH_CPANEL_START_BATCH
+Button_Close,0
+Z_FAULTBUFFER
+Button_Navi_1,0
+SETSTRINGKBD_HU
+Text Button_5,0
+Button_1,0
+Bitmap Button_1,0
+DIALOGKBD_CE
+Button_Close,0
+DIALOGKBD_PC
+Button_Close,0
+005 CATHETER_TRANSFER
+Bitmap Button_2,0
+Button_1_1_8_3,2
+Button_1_1_8_3_1,2
+Button_1_1_8_3_2,2
+Button_1_1_8_3_3,2
+Button_1_1_8_3_4,2
+Button_1_1_8_3_5,2
+Button_1_1_8_3_6,2
+Button_1_1_8_3_7,2
+Button_1_1_8_3_8,2
+Button_1_1_8_3_7_1,2
+Button_1_1_8_3_8_1,2
+Z_RGM_FORMAT_CPANEL_OPERATION_FAILED
+Button_1_1_1_1,0
+Button_1_3_1,0
+015_PARAMETER_GENERAL
+000_DISPLAY_SHIFT_REGISTER
+022_INPUT_OUTPUT_HOLLISTER
+Z_BATCH_DATA
+015 EYE_PUNCHING
+Bitmap Button_1_1,2
+Bitmap Button_2,1
+Bitmap Button_1_1_1,0
+Bitmap Button_2_1,2
+Button_1_1,2
+Button_1_1_1,2
+Bitmap Button_2_1_1,2
+Text verknüpfen (28)_300,0
+Z_CPANEL_AUDIT_FILTER
+Button_1,0
+Z_BATCH_CPANEL_RECREATE_BATCHREPORT
+Button_Close,0
+Button_1,0
+Z_STDREPORT_CPANEL_INFO_3
+Button_1,0
+CPAN_CalibResul1
+Button_Close,0
+Z_SYSTEM
+Button_Navi_1,0
+Button_Navi_2,0
+Button_Navi_3,5
+SETSTRINGKBD
+Text Button_5,0
+Button_1,0
+Bitmap Button_1,0
+Z_ELAU_USER_CURRENT_TEST_1_20
+Zahlenwert_3,0
+009_PARAMETER_LINMOT
+Button_1_1_8_3_16_1,1
+Button_1_1_8_3_16_2,2
+Button_1_1_8_3_16_3,2
+Button_1_1_8_3_16_1_1,1
+Button_1_1_8_3_16_2_1,2
+Button_1_1_8_3_16_3_1,2
+Combielement_1_1,0
+Combielement_1_1_1,0
+Zahlenwert_1_2,2
+Zahlenwert (2)_26,0
+Bitmap Button_1_2_1,2
+Zahlenwert_2_1,0
+Zahlenwert_1_1_1,2
+Bitmap Button_1_2_1_1,2
+Zahlenwert_2_1_1,0
+Zahlenwert (2)_26_1,0
+013_INPUT_OUTPUT_HOLLISTER
+019_SHIFTREGISTER
+Z_RGM_FORMAT_CPANEL_UPLOAD
+Text verknüpfen (5)_398,0
+Text verknüpfen (5)_392,3
+Button_1_1_1_1,0
+Button_1_3_1,3
+Button_1_3_2,3
+Button_1_3_2_1_1_1,3
+Button_1_3_2_1_1_2,3
+Z_RGM_FORMAT_CPANEL_DELETE
+Button_1_1_1_1,0
+Button_1_3_1,0
+Z_DIAG_ASI_MONITOR
+Schalter (18)_112,1
+Bitmap Button (43)_169_1,1
+Bitmap Button (43)_169_1_1,1
+Z_HOME_1
+Button_Navi_1,0
+Button_Navi_2,0
+Button_Navi_3,0
+Button_Navi_4,0
+Button_Navi_5,0
+Button_Navi_6,0
+Button_Navi_7,0
+Button_Navi_8,0
+Dynamischer Text_1,0
+021_INPUT_OUTPUT_HOLLISTER
+Bitmap Button (60)_330,0
+Z_AUDIT
+Button_Navi_1,0
+Z_RGM_FORMAT_ARCHIVDATA
+Button_1_3_1,1
+Button_1_3_2,3
+Button_1_3_4,1
+Button_1_3_5,3
+007_SHIFTREGISTER
+SETSTRINGKBD_SE
+Text Button_5,0
+Button_1,0
+Bitmap Button_1,0
+Z_CPANEL_CONTROLPANEL_SMALL
+Button_Close,0
+000 COUNTER MANDREL_Old
+Zahlenwert_19_1_1,0
+Zahlenwert_19_1_1_2,0
+Zahlenwert_19_2_1,0
+Zahlenwert_19_2_1_1,0
+Zahlenwert_19_1_1_1,0
+Zahlenwert_19_1_1_2_1,0
+Zahlenwert_19_2_1_2,0
+Zahlenwert_19_2_1_1_1,0
+Zahlenwert_19_1_1_3,0
+Zahlenwert_19_1_1_2_2,0
+Zahlenwert_19_2_1_3,0
+Zahlenwert_19_2_1_1_2,0
+Zahlenwert_19_1_1_4,0
+Zahlenwert_19_1_1_2_3,0
+Zahlenwert_19_2_1_4,0
+Zahlenwert_19_2_1_1_3,0
+Z_RGM_FORMAT_CPANEL_FORMAT_INFO_OK
+Button_1_1_1_1,0
+Button_1_3_1,0
+SETVALUEKBD
+Text Button_1,0
+Text Button_2,0
+Text Button_3,0
+Text Button_4,0
+Text Button_5,0
+Text Button_6,0
+Text Button_7,0
+Text Button_8,0
+Text Button_9,0
+Text Button_10,0
+Button_Close,0
+Z_HOME_CPANEL_SELECT_OPMODE
+Button_Close,0
+Z_HOME_CPANEL_SELECT_PRODMODE
+Button_Close,0
+Button_1_1_2,0
+Button_1_1_2_1,1
+Z_CPANEL_CONTROLPANEL_LARGE
+Button_Close,0
+Z_HH_INFO_CPANEL
+Button_Close,0
+Dynamischer Text_1,0
+Dynamischer Text_1_1,0
+Dynamischer Text_1_1_1,0
+Z_PERMANENT_BAR_CPANEL_LOGIN_LOGOUT
+Button_Close,0
+Z_SYSTEM_CPANEL_SELECT_LANGUAGE
+Button_Close,0
+Z_CPANEL_HIGH_RI
+Button_Close,0
+Z_DIAG_PROFIBUS
+Zahlenwert_1,0
+Z_INFOBUTTON
+Button_1,0
+Z_SERVICE
+Button_Navi_1,2
+Button_Navi_2,2
+Button_Navi_3,2
+Button_Navi_4,2
+Button_Navi_5,2
+Button_Navi_6,2
+Button_Navi_3_1,0
+Button_Navi_3_1_1,2
+Z_SETUP_GENERAL
+Button_1,2
+Button_2,2
+Button_Navi_1,0
+Button_1_2,2
+Button_1_2_1,2
+Button_1_2_1_1,2
+Button_1_2_1_2,2
+Button_1_2_1_3,2
+Button_1_2_1_4,2
+Button_1_2_1_5,2
+Button_1_2_1_6,2
+Button_1_2_1_7,2
+Button_1_2_1_6_1,2
+Z_SETUP_OVERVIEW
+Z_HOME
+Button_Navi_1,0
+Button_Navi_2,0
+Button_Navi_3,0
+Button_Navi_4,0
+Button_Navi_5,0
+Button_Navi_6,0
+Button_Navi_7,0
+Dynamischer Text_1,0
+Text verknüpfen (39)_411,0
+Button_Navi_3_1,0
+Text verknüpfen (28)_300,0
+Z_FAULTLIST
+Button_Navi_1,0
+Schalter_1_8_1,0
+Schalter_1_8_1_1,0
+Z_SYS_DATE_USER
+Button_1,0
