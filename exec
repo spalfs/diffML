@@ -1,6 +1,12 @@
 #!/usr/bin/python3
-from lib import getXML, writeCSV
+from lib import getXML, writeCSV, diff
 
-num = "18077"
-data = getXML(num)
-writeCSV(num,data)
+n1 = "18077"
+data = getXML(n1)
+writeCSV(n1,data)
+
+n2 = "18070"
+data = getXML(n2)
+writeCSV(n2,data)
+
+diff(n1,n2)

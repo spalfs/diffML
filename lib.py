@@ -34,3 +34,9 @@ def writeCSV(num,data):
         for screen in data:
             writer.writerow([screen['title']])
             writer.writerows(screen['namesAndLevels'])
+
+def diff(n1,n2):
+    print("diff")
+
+
+
