@@ -1,8 +1,9 @@
 import xml.etree.ElementTree as ET
+from pprint import pprint
 import csv
 
-def getXML(num):
-    tree = ET.parse("xmldata/"+num+".XML")
+def getXML(n):
+    tree = ET.parse("xmldata/"+n+".XML")
     root = tree.getroot()
 
     data = []
@@ -11,7 +12,7 @@ def getXML(num):
         screens = apartment.findall('Picture')
         for screen in screens:
             tmp = {}
-            tmp['namesAndLevels'] = []
+            tmp['info'] = []
             for screenObject in screen:
                 if screenObject.tag == "Title":
                     tmp['title'] = screenObject.text
@@ -20,23 +21,43 @@ def getXML(num):
                 if str(screenObject.tag).find("Elements") != -1:
                     name = screenObject.findall("Name")
                     plvl = screenObject.findall("Passwordlevel")
-                    if not name or not plvl:
+                    dyne = screenObject.findall("DynEleFkt_0")
+                    if not name or not plvl or not dyne:
                         continue
                     if name[0].text == None:
                         continue
-                    tmp['namesAndLevels'].append((name[0].text,plvl[0].text))
+                    func = dyne[0].findall("Name")
+                    tmp['info'].append({ "name" : name[0].text,
+                                         "plvl" : plvl[0].text,
+                                         "func" : func[0].text })
 
     return data
 
-def writeCSV(num,data):
-    with open(num+'.csv','w') as f:
+def writeCSV(n,data):
+    with open(n+'.csv','w') as f:
         writer = csv.writer(f)
         for screen in data:
             writer.writerow([screen['title']])
-            writer.writerows(screen['namesAndLevels'])
+            for v in screen['info']:
+                writer.writerow((v['func'],v['name'],v['plvl']))
 
 def diff(n1,n2):
-    print("diff")
+    f = open(n1+'.csv','r')
+    reader = csv.reader(f)
+    data1 = []
+    for row in reader:
+        tmp = {}
+        if len(row) == 1:
+            tmp["title"] = row[0]
+
+        if tmp == {}:
+            continue
+        data1.append(tmp)
+
+    pprint(data1)
+
+
+
 
 
 
