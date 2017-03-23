@@ -1,10 +1,11 @@
 #!/usr/bin/python3
-from tkinter import Tk, Frame, Button, X, Listbox, OptionMenu, StringVar, LEFT, RIGHT, Toplevel, Message, Listbox, END, Scrollbar, Y, EXTENDED
+
+from tkinter import Tk, Frame, Button, Listbox, OptionMenu, StringVar, Toplevel, Message, Listbox, END, Entry, ACTIVE
 from os import listdir
+
 from lib.xmllib import getXML
 from lib.csvlib import writeCSV, readCSV
 from lib.datalib import diffScreens
-from pprint import pprint
 
 class XMLDiffer(Frame):
     def __init__(self, master):
@@ -22,39 +23,65 @@ class XMLDiffer(Frame):
         self.file2Selection.set(options[0])
 
         file1 = OptionMenu(master, self.file1Selection, *options)
-        file1.grid(column = 0, row = 0, columnspan = 2)
+        file1.grid(column = 0, row = 0)
 
         file2 = OptionMenu(master, self.file2Selection, *options)
-        file2.grid(column = 2, row = 0, columnspan = 2)
+        file2.grid(column = 1, row = 0)
 
         # ROW 1
-
-        Button(master, text="Get Screens", command=self.getData).grid(row=1, columnspan=4)
+        Button(master, text="Get Screens", command=self.getData).grid(row=1, columnspan=2)
         
         # ROW 2
-        self.file1Screens = Listbox(master, selectmode=EXTENDED)
-        self.file1Screens.grid(column=0,row=2,columnspan=2)
+        self.file1Screens = Listbox(master)
+        self.file1Screens.grid(column=0,row=2)
+        self.file1Screens.bind('<Double-1>', lambda a: self.sendToCompare(1) )
 
         self.file2Screens = Listbox(master)
-        self.file2Screens.grid(column=2,row=2,columnspan=2)
+        self.file2Screens.grid(column=1,row=2)
+        self.file2Screens.bind('<Double-1>', lambda a: self.sendToCompare(2) )
 
         # ROW 3
-        self.file1CsvButton = Button(master, text="Save to CSV", command = lambda: self.saveCSV(1)).grid(row=3, column=0, columnspan=2)
-        self.file1CsvButton = Button(master, text="Save to CSV", command = lambda: self.saveCSV(2)).grid(row=3, column=2, columnspan=2)
+        self.file1CsvButton = Button(master, text="Save to CSV", command = lambda: self.saveCSV(1))
+        self.file1CsvButton.grid(row=3, column=0)
+        self.file1CsvButton.config(state="disabled")
+
+        self.file2CsvButton = Button(master, text="Save to CSV", command = lambda: self.saveCSV(2))
+        self.file2CsvButton.grid(row=3, column=1)
+        self.file2CsvButton.config(state="disabled")
 
         # ROW 4
         self.diffButton = Button(master, text="Find different screens", command = self.checkMissingScreens)
         self.diffButton.grid(row = 4, columnspan=4)
         self.diffButton.config(state="disabled") 
 
+        # ROW 5
+        self.data1Select = Entry(master)
+        self.data1Select.grid(row = 5, column = 0)
+
+        self.data2Select = Entry(master)
+        self.data2Select.grid(row = 5, column = 1)
+
+        # ROW 6   
+        self.compareButton = Button(master, text="Compare:", command = self.compare)
+        self.compareButton.grid(row = 6, columnspan = 2)
+        self.compareButton.config(state="disabled")
+
+
     def getData(self):
         self.data1 = getXML(self.file1Selection.get())
         self.data2 = getXML(self.file2Selection.get())
+        
+        self.file1Screens.insert(END,"ALL")
+        self.file2Screens.insert(END,"ALL")
+
         for screen in self.data1:
             self.file1Screens.insert(END,screen['title'])
         for screen in self.data2:
             self.file2Screens.insert(END,screen['title'])
+
         self.diffButton.config(state="normal")
+        self.file1CsvButton.config(state="normal")
+        self.file2CsvButton.config(state="normal")
         
     def checkMissingScreens(self):
         diffData = diffScreens(self.data1,self.data2)
@@ -72,13 +99,22 @@ class XMLDiffer(Frame):
 
         for index, screen in enumerate(diffData["data1missing"]):
             tmp = Message(top,text=screen)
-            tmp.config(aspect=1000)
+            tmp.config(aspect=1500)
             tmp.grid(row=index+1,column=0)
-
+        
         for index, screen in enumerate(diffData["data2missing"]):
             tmp = Message(top,text=screen)
-            tmp.config(aspec=1000)
+            tmp.config(aspec=1500)
             tmp.grid(row=index+1,column=1)
+
+        lastRow = len(diffData["data1missing"])
+        if lastRow <= len(diffData["data2missing"]):
+            lastRow = len(diffData["data2missing"])
+        lastRow = lastRow+1
+
+        Button(top, text="Okay", command=top.destroy).grid(column=0, row=lastRow)
+        Button(top, text="Save to CSV").grid(column=1, row=lastRow)
+        
 
     def saveCSV(self, f):
         if f == 1:
@@ -92,6 +128,17 @@ class XMLDiffer(Frame):
             writeCSV(n,self.data1)
         elif f == 2:
             writeCSV(n,self.data2)
+
+    def sendToCompare(self, f):
+        if f == 1:
+            self.data1Select.delete(0,END)
+            self.data1Select.insert(0,self.file1Screens.get(ACTIVE))
+        elif f == 2:
+            self.data2Select.delete(0,END)
+            self.data2Select.insert(0,self.file2Screens.get(ACTIVE))
+
+    def compare(self):
+        print("comparing")
 
 
 root = Tk()
