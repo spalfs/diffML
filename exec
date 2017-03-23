@@ -1,12 +1,100 @@
 #!/usr/bin/python3
+from tkinter import Tk, Frame, Button, X, Listbox, OptionMenu, StringVar, LEFT, RIGHT, Toplevel, Message, Listbox, END, Scrollbar, Y, EXTENDED
+from os import listdir
 from lib.xmllib import getXML
 from lib.csvlib import writeCSV, readCSV
-from lib.datalib import diff
+from lib.datalib import diffScreens
+from pprint import pprint
 
-n1 = "18077"
-data1 = getXML(n1)
+class XMLDiffer(Frame):
+    def __init__(self, master):
+        self.master = master
+        
+        # ROW 0
+        options = []
+        for f in listdir("xmldata"):
+            options.append(f)
 
-n2 = "18368"
-data2 = getXML(n2)
+        self.file1Selection = StringVar()
+        self.file1Selection.set(options[0])
 
-diff(data1,data2)
+        self.file2Selection = StringVar()
+        self.file2Selection.set(options[0])
+
+        file1 = OptionMenu(master, self.file1Selection, *options)
+        file1.grid(column = 0, row = 0, columnspan = 2)
+
+        file2 = OptionMenu(master, self.file2Selection, *options)
+        file2.grid(column = 2, row = 0, columnspan = 2)
+
+        # ROW 1
+
+        Button(master, text="Get Screens", command=self.getData).grid(row=1, columnspan=4)
+        
+        # ROW 2
+        self.file1Screens = Listbox(master, selectmode=EXTENDED)
+        self.file1Screens.grid(column=0,row=2,columnspan=2)
+
+        self.file2Screens = Listbox(master)
+        self.file2Screens.grid(column=2,row=2,columnspan=2)
+
+        # ROW 3
+        self.file1CsvButton = Button(master, text="Save to CSV", command = lambda: self.saveCSV(1)).grid(row=3, column=0, columnspan=2)
+        self.file1CsvButton = Button(master, text="Save to CSV", command = lambda: self.saveCSV(2)).grid(row=3, column=2, columnspan=2)
+
+        # ROW 4
+        self.diffButton = Button(master, text="Find different screens", command = self.checkMissingScreens)
+        self.diffButton.grid(row = 4, columnspan=4)
+        self.diffButton.config(state="disabled") 
+
+    def getData(self):
+        self.data1 = getXML(self.file1Selection.get())
+        self.data2 = getXML(self.file2Selection.get())
+        for screen in self.data1:
+            self.file1Screens.insert(END,screen['title'])
+        for screen in self.data2:
+            self.file2Screens.insert(END,screen['title'])
+        self.diffButton.config(state="normal")
+        
+    def checkMissingScreens(self):
+        diffData = diffScreens(self.data1,self.data2)
+
+        top = Toplevel()
+        top.columnconfigure(0,minsize=200)
+        top.columnconfigure(1,minsize=200)
+
+        titleLeft = Message(top, text=(self.file1Selection.get() + " is missing:"))
+        titleLeft.config(aspect=400)
+        titleLeft.grid(row=0,column=0)
+        titleRight = Message(top, text=(self.file2Selection.get() + " is missing:"))
+        titleRight.config(aspect=400)
+        titleRight.grid(row=0,column=1)
+
+        for index, screen in enumerate(diffData["data1missing"]):
+            tmp = Message(top,text=screen)
+            tmp.config(aspect=1000)
+            tmp.grid(row=index+1,column=0)
+
+        for index, screen in enumerate(diffData["data2missing"]):
+            tmp = Message(top,text=screen)
+            tmp.config(aspec=1000)
+            tmp.grid(row=index+1,column=1)
+
+    def saveCSV(self, f):
+        if f == 1:
+            n = self.file1Selection.get()
+        elif f == 2:
+            n = self.file2Selection.get()
+
+        n = n.replace(".XML","")
+
+        if f == 1:
+            writeCSV(n,self.data1)
+        elif f == 2:
+            writeCSV(n,self.data2)
+
+
+root = Tk()
+root.title("xmldiffer")
+app = XMLDiffer(master = root)
+root.mainloop()

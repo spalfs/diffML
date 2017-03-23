@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 from pprint import pprint
 
 def getXML(n):
-    tree = ET.parse("xmldata/"+n+".XML")
+    tree = ET.parse("xmldata/"+n)
     root = tree.getroot()
 
     data = []
