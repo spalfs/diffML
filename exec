@@ -1,11 +1,12 @@
 #!/usr/bin/python3
-from lib.xmllib import getXML, diff
+from lib.xmllib import getXML
 from lib.csvlib import writeCSV, readCSV
+from lib.datalib import diff
 
 n1 = "18077"
 data1 = getXML(n1)
 
-n2 = "18070"
+n2 = "18368"
 data2 = getXML(n2)
 
 diff(data1,data2)

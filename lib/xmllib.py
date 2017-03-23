@@ -31,11 +31,3 @@ def getXML(n):
                                          "func" : func[0].text })
 
     return data
-
-def diff(data1, data2):
-    pprint("diff")
-
-
-
-
-
