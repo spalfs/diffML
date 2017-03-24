@@ -1,5 +1,4 @@
 import csv
-from pprint import pprint
 
 def writeCSV(n,data):
     with open(n+'.csv','w') as f:
@@ -39,7 +38,7 @@ def writeCSVDiff(diffData):
                 for var in screen['diffVars']:
                     writer.writerow([var['data1']['name'], var['data1']['func'], var['data1']['plvl'], var['data2']['plvl']])
 
-def writeCSVScreenDiff(diffData):
+def writeCSVScreensDiff(diffData):
     with open("diff.csv","w") as f:
         writer = csv.writer(f)
         while len(diffData['data1missing']) > len(diffData['data2missing']):

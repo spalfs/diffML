@@ -1,4 +1,3 @@
-from pprint import pprint
 
 def diffScreens(data1, data2):
     diffData = {}

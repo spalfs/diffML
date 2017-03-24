@@ -1,5 +1,4 @@
 import xml.etree.ElementTree as ET
-from pprint import pprint
 
 def getXML(n):
     tree = ET.parse("xmldata/"+n)
