@@ -37,10 +37,18 @@ def diffScreenVars(screen1, screen2):
                 else:
                     tmp['diffVars'].append({ "data1" : var1, "data2" : var2 })
         if not found:
-            tmp['missingVars'].append(var1)
+            tmp['missingVars'].append(("data1has",var1))
 
-        if tmp['diffVars'] == [] and tmp['missingVars'] == []:
-            return False
+    for var2 in screen2['info']:
+        found = False
+        for var1 in screen1['info']:
+            if var1['name'] == var2['name']:
+                found = True
+        if not found:
+            tmp['missingVars'].append(("data2has",var2))
+
+    if tmp['diffVars'] == [] and tmp['missingVars'] == []:
+        return False
 
     return tmp
 
@@ -51,13 +59,6 @@ def diffAll(data1, data2):
         for data2Screen in data2:
             if data1Screen['title'] == data2Screen['title']:
                 tmp = diffScreenVars(data1Screen,data2Screen)
-                if tmp:
-                    diffData.append(tmp)
-
-    for data2Screen in data2:
-        for data1Screen in data1:
-            if data1Screen['title'] == data2Screen['title']:
-                tmp = diffScreenVars(data2Screen,data1Screen)
                 if tmp:
                     diffData.append(tmp)
 

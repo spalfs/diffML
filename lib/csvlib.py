@@ -32,11 +32,11 @@ def writeCSVDiff(diffData):
             if screen['missingVars'] != []:
                 writer.writerow([screen['title'],'MISSING'])
                 for var in screen['missingVars']:
-                    writer.writerow([var['name'],var['func'],var['plvl']])
+                    writer.writerow([var[1]['name'],var[1]['func'],var[1]['plvl'],var[0]])
             if screen['diffVars'] != []:
                 writer.writerow([screen['title'],'DIFFERENCES'])
                 for var in screen['diffVars']:
-                    writer.writerow([var['data1']['name'], var['data1']['func'], var['data1']['plvl'], var['data2']['plvl']])
+                    writer.writerow([var['data1']['name'], var['data1']['func'], var['data2']['func'], var['data1']['plvl'], var['data2']['plvl']])
 
 def writeCSVScreensDiff(diffData):
     with open("diff.csv","w") as f:

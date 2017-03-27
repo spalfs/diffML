@@ -194,6 +194,6 @@ class XMLDiffer(Frame):
                 Button(top,text="Save to CSV",command=lambda: writeCSVDiff([diffData1,diffData2])).grid(row=1,column=0)
 
 root = Tk()
-root.title("xmldiffer")
+root.title("xmldiffer (for screens) - thomas.barrett_ext@hoefliger.de")
 app = XMLDiffer(master = root)
 root.mainloop()
