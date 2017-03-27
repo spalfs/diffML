@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from tkinter import Tk, Frame, Button, Listbox, OptionMenu, StringVar, Toplevel, Message, Listbox, END, Entry, ACTIVE, messagebox
+from tkinter import Tk, Frame, Button, Listbox, OptionMenu, StringVar, Toplevel, Message, Listbox, END, Entry, ACTIVE, messagebox, ALL, N, S, E, W
 from os import listdir
 
 from lib.xmllib import getXML
@@ -13,6 +13,8 @@ class XMLDiffer(Frame):
 
         self.filled1 = False
         self.filled2 = False
+
+        textWidth = 45
         
         # ROW 0
         options = []
@@ -35,11 +37,11 @@ class XMLDiffer(Frame):
         Button(master, text="Get Screens", command=self.getData).grid(row=1, columnspan=2)
         
         # ROW 2
-        self.file1Screens = Listbox(master)
+        self.file1Screens = Listbox(master,width=textWidth)
         self.file1Screens.grid(column=0,row=2)
         self.file1Screens.bind('<Double-1>', lambda a: self.sendToCompare(1) )
 
-        self.file2Screens = Listbox(master)
+        self.file2Screens = Listbox(master,width=textWidth)
         self.file2Screens.grid(column=1,row=2)
         self.file2Screens.bind('<Double-1>', lambda a: self.sendToCompare(2) )
 
@@ -53,19 +55,19 @@ class XMLDiffer(Frame):
         self.file2CsvButton.config(state="disabled")
 
         # ROW 4
-        self.diffButton = Button(master, text="Find different screens", command = self.checkMissingScreens)
+        self.diffButton = Button(master, text="Compare Screens", command = self.checkMissingScreens)
         self.diffButton.grid(row = 4, columnspan=4)
         self.diffButton.config(state="disabled") 
 
         # ROW 5
-        self.data1Select = Entry(master)
+        self.data1Select = Entry(master,width=textWidth)
         self.data1Select.grid(row = 5, column = 0)
 
-        self.data2Select = Entry(master)
+        self.data2Select = Entry(master,width=textWidth)
         self.data2Select.grid(row = 5, column = 1)
 
         # ROW 6   
-        self.compareButton = Button(master, text="Compare", command = self.compare)
+        self.compareButton = Button(master, text="Compare Variables", command = self.compare)
         self.compareButton.grid(row = 6, columnspan = 2)
         self.compareButton.config(state="disabled")
 
@@ -195,5 +197,15 @@ class XMLDiffer(Frame):
 
 root = Tk()
 root.title("xmldiffer (for screens) - thomas.barrett_ext@hoefliger.de")
+root.geometry("600x400")
+root.columnconfigure(0,weight=1)
+root.columnconfigure(1,weight=1)
+root.rowconfigure(0,weight=1)
+root.rowconfigure(1,weight=1)
+root.rowconfigure(2,weight=1)
+root.rowconfigure(3,weight=1)
+root.rowconfigure(4,weight=1)
+root.rowconfigure(5,weight=1)
+root.rowconfigure(6,weight=1)
 app = XMLDiffer(master = root)
 root.mainloop()
