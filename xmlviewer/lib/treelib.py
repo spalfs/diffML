@@ -1,4 +1,5 @@
 from PyQt5.QtCore import Qt, QAbstractItemModel, QModelIndex
+import xml.etree.ElementTree as ET
 
 class TreeItem(object):
     def __init__(self, data, parent=None):
@@ -34,11 +35,12 @@ class TreeItem(object):
         return 0
 
 class TreeModel(QAbstractItemModel):
-    def __init__(self, data, parent=None):
+    def __init__(self, path, parent=None):
         super(TreeModel, self).__init__(parent)
 
         self.rootItem = TreeItem(("Tag", "Text", "Attributes"))
-        self.setupModelData(data, self.rootItem)
+
+        self.setupModelData(path, self.rootItem)
 
     def columnCount(self, parent):
         if parent.isValid():
@@ -107,14 +109,17 @@ class TreeModel(QAbstractItemModel):
 
         return parentItem.childCount()
 
-    def setupModelData(self, elements, parent):
-        parents = [parent]
+    def setupModelData(self, path, root):
+        xmlTree = ET.parse(path)
+        xmlRoot = xmlTree.getroot()
 
-        for element in elements:
-            parents[-1].appendChild(TreeItem(element['info'], parents[-1]))
+        self.recurse(root,xmlRoot)
 
-        first = parent.child(0)
-        first.appendChild(TreeItem(("blah","blah","blah"),first))
+    def recurse(self, node, xmlNode):
+        for element in xmlNode:
+            child = TreeItem((str(element.tag),str(element.text),str(element.attrib)), node)
+            node.appendChild(child)
+            self.recurse(child,element)
 
 
 

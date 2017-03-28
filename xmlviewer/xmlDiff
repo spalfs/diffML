@@ -1,0 +1,68 @@
+#!/usr/bin/python3
+
+from PyQt5.QtCore import QFile, QIODevice
+from PyQt5.QtWidgets import QApplication, QTreeView, QGridLayout, QWidget, QFileDialog, QPushButton, QMainWindow, QAction, QInputDialog
+import sys
+
+from lib.treelib import TreeModel
+
+class xmlDiff(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        frame = QWidget()
+        self.setCentralWidget(frame)
+        self.grid = QGridLayout()
+        frame.setLayout(self.grid)
+
+        self.initMenuBar()
+
+        self.XMLViewOne = QTreeView()
+        self.grid.addWidget(self.XMLViewOne,0,0)
+
+        self.NewXMLView = QPushButton(">>")
+        self.grid.addWidget(self.NewXMLView,0,1)
+        self.NewXMLView.clicked.connect(self.addView)
+        self.hasViewTwo = False
+
+        self.show()
+    
+    def initMenuBar(self):
+        menubar = self.menuBar()
+
+        fileMenu = menubar.addMenu('&File')
+
+        openLeftXML = QAction('&Open',self)
+        openLeftXML.triggered.connect(self.findFile)
+        fileMenu.addAction(openLeftXML)
+
+        editMenu = menubar.addMenu('&Edit')
+
+        helpMenu = menubar.addMenu('&Help')
+
+    def findFile(self):
+        path = QFileDialog.getOpenFileName(self)
+        if path[0]:
+            model = TreeModel(path[0])
+            if self.hasViewTwo:
+                choices = ("1","2")
+                choice = QInputDialog.getItem(self, 'Open', 'Workspace:', choices)
+                if choice[0] == "1":
+                    self.XMLViewOne.setModel(model)
+                else:
+                    self.XMLViewTwo.setModel(model)
+            else:
+                self.XMLViewOne.setModel(model)
+
+    def addView(self):
+        self.hasViewTwo = True
+        self.XMLViewTwo = QTreeView()
+        self.grid.addWidget(self.XMLViewTwo,0,1)
+
+
+
+app = QApplication(sys.argv)
+
+masterView = xmlDiff()
+
+sys.exit(app.exec_())
