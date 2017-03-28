@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from tkinter import Tk, Frame, Button, Listbox, OptionMenu, StringVar, Toplevel, Message, Listbox, END, Entry, ACTIVE, messagebox, ALL, N, S, E, W
+from tkinter import Tk, Frame, Button, Listbox, OptionMenu, StringVar, Toplevel, Message, Listbox, END, Entry, ACTIVE, messagebox, ALL, DoubleVar
 from os import listdir
 
 from lib.xmllib import getXML
@@ -34,8 +34,15 @@ class XMLDiffer(Frame):
         file2.grid(column = 1, row = 0)
 
         # ROW 1
-        Button(master, text="Get Screens", command=self.getData).grid(row=1, columnspan=2)
-        
+        Button(master, text="Get Screens", command=self.getData).grid(column = 1, row=1)
+
+        versions = [6.5, 7.2]
+        self.versionSelection = DoubleVar()
+        self.versionSelection.set(versions[0])
+
+        version = OptionMenu(master, self.versionSelection, *versions)
+        version.grid(column = 0, row = 1)
+
         # ROW 2
         self.file1Screens = Listbox(master,width=textWidth)
         self.file1Screens.grid(column=0,row=2)
@@ -73,8 +80,8 @@ class XMLDiffer(Frame):
 
 
     def getData(self):
-        self.data1 = getXML(self.file1Selection.get())
-        self.data2 = getXML(self.file2Selection.get())
+        self.data1 = getXML(self.file1Selection.get(),self.versionSelection.get())
+        self.data2 = getXML(self.file2Selection.get(),self.versionSelection.get())
         
         self.file1Screens.insert(END,"ALL")
         self.file2Screens.insert(END,"ALL")
@@ -154,6 +161,11 @@ class XMLDiffer(Frame):
         if self.data1Select.get() == "ALL" and self.data2Select.get() == "ALL":
             diffData = diffAll(self.data1,self.data2) 
             n = 0
+            
+            if not diffData:
+                messagebox.showinfo("Result","There was no difference.")
+                return
+
             for screen in diffData:
                 n = n + len(screen['diffVars']) + len(screen['missingVars'])
             
@@ -165,11 +177,7 @@ class XMLDiffer(Frame):
                 Button(top,text="Okay",command=top.destroy).grid(row=1,column=1)
                 Button(top,text="Save to CSV",command=lambda: writeCSVDiff(diffData)).grid(row=1,column=0)
             else:
-                top = Toplevel()
-                m = Message(top,text="No Difference.")
-                m.config(aspect = 1000)
-                m.grid(row=0,column=0,columnspan=2)
-                Button(top,text="Okay", command=top.destroy).grid(row=1,column=0,columnspan=2)
+                messagebox.showinfo("Result","There was no difference.")
 
         elif self.data1Select.get() == "ALL" or self.data2Select.get() == "ALL":
             messagebox.showinfo("Error","Both choices need to be ALL or neither choice needs to be ALL")
