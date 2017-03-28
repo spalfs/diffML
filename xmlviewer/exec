@@ -5,11 +5,9 @@ from PyQt5.QtWidgets import QApplication, QTreeView, QGridLayout, QWidget, QFile
 import sys
 
 from lib.treelib import TreeModel
-import simpletreemodel_rc
+from lib.xmllib import getXML
 
-
-
-class Application(QMainWindow):
+class xmlDiff(QMainWindow):
     def __init__(self):
         super().__init__()
 
@@ -20,13 +18,11 @@ class Application(QMainWindow):
 
         self.initMenuBar()
 
-        leftXMLView = QTreeView()
-        leftXMLView.setModel(model)
-        grid.addWidget(leftXMLView,0,0)
+        self.leftXMLView = QTreeView()
+        grid.addWidget(self.leftXMLView,0,0)
 
-        rightXMLView = QTreeView()
-        rightXMLView.setModel(model)
-        grid.addWidget(rightXMLView,0,1)
+        self.rightXMLView = QTreeView()
+        grid.addWidget(self.rightXMLView,0,1)
 
         self.show()
     
@@ -36,28 +32,30 @@ class Application(QMainWindow):
         fileMenu = menubar.addMenu('&File')
 
         openLeftXML = QAction('&Open Left XML',self)
-        openLeftXML.triggered.connect(self.findFile)
+        openLeftXML.triggered.connect(lambda : self.findFile("left"))
         fileMenu.addAction(openLeftXML)
 
         openRightXML = QAction('&Open Right XML',self)
-        openRightXML.triggered.connect(self.findFile)
+        openRightXML.triggered.connect(lambda : self.findFile("right"))
         fileMenu.addAction(openRightXML)
 
         editMenu = menubar.addMenu('&Edit')
 
         helpMenu = menubar.addMenu('&Help')
 
-    def findFile(self):
-        options = QFileDialog.Options()
-        QFileDialog.getOpenFileName(self)
+    def findFile(self,which):
+        path = QFileDialog.getOpenFileName(self)
+        if path:
+            xmlData = getXML(path[0]) 
+            model = TreeModel(xmlData)
+            if which == "left":
+                self.leftXMLView.setModel(model)
+            else:
+                self.rightXMLView.setModel(model)
+
 
 app = QApplication(sys.argv)
 
-f = QFile(':/default.txt')
-f.open(QIODevice.ReadOnly)
-model = TreeModel(f.readAll())
-f.close()
-
-masterView = Application()
+masterView = xmlDiff()
 
 sys.exit(app.exec_())

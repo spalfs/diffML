@@ -33,13 +33,12 @@ class TreeItem(object):
 
         return 0
 
-
 class TreeModel(QAbstractItemModel):
     def __init__(self, data, parent=None):
         super(TreeModel, self).__init__(parent)
 
-        self.rootItem = TreeItem(("Title One", "Title Two", "Title Three"))
-        self.setupModelData(data.split('\n'), self.rootItem)
+        self.rootItem = TreeItem(("Tag", "Text", "Attributes"))
+        self.setupModelData(data, self.rootItem)
 
     def columnCount(self, parent):
         if parent.isValid():
@@ -108,41 +107,16 @@ class TreeModel(QAbstractItemModel):
 
         return parentItem.childCount()
 
-    def setupModelData(self, lines, parent):
+    def setupModelData(self, elements, parent):
         parents = [parent]
-        indentations = [0]
 
-        number = 0
+        for element in elements:
+            parents[-1].appendChild(TreeItem(element['info'], parents[-1]))
 
-        while number < len(lines):
-            position = 0
-            while position < len(lines[number]):
-                if lines[number][position] != ' ':
-                    break
-                position += 1
+        first = parent.child(0)
+        first.appendChild(TreeItem(("blah","blah","blah"),first))
 
-            lineData = lines[number][position:].trimmed()
 
-            if lineData:
-                # Read the column data from the rest of the line.
-                columnData = [s for s in lineData.split('\t') if s]
 
-                if position > indentations[-1]:
-                    # The last child of the current parent is now the new
-                    # parent unless the current parent has no children.
-
-                    if parents[-1].childCount() > 0:
-                        parents.append(parents[-1].child(parents[-1].childCount() - 1))
-                        indentations.append(position)
-
-                else:
-                    while position < indentations[-1] and len(parents) > 0:
-                        parents.pop()
-                        indentations.pop()
-
-                # Append a new item to the current parent's list of children.
-                parents[-1].appendChild(TreeItem(columnData, parents[-1]))
-
-            number += 1
 
 
