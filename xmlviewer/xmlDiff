@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from PyQt5.QtCore import QFile, QIODevice
-from PyQt5.QtWidgets import QApplication, QTreeView, QGridLayout, QWidget, QFileDialog, QPushButton, QMainWindow, QAction, QInputDialog
+from PyQt5.QtWidgets import QApplication, QTreeView, QGridLayout, QWidget, QFileDialog, QPushButton, QMainWindow, QAction, QInputDialog, qApp
 import sys
 
 from lib.treelib import TreeModel
@@ -20,9 +20,9 @@ class xmlDiff(QMainWindow):
         self.XMLViewOne = QTreeView()
         self.grid.addWidget(self.XMLViewOne,0,0)
 
-        self.NewXMLView = QPushButton(">>")
-        self.grid.addWidget(self.NewXMLView,0,1)
-        self.NewXMLView.clicked.connect(self.addView)
+        self.addViewButton = QPushButton(">>")
+        self.grid.addWidget(self.addViewButton,0,1)
+        self.addViewButton.clicked.connect(self.addView)
         self.hasViewTwo = False
 
         self.show()
@@ -32,15 +32,25 @@ class xmlDiff(QMainWindow):
 
         fileMenu = menubar.addMenu('&File')
 
-        openLeftXML = QAction('&Open',self)
-        openLeftXML.triggered.connect(self.findFile)
-        fileMenu.addAction(openLeftXML)
+        openXMLButton = QAction('&Open',self)
+        openXMLButton.triggered.connect(self.openXML)
+        fileMenu.addAction(openXMLButton)
+
+        exitButton = QAction('&Exit',self)
+        exitButton.triggered.connect(qApp.quit)
+        fileMenu.addAction(exitButton)
 
         editMenu = menubar.addMenu('&Edit')
 
+        viewMenu = menubar.addMenu('&View')
+        
+        colorizeButton = QAction('&Colorize',self)
+        colorizeButton.triggered.connect(self.colorize)
+        viewMenu.addAction(colorizeButton)
+        
         helpMenu = menubar.addMenu('&Help')
 
-    def findFile(self):
+    def openXML(self):
         path = QFileDialog.getOpenFileName(self)
         if path[0]:
             model = TreeModel(path[0])
@@ -48,16 +58,24 @@ class xmlDiff(QMainWindow):
                 choices = ("1","2")
                 choice = QInputDialog.getItem(self, 'Open', 'Workspace:', choices)
                 if choice[0] == "1":
+                    self.XMLModelOne = model
                     self.XMLViewOne.setModel(model)
                 else:
+                    self.XMLModelTwo = model
                     self.XMLViewTwo.setModel(model)
             else:
+                self.XMLModelOne = model
                 self.XMLViewOne.setModel(model)
 
     def addView(self):
         self.hasViewTwo = True
         self.XMLViewTwo = QTreeView()
         self.grid.addWidget(self.XMLViewTwo,0,1)
+
+    def colorize(self):
+        self.XMLModelOne.colorize()
+        if self.hasViewTwo:
+            self.XMLModelTwo.colorize()
 
 
 

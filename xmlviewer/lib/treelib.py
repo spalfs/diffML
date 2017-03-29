@@ -1,11 +1,14 @@
 from PyQt5.QtCore import Qt, QAbstractItemModel, QModelIndex
+from PyQt5.QtGui import QBrush, QColor
 import xml.etree.ElementTree as ET
 
 class TreeItem(object):
-    def __init__(self, data, parent=None):
+    def __init__(self, data, parent=None, depth=0):
         self.parentItem = parent
         self.itemData = data
         self.childItems = []
+        self.depth = depth
+        self.color = False
 
     def appendChild(self, item):
         self.childItems.append(item)
@@ -32,6 +35,12 @@ class TreeItem(object):
         if self.parentItem:
             return self.parentItem.childItems.index(self)
 
+    def toggleColor(self):
+        if not self.color:
+            self.color = True
+        else:
+            self.color = False
+
         return 0
 
 class TreeModel(QAbstractItemModel):
@@ -40,7 +49,7 @@ class TreeModel(QAbstractItemModel):
 
         self.rootItem = TreeItem(("Tag", "Text", "Attributes"))
 
-        self.setupModelData(path, self.rootItem)
+        self.setupModel(path, self.rootItem)
 
     def columnCount(self, parent):
         if parent.isValid():
@@ -52,10 +61,25 @@ class TreeModel(QAbstractItemModel):
         if not index.isValid():
             return None
 
+        item = index.internalPointer()
+
+        if role == Qt.BackgroundRole:
+            if item.color:
+                if item.depth == 1:
+                    return QBrush(QColor(85,157,159))
+                elif item.depth == 2:
+                    return QBrush(QColor(85,120,159))
+                elif item.depth == 3:
+                    return QBrush(QColor(159,87,85))
+                elif item.depth == 4:
+                    return QBrush(QColor(120,159,85))
+                elif item.depth == 5:
+                    return QBrush(QColor(159,85,120))
+
+                return QBrush(Qt.transparent)
+
         if role != Qt.DisplayRole:
             return None
-
-        item = index.internalPointer()
 
         return item.data(index.column())
 
@@ -109,19 +133,22 @@ class TreeModel(QAbstractItemModel):
 
         return parentItem.childCount()
 
-    def setupModelData(self, path, root):
+    def setupModel(self, path, root):
         xmlTree = ET.parse(path)
         xmlRoot = xmlTree.getroot()
 
-        self.recurse(root,xmlRoot)
+        self.setupModelRecursive(root,xmlRoot)
 
-    def recurse(self, node, xmlNode):
+    def setupModelRecursive(self, node, xmlNode, depth=0):
+        depth = depth + 1
         for element in xmlNode:
-            child = TreeItem((str(element.tag),str(element.text),str(element.attrib)), node)
+            child = TreeItem((str(element.tag),str(element.text),str(element.attrib)), node, depth)
             node.appendChild(child)
-            self.recurse(child,element)
+            self.setupModelRecursive(child,element,depth)
 
-
-
-
-
+    def colorize(self,node=None):
+        if node is None:
+            node = self.rootItem
+        for i in range(node.childCount()):
+            node.child(i).toggleColor()
+            self.colorize(node.child(i))
