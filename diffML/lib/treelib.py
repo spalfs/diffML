@@ -135,17 +135,17 @@ class TreeModel(QAbstractItemModel):
         return parentItem.childCount()
 
     def setupModel(self, path, root):
-        xmlTree = ET.parse(path)
-        xmlRoot = xmlTree.getroot()
+        self.XMLTree = ET.parse(path)
+        XMLRoot = self.XMLTree.getroot()
 
         base = TreeItem((path,'',''),root)
         root.appendChild(base)
 
-        self.setupModelRecursive(base,xmlRoot)
+        self.setupModelRecursive(base,XMLRoot)
 
-    def setupModelRecursive(self, node, xmlNode, depth=0):
+    def setupModelRecursive(self, node, XMLNode, depth=0):
         depth = depth + 1
-        for element in xmlNode:
+        for element in XMLNode:
             child = TreeItem((str(element.tag),str(element.text),str(element.attrib)), node, depth)
             node.appendChild(child)
             self.setupModelRecursive(child,element,depth)
@@ -156,3 +156,7 @@ class TreeModel(QAbstractItemModel):
         for i in range(node.childCount()):
             node.child(i).toggleColor()
             self.colorize(node.child(i))
+
+    def getXMLTree(self):
+        return self.XMLTree
+

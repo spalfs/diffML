@@ -2,13 +2,14 @@
 
 from PyQt5.QtCore import QFile, QIODevice
 from PyQt5.QtWidgets import QApplication, QTreeView, QGridLayout, QWidget, QFileDialog, QPushButton
-from PyQt5.QtWidgets import qApp, QInputDialog, QAction, QMainWindow
+from PyQt5.QtWidgets import qApp, QInputDialog, QAction, QMainWindow, QMessageBox
 import sys
 
+from pprint import pprint
 from lib.treelib import TreeModel
 from lib.xmllib import compareXML
 
-class xmlDiff(QMainWindow):
+class diffML(QMainWindow):
     def __init__(self):
         super().__init__()
 
@@ -38,6 +39,10 @@ class xmlDiff(QMainWindow):
         openXMLButton.triggered.connect(self.openXML)
         fileMenu.addAction(openXMLButton)
 
+        saveXMLButton = QAction('&Save',self)
+        saveXMLButton.triggered.connect(self.saveXML)
+        fileMenu.addAction(saveXMLButton)
+
         exitButton = QAction('&Exit',self)
         exitButton.triggered.connect(qApp.quit)
         fileMenu.addAction(exitButton)
@@ -50,7 +55,7 @@ class xmlDiff(QMainWindow):
         colorizeButton.triggered.connect(self.colorize)
         viewMenu.addAction(colorizeButton)
         
-        compareButton = QAction('&Compare',self)
+        compareButton = QAction('&Compare Selected Elements',self)
         compareButton.triggered.connect(self.compare)
         viewMenu.addAction(compareButton)
         
@@ -61,12 +66,18 @@ class xmlDiff(QMainWindow):
         if path[0]:
             model = TreeModel(path[0])
             if self.hasViewTwo:
-                choices = ("1","2")
+                choices = ("1","2","Both")
                 choice = QInputDialog.getItem(self, 'Open', 'Workspace:', choices)
                 if choice[0] == "1":
                     self.XMLModelOne = model
                     self.XMLViewOne.setModel(model)
+                elif choice[0] == "2":
+                    self.XMLModelTwo = model
+                    self.XMLViewTwo.setModel(model)
                 else:
+                    self.XMLModelOne = model
+                    self.XMLViewOne.setModel(model)
+                    model = TreeModel(path[0])
                     self.XMLModelTwo = model
                     self.XMLViewTwo.setModel(model)
             else:
@@ -84,17 +95,27 @@ class xmlDiff(QMainWindow):
             self.XMLModelTwo.colorize()
 
     def compare(self):
+        choices = ("Tag","Text","Attribute")
+        choice = QInputDialog.getItem(self, 'Compare Selected Elements', 'What to match with?', choices)
+
         selectedOne = self.XMLViewOne.selectedIndexes()
+
         if self.hasViewTwo:
             selectedTwo = self.XMLViewTwo.selectedIndexes()
-        else:
-            selectedTwo = None
-        result = compareXML(selectedOne,selectedTwo)
+            result = compareXML(choice[0],
+                                self.XMLModelOne.getXMLTree(),
+                                selectedOne,
+                                self.XMLModelTwo.getXMLTree(),
+                                selectedTwo)
+            QMessageBox.question(self,'Result:','There were ' + str(len(result)) + ' differences.', QMessageBox.Save | QMessageBox.Ok)
+            pprint(result)
 
+    def saveXML(self):
+        print("savin-")
 
 
 app = QApplication(sys.argv)
 
-masterView = xmlDiff()
+masterView = diffML()
 
 sys.exit(app.exec_())
