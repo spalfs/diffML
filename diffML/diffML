@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 
 from PyQt5.QtCore import QFile, QIODevice
-from PyQt5.QtWidgets import QApplication, QTreeView, QGridLayout, QWidget, QFileDialog, QPushButton, QMainWindow, QAction, QInputDialog, qApp
+from PyQt5.QtWidgets import QApplication, QTreeView, QGridLayout, QWidget, QFileDialog, QPushButton
+from PyQt5.QtWidgets import qApp, QInputDialog, QAction, QMainWindow
 import sys
 
 from lib.treelib import TreeModel
+from lib.xmllib import compareXML
 
 class xmlDiff(QMainWindow):
     def __init__(self):
@@ -43,10 +45,14 @@ class xmlDiff(QMainWindow):
         editMenu = menubar.addMenu('&Edit')
 
         viewMenu = menubar.addMenu('&View')
-        
+
         colorizeButton = QAction('&Colorize',self)
         colorizeButton.triggered.connect(self.colorize)
         viewMenu.addAction(colorizeButton)
+        
+        compareButton = QAction('&Compare',self)
+        compareButton.triggered.connect(self.compare)
+        viewMenu.addAction(compareButton)
         
         helpMenu = menubar.addMenu('&Help')
 
@@ -76,6 +82,14 @@ class xmlDiff(QMainWindow):
         self.XMLModelOne.colorize()
         if self.hasViewTwo:
             self.XMLModelTwo.colorize()
+
+    def compare(self):
+        selectedOne = self.XMLViewOne.selectedIndexes()
+        if self.hasViewTwo:
+            selectedTwo = self.XMLViewTwo.selectedIndexes()
+        else:
+            selectedTwo = None
+        result = compareXML(selectedOne,selectedTwo)
 
 
 

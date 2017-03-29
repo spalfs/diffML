@@ -65,7 +65,9 @@ class TreeModel(QAbstractItemModel):
 
         if role == Qt.BackgroundRole:
             if item.color:
-                if item.depth == 1:
+                if item.depth == 0:
+                    return QBrush(QColor(157,159,85))
+                elif item.depth == 1:
                     return QBrush(QColor(85,157,159))
                 elif item.depth == 2:
                     return QBrush(QColor(85,120,159))
@@ -75,7 +77,6 @@ class TreeModel(QAbstractItemModel):
                     return QBrush(QColor(120,159,85))
                 elif item.depth == 5:
                     return QBrush(QColor(159,85,120))
-
                 return QBrush(Qt.transparent)
 
         if role != Qt.DisplayRole:
@@ -137,7 +138,10 @@ class TreeModel(QAbstractItemModel):
         xmlTree = ET.parse(path)
         xmlRoot = xmlTree.getroot()
 
-        self.setupModelRecursive(root,xmlRoot)
+        base = TreeItem((path,'',''),root)
+        root.appendChild(base)
+
+        self.setupModelRecursive(base,xmlRoot)
 
     def setupModelRecursive(self, node, xmlNode, depth=0):
         depth = depth + 1
