@@ -9,6 +9,7 @@ from lib.treemodel import TreeModel
 from lib.xmllib import compareXML
 from lib.barlib import menubar
 from lib.treeview import TreeView
+from lib.CONSTANTS import NONE
 
 class diffML(QMainWindow):
     def __init__(self):
@@ -24,10 +25,15 @@ class diffML(QMainWindow):
         self.XMLViewOne = TreeView()
         self.grid.addWidget(self.XMLViewOne,0,0)
 
-        self.addViewButton = QPushButton(">>")
-        self.grid.addWidget(self.addViewButton,0,1)
-        self.addViewButton.clicked.connect(self.addView)
+        self.XMLViewTwo = TreeView()
+        self.grid.addWidget(self.XMLViewTwo,0,1)
+        self.XMLViewTwo.hide()
         self.hasViewTwo = False
+
+        self.XMLModelOne = False
+        self.XMLModelTwo = False
+
+        self.colorState = NONE
 
         self.show()
     
@@ -41,29 +47,45 @@ class diffML(QMainWindow):
                 if choice[0] == "1":
                     self.XMLModelOne = model
                     self.XMLViewOne.setModel(model)
+                    self.XMLModelOne.setColor(self.colorState)
+
                 elif choice[0] == "2":
                     self.XMLModelTwo = model
                     self.XMLViewTwo.setModel(model)
+                    self.XMLModelTwo.setColor(self.colorState)
+
                 else:
                     self.XMLModelOne = model
                     self.XMLViewOne.setModel(model)
+                    self.XMLModelOne.setColor(self.colorState)
+                    
                     model = TreeModel(path[0])
                     self.XMLModelTwo = model
                     self.XMLViewTwo.setModel(model)
+                    self.XMLModelTwo.setColor(self.colorState)
+
             else:
                 self.XMLModelOne = model
                 self.XMLViewOne.setModel(model)
+                self.XMLModelOne.setColor(self.colorState)
 
-    def addView(self):
-        self.hasViewTwo = True
-        self.XMLViewTwo = TreeView()
-        self.grid.addWidget(self.XMLViewTwo,0,1)
-
-    def colorize(self):
-        self.XMLModelOne.colorize()
-        if self.hasViewTwo:
-            self.XMLModelTwo.colorize()
-
+    def toggleViewTwo(self):
+        if  self.hasViewTwo:
+            self.hasViewTwo = False
+            self.XMLViewTwo.hide()
+        else:
+            self.hasViewTwo = True
+            self.XMLViewTwo.show()
+    
+    def setColor(self, color):
+        self.colorState = color
+        if self.XMLModelOne:
+            self.XMLModelOne.setColor(color)
+            self.XMLViewOne.setFocus()
+        if self.XMLModelTwo:
+            self.XMLModelTwo.setColor(color)
+            self.XMLViewTwo.setNoneColor()
+    
     def compare(self):
         choices = ("Tag","Text","Attribute")
         choice = QInputDialog.getItem(self, 'Compare Selected Elements', 'What to match with?', choices)
@@ -81,17 +103,18 @@ class diffML(QMainWindow):
             pprint(result)
 
     def save(self):
-        self.XMLModelOne.save()
-        if self.hasViewTwo:
+        if self.XMLModelOne:
+            self.XMLModelOne.save()
+        if self.XMLModelTwo:
             self.XMLModelTwo.save()
         
     def saveAs(self):
         path = QFileDialog.getSaveFileName(self)
         if path[0] != '':
-            self.XMLModelOne.save(path[0])
-            if self.hasViewTwo:
+            if self.XMLModelOne:
+                self.XMLModelOne.save(path[0])
+            if self.XMLModelTwo:
                 self.XMLModelTwo.save(path[0])
-
 
 app = QApplication(sys.argv)
 

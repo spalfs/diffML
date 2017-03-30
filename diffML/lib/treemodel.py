@@ -1,6 +1,8 @@
 from PyQt5.QtCore import Qt, QAbstractItemModel, QModelIndex
 from PyQt5.QtGui import QBrush, QColor
 import xml.etree.ElementTree as ET
+
+from lib.CONSTANTS import NONE, HIERARCHY, CHANGED
 from lib.xmllib import find
 
 class TreeItem(object):
@@ -9,7 +11,8 @@ class TreeItem(object):
         self.itemData = data
         self.childItems = []
         self.depth = depth
-        self.color = False
+        self.colorState = NONE
+        self.changed = False
 
     def appendChild(self, item):
         self.childItems.append(item)
@@ -30,9 +33,13 @@ class TreeItem(object):
             return None
 
     def setData(self, data, column):
+        self.changed = True
         tmp = list(self.itemData)
         tmp[column] = data
         self.itemData = tuple(tmp)
+
+    def resetChanged(self):
+        self.changed = False
 
     def parent(self):
         return self.parentItem
@@ -41,13 +48,8 @@ class TreeItem(object):
         if self.parentItem:
             return self.parentItem.childItems.index(self)
 
-    def toggleColor(self):
-        if not self.color:
-            self.color = True
-        else:
-            self.color = False
-
-        return 0
+    def setColorState(self,state):
+        self.colorState = state
 
 class TreeModel(QAbstractItemModel):
     def __init__(self, path, parent=None):
@@ -71,7 +73,9 @@ class TreeModel(QAbstractItemModel):
         item = index.internalPointer()
 
         if role == Qt.BackgroundRole:
-            if item.color:
+            if item.colorState == NONE:
+                return QBrush(Qt.transparent)
+            elif item.colorState == HIERARCHY:
                 if item.depth == 0:
                     return QBrush(QColor(157,159,85))
                 elif item.depth == 1:
@@ -84,7 +88,11 @@ class TreeModel(QAbstractItemModel):
                     return QBrush(QColor(120,159,85))
                 elif item.depth == 5:
                     return QBrush(QColor(159,85,120))
-                return QBrush(Qt.transparent)
+            elif item.colorState == CHANGED:
+                if item.changed:
+                    return QBrush(Qt.red)
+                else:
+                    return QBrush(Qt.transparent)
 
         if role == Qt.EditRole:
             return item.data(index.column())
@@ -115,7 +123,6 @@ class TreeModel(QAbstractItemModel):
 
         item.setData(value,index.column())
         return True
-
 
     def headerData(self, section, orientation, role):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
@@ -177,12 +184,12 @@ class TreeModel(QAbstractItemModel):
             node.appendChild(child)
             self.setupModelRecursive(child,element,depth)
 
-    def colorize(self,node=None):
+    def setColor(self, color, node=None):
         if node is None:
             node = self.rootItem
         for i in range(node.childCount()):
-            node.child(i).toggleColor()
-            self.colorize(node.child(i))
+            node.child(i).setColorState(color)
+            self.setColor(color, node.child(i))
 
     def getXMLTree(self):
         return self.XMLTree
@@ -191,5 +198,15 @@ class TreeModel(QAbstractItemModel):
         if path is None:
             path = self.path
 
+        self.resetChanged()
+
         self.XMLTree.write(path)
+
+    def resetChanged(self, node=None):
+        if node is None:
+            node = self.rootItem
+        for i in range(node.childCount()):
+            node.child(i).resetChanged()
+            self.resetChanged(node.child(i))
+
 

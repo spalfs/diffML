@@ -1,4 +1,6 @@
-from PyQt5.QtWidgets import qApp, QAction
+from PyQt5.QtWidgets import qApp, QAction, QActionGroup
+
+from lib.CONSTANTS import NONE, HIERARCHY, CHANGED
 
 class  menubar():
     def __init__(self, view):
@@ -24,15 +26,39 @@ class  menubar():
 
         editMenu = menubar.addMenu('&Edit')
 
-        viewMenu = menubar.addMenu('&View')
-
-        colorizeButton = QAction('&Colorize',view)
-        colorizeButton.triggered.connect(view.colorize)
-        viewMenu.addAction(colorizeButton)
-
         compareButton = QAction('&Compare Selected Elements',view)
         compareButton.triggered.connect(view.compare)
-        viewMenu.addAction(compareButton)
+        editMenu.addAction(compareButton)
+
+        viewMenu = menubar.addMenu('&View')
+
+        addViewButton = QAction('&Enable Second Workspace',view)
+        addViewButton.setCheckable(True)
+        addViewButton.triggered.connect(view.toggleViewTwo)
+        viewMenu.addAction(addViewButton)
+
+        colorizeButton = viewMenu.addMenu('&Colorize')
+        colorizeGroup = QActionGroup(view)
+
+        noneButton = QAction('&None',view)
+        noneButton.triggered.connect( lambda : view.setColor(NONE))
+        noneButton.setCheckable(True)
+        noneButton.setChecked(True)
+        colorizeButton.addAction(noneButton)
+        colorizeGroup.addAction(noneButton)
+
+        hierarchyButton = QAction('&Hierarchy',view)
+        hierarchyButton.triggered.connect( lambda : view.setColor(HIERARCHY))
+        hierarchyButton.setCheckable(True)
+        colorizeButton.addAction(hierarchyButton)
+        colorizeGroup.addAction(hierarchyButton)
+
+        changesButton = QAction('&Changes',view)
+        changesButton.triggered.connect( lambda : view.setColor(CHANGED))
+        changesButton.setCheckable(True)
+        colorizeButton.addAction(changesButton)
+        colorizeGroup.addAction(changesButton)
+
+        colorizeGroup.setExclusive(True)
 
         helpMenu = menubar.addMenu('&Help')
-

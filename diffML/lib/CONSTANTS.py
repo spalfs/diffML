@@ -1,0 +1,3 @@
+NONE = 0
+HIERARCHY = 1
+CHANGED = 2
