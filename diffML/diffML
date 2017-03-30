@@ -31,7 +31,7 @@ class diffML(QMainWindow):
 
         self.show()
     
-    def openXML(self):
+    def open(self):
         path = QFileDialog.getOpenFileName(self)
         if path[0]:
             model = TreeModel(path[0])
@@ -80,8 +80,17 @@ class diffML(QMainWindow):
             QMessageBox.question(self,'Result:','There were ' + str(len(result)) + ' differences.', QMessageBox.Save | QMessageBox.Ok)
             pprint(result)
 
-    def saveXML(self):
-        print("savin-")
+    def save(self):
+        self.XMLModelOne.save()
+        if self.hasViewTwo:
+            self.XMLModelTwo.save()
+        
+    def saveAs(self):
+        path = QFileDialog.getSaveFileName(self)
+        if path[0] != '':
+            self.XMLModelOne.save(path[0])
+            if self.hasViewTwo:
+                self.XMLModelTwo.save(path[0])
 
 
 app = QApplication(sys.argv)

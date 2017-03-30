@@ -1,6 +1,7 @@
 from PyQt5.QtCore import Qt, QAbstractItemModel, QModelIndex
 from PyQt5.QtGui import QBrush, QColor
 import xml.etree.ElementTree as ET
+from lib.xmllib import find
 
 class TreeItem(object):
     def __init__(self, data, parent=None, depth=0):
@@ -53,8 +54,9 @@ class TreeModel(QAbstractItemModel):
         super(TreeModel, self).__init__(parent)
 
         self.rootItem = TreeItem(("Tag", "Text", "Attributes"))
+        self.path = path
 
-        self.setupModel(path, self.rootItem)
+        self.setupModel()
 
     def columnCount(self, parent):
         if parent.isValid():
@@ -99,10 +101,21 @@ class TreeModel(QAbstractItemModel):
         return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable
 
     def setData(self, index, value, role):
+        XMLRoot = self.XMLTree.getroot()
         item = index.internalPointer()
-        item.setData(value,index.column())
 
+        element = find(XMLRoot, item.data(0), item.data(1), item.data(2))
+
+        if index.column() == 0:
+            element.tag = value
+        elif index.column() == 1:
+            element.text = value
+        elif index.column() == 2:
+            element.attrib = value
+
+        item.setData(value,index.column())
         return True
+
 
     def headerData(self, section, orientation, role):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
@@ -148,12 +161,12 @@ class TreeModel(QAbstractItemModel):
 
         return parentItem.childCount()
 
-    def setupModel(self, path, root):
-        self.XMLTree = ET.parse(path)
+    def setupModel(self):
+        self.XMLTree = ET.parse(self.path)
         XMLRoot = self.XMLTree.getroot()
 
-        base = TreeItem((path,'',''),root)
-        root.appendChild(base)
+        base = TreeItem((self.path,'',''),self.rootItem)
+        self.rootItem.appendChild(base)
 
         self.setupModelRecursive(base,XMLRoot)
 
@@ -173,4 +186,10 @@ class TreeModel(QAbstractItemModel):
 
     def getXMLTree(self):
         return self.XMLTree
+
+    def save(self,path=None):
+        if path is None:
+            path = self.path
+
+        self.XMLTree.write(path)
 
