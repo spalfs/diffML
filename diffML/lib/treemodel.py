@@ -28,6 +28,11 @@ class TreeItem(object):
         except IndexError:
             return None
 
+    def setData(self, data, column):
+        tmp = list(self.itemData)
+        tmp[column] = data
+        self.itemData = tuple(tmp)
+
     def parent(self):
         return self.parentItem
 
@@ -79,6 +84,9 @@ class TreeModel(QAbstractItemModel):
                     return QBrush(QColor(159,85,120))
                 return QBrush(Qt.transparent)
 
+        if role == Qt.EditRole:
+            return item.data(index.column())
+
         if role != Qt.DisplayRole:
             return None
 
@@ -88,7 +96,13 @@ class TreeModel(QAbstractItemModel):
         if not index.isValid():
             return Qt.NoItemFlags
 
-        return Qt.ItemIsEnabled | Qt.ItemIsSelectable
+        return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable
+
+    def setData(self, index, value, role):
+        item = index.internalPointer()
+        item.setData(value,index.column())
+
+        return True
 
     def headerData(self, section, orientation, role):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:

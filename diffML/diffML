@@ -1,13 +1,14 @@
 #!/usr/bin/python3
 
-from PyQt5.QtWidgets import QApplication, QTreeView, QGridLayout, QWidget, QFileDialog, QPushButton
+from PyQt5.QtWidgets import QApplication, QGridLayout, QWidget, QFileDialog, QPushButton
 from PyQt5.QtWidgets import QInputDialog, QMainWindow, QMessageBox
 import sys
 
 from pprint import pprint
-from lib.treelib import TreeModel
+from lib.treemodel import TreeModel
 from lib.xmllib import compareXML
 from lib.barlib import menubar
+from lib.treeview import TreeView
 
 class diffML(QMainWindow):
     def __init__(self):
@@ -20,7 +21,7 @@ class diffML(QMainWindow):
 
         menubar(self) 
 
-        self.XMLViewOne = QTreeView()
+        self.XMLViewOne = TreeView()
         self.grid.addWidget(self.XMLViewOne,0,0)
 
         self.addViewButton = QPushButton(">>")
@@ -55,7 +56,7 @@ class diffML(QMainWindow):
 
     def addView(self):
         self.hasViewTwo = True
-        self.XMLViewTwo = QTreeView()
+        self.XMLViewTwo = TreeView()
         self.grid.addWidget(self.XMLViewTwo,0,1)
 
     def colorize(self):
