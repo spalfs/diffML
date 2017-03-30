@@ -3,11 +3,10 @@
 from PyQt5.QtWidgets import QApplication, QFileDialog, QInputDialog, QMainWindow, QMessageBox, QSplitter
 import sys
 
-from pprint import pprint
-from lib.treemodel import TreeModel
+from lib.TreeModel import TreeModel
+from lib.TreeView import TreeView
+from lib.menubar import menubar
 from lib.xmllib import compareXML
-from lib.barlib import menubar
-from lib.treeview import TreeView
 from lib.CONSTANTS import NONE
 
 class diffML(QMainWindow):
