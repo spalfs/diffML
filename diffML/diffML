@@ -42,8 +42,7 @@ class diffML(QMainWindow):
         if path[0]:
             model = TreeModel(path[0])
             if self.hasViewTwo:
-                choices = ("1","2","Both")
-                choice = QInputDialog.getItem(self, 'Open', 'Workspace:', choices)
+                choice = QInputDialog.getItem(self, 'Open', 'Workspace:', ("1","2","Both"))
                 if choice[0] == "1":
                     self.XMLModelOne = model
                     self.XMLViewOne.setModel(model)
@@ -109,12 +108,19 @@ class diffML(QMainWindow):
             self.XMLModelTwo.save()
         
     def saveAs(self):
-        path = QFileDialog.getSaveFileName(self)
-        if path[0] != '':
+        if self.XMLModelTwo:
+            choice = QInputDialog.getItem(self, 'Save As', 'Workspace:', ("1","2"))
+            path = QFileDialog.getSaveFileName(self)
+            if path[0] != '':
+                if choice[0] == "1":
+                        self.XMLModelOne.save(path[0])
+                if choice[0] == "2":
+                        self.XMLModelTwo.save(path[0])
+        else:
             if self.XMLModelOne:
-                self.XMLModelOne.save(path[0])
-            if self.XMLModelTwo:
-                self.XMLModelTwo.save(path[0])
+                path = QFileDialog.getSaveFileName(self)
+                if path[0] != '':
+                    self.XMLModelOne.save(path[0])
 
 app = QApplication(sys.argv)
 
