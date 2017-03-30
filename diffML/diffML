@@ -1,13 +1,13 @@
 #!/usr/bin/python3
 
-from PyQt5.QtCore import QFile, QIODevice
 from PyQt5.QtWidgets import QApplication, QTreeView, QGridLayout, QWidget, QFileDialog, QPushButton
-from PyQt5.QtWidgets import qApp, QInputDialog, QAction, QMainWindow, QMessageBox
+from PyQt5.QtWidgets import QInputDialog, QMainWindow, QMessageBox
 import sys
 
 from pprint import pprint
 from lib.treelib import TreeModel
 from lib.xmllib import compareXML
+from lib.barlib import menubar
 
 class diffML(QMainWindow):
     def __init__(self):
@@ -18,7 +18,7 @@ class diffML(QMainWindow):
         self.grid = QGridLayout()
         frame.setLayout(self.grid)
 
-        self.initMenuBar()
+        menubar(self) 
 
         self.XMLViewOne = QTreeView()
         self.grid.addWidget(self.XMLViewOne,0,0)
@@ -30,37 +30,6 @@ class diffML(QMainWindow):
 
         self.show()
     
-    def initMenuBar(self):
-        menubar = self.menuBar()
-
-        fileMenu = menubar.addMenu('&File')
-
-        openXMLButton = QAction('&Open',self)
-        openXMLButton.triggered.connect(self.openXML)
-        fileMenu.addAction(openXMLButton)
-
-        saveXMLButton = QAction('&Save',self)
-        saveXMLButton.triggered.connect(self.saveXML)
-        fileMenu.addAction(saveXMLButton)
-
-        exitButton = QAction('&Exit',self)
-        exitButton.triggered.connect(qApp.quit)
-        fileMenu.addAction(exitButton)
-
-        editMenu = menubar.addMenu('&Edit')
-
-        viewMenu = menubar.addMenu('&View')
-
-        colorizeButton = QAction('&Colorize',self)
-        colorizeButton.triggered.connect(self.colorize)
-        viewMenu.addAction(colorizeButton)
-        
-        compareButton = QAction('&Compare Selected Elements',self)
-        compareButton.triggered.connect(self.compare)
-        viewMenu.addAction(compareButton)
-        
-        helpMenu = menubar.addMenu('&Help')
-
     def openXML(self):
         path = QFileDialog.getOpenFileName(self)
         if path[0]:
