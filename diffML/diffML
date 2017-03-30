@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
-from PyQt5.QtWidgets import QApplication, QGridLayout, QWidget, QFileDialog, QPushButton
-from PyQt5.QtWidgets import QInputDialog, QMainWindow, QMessageBox
+from PyQt5.QtWidgets import QApplication, QFileDialog, QInputDialog, QMainWindow, QMessageBox, QSplitter
 import sys
 
 from pprint import pprint
@@ -15,18 +14,16 @@ class diffML(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        frame = QWidget()
-        self.setCentralWidget(frame)
-        self.grid = QGridLayout()
-        frame.setLayout(self.grid)
+        self.frame = QSplitter()
+        self.setCentralWidget(self.frame)
 
         menubar(self) 
 
         self.XMLViewOne = TreeView()
-        self.grid.addWidget(self.XMLViewOne,0,0)
+        self.frame.addWidget(self.XMLViewOne)
 
         self.XMLViewTwo = TreeView()
-        self.grid.addWidget(self.XMLViewTwo,0,1)
+        self.frame.addWidget(self.XMLViewTwo)
         self.XMLViewTwo.hide()
         self.hasViewTwo = False
 

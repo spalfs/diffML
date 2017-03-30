@@ -109,20 +109,23 @@ class TreeModel(QAbstractItemModel):
         return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable
 
     def setData(self, index, value, role):
-        XMLRoot = self.XMLTree.getroot()
-        item = index.internalPointer()
+        try:
+            XMLRoot = self.XMLTree.getroot()
+            item = index.internalPointer()
 
-        element = find(XMLRoot, item.data(0), item.data(1), item.data(2))
+            element = find(XMLRoot, item.data(0), item.data(1), item.data(2))
 
-        if index.column() == 0:
-            element.tag = value
-        elif index.column() == 1:
-            element.text = value
-        elif index.column() == 2:
-            element.attrib = value
+            if index.column() == 0:
+                element.tag = value
+            elif index.column() == 1:
+                element.text = value
+            elif index.column() == 2:
+                element.attrib = value
 
-        item.setData(value,index.column())
-        return True
+            item.setData(value,index.column())
+            return True
+        except:
+            return False
 
     def headerData(self, section, orientation, role):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
