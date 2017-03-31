@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 
-from PyQt5.QtWidgets import QApplication, QFileDialog, QInputDialog, QMainWindow, QMessageBox, QSplitter
+from PyQt5.QtWidgets import QApplication, QFileDialog, QInputDialog, QMainWindow, QMessageBox, QSplitter, QMenu, QAction
+from PyQt5.QtGui import QCursor
 import sys
 
+from pprint import pprint
 from lib.TreeModel import TreeModel
 from lib.TreeView import TreeView
 from lib.menubar import menubar
@@ -18,10 +20,10 @@ class diffML(QMainWindow):
 
         menubar(self) 
 
-        self.XMLViewOne = TreeView()
+        self.XMLViewOne = TreeView(self)
         self.frame.addWidget(self.XMLViewOne)
 
-        self.XMLViewTwo = TreeView()
+        self.XMLViewTwo = TreeView(self)
         self.frame.addWidget(self.XMLViewTwo)
         self.XMLViewTwo.hide()
         self.hasViewTwo = False
@@ -33,37 +35,19 @@ class diffML(QMainWindow):
 
         self.show()
     
-    def open(self):
-        path = QFileDialog.getOpenFileName(self)
-        if path[0]:
-            model = TreeModel(path[0])
-            if self.hasViewTwo:
-                choice = QInputDialog.getItem(self, 'Open', 'Workspace:', ("1","2","Both"))
-                if choice[0] == "1":
-                    self.XMLModelOne = model
-                    self.XMLViewOne.setModel(model)
-                    self.XMLModelOne.setColor(self.colorState)
+    def rightClickMenu(self, view):
+        menu = QMenu()
+        collapseButton = QAction('&Collapse All', self)
+        collapseButton.triggered.connect(lambda : view.collapseAll())
+        menu.addAction(collapseButton)
 
-                elif choice[0] == "2":
-                    self.XMLModelTwo = model
-                    self.XMLViewTwo.setModel(model)
-                    self.XMLModelTwo.setColor(self.colorState)
+        expandButton = QAction('&Expand All', self)
+        expandButton.triggered.connect(lambda : view.expandAll())
+        menu.addAction(expandButton)
 
-                else:
-                    self.XMLModelOne = model
-                    self.XMLViewOne.setModel(model)
-                    self.XMLModelOne.setColor(self.colorState)
-                    
-                    model = TreeModel(path[0])
-                    self.XMLModelTwo = model
-                    self.XMLViewTwo.setModel(model)
-                    self.XMLModelTwo.setColor(self.colorState)
-
-            else:
-                self.XMLModelOne = model
-                self.XMLViewOne.setModel(model)
-                self.XMLModelOne.setColor(self.colorState)
-
+        position = view.viewport().mapFromGlobal(QCursor.pos()) 
+        menu.exec_(view.viewport().mapToGlobal(position))
+  
     def toggleViewTwo(self):
         if  self.hasViewTwo:
             self.hasViewTwo = False
@@ -79,7 +63,7 @@ class diffML(QMainWindow):
             self.XMLViewOne.setFocus()
         if self.XMLModelTwo:
             self.XMLModelTwo.setColor(color)
-            self.XMLViewTwo.setNoneColor()
+            self.XMLViewTwo.setFocus()
     
     def compare(self):
         choices = ("Tag","Text","Attribute")
@@ -117,6 +101,36 @@ class diffML(QMainWindow):
                 path = QFileDialog.getSaveFileName(self)
                 if path[0] != '':
                     self.XMLModelOne.save(path[0])
+    
+    def open(self):
+        path = QFileDialog.getOpenFileName(self)
+        if path[0]:
+            model = TreeModel(path[0])
+            if self.hasViewTwo:
+                choice = QInputDialog.getItem(self, 'Open', 'Workspace:', ("1","2","Both"))
+                if choice[0] == "1":
+                    self.XMLModelOne = model
+                    self.XMLViewOne.setModel(model)
+
+                elif choice[0] == "2":
+                    self.XMLModelTwo = model
+                    self.XMLViewTwo.setModel(model)
+
+                else:
+                    self.XMLModelOne = model
+                    self.XMLViewOne.setModel(model)
+                    
+                    model = TreeModel(path[0])
+                    self.XMLModelTwo = model
+                    self.XMLViewTwo.setModel(model)
+                
+
+            else:
+                self.XMLModelOne = model
+                self.XMLViewOne.setModel(model)
+
+        self.setColor(self.colorState)
+
 
 app = QApplication(sys.argv)
 
