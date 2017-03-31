@@ -157,8 +157,10 @@ class TreeModel(QAbstractItemModel):
             path = self.path
 
         self.resetChanged()
-
-        self.XMLTree.write(path)
+        try:
+            self.XMLTree.write(path)
+        except:
+            print("save error (probs because attribute was not set correctly on editing..?)")
 
     def resetChanged(self, node=None):
         if node is None:

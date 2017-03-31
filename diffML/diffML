@@ -9,6 +9,7 @@ from lib.TreeModel import TreeModel
 from lib.TreeView import TreeView
 from lib.menubar import menubar
 from lib.xmllib import compareXML
+from lib.csvlib import csvSave
 from lib.CONSTANTS import NONE
 
 class diffML(QMainWindow):
@@ -66,20 +67,41 @@ class diffML(QMainWindow):
             self.XMLViewTwo.setFocus()
     
     def compare(self):
-        choices = ("Tag","Text","Attribute")
-        choice = QInputDialog.getItem(self, 'Compare Selected Elements', 'What to match with?', choices)
+        choice = QInputDialog.getItem(self, 'Compare Selected Elements Children', 'What to match with?', ("Tag","Text","Attribute"))
 
-        selectedOne = self.XMLViewOne.selectedIndexes()
-
-        if self.hasViewTwo:
+        if self.XMLModelOne:
+            selectedOne = self.XMLViewOne.selectedIndexes()
+        if self.XMLModelTwo:
             selectedTwo = self.XMLViewTwo.selectedIndexes()
-            result = compareXML(choice[0],
-                                self.XMLModelOne.getXMLTree(),
-                                selectedOne,
-                                self.XMLModelTwo.getXMLTree(),
-                                selectedTwo)
-            QMessageBox.question(self,'Result:','There were ' + str(len(result)) + ' differences.', QMessageBox.Save | QMessageBox.Ok)
-            pprint(result)
+            differences = compareXML(   choice[0],
+                                        self.XMLModelOne.getXMLTree(),
+                                        selectedOne,
+                                        self.XMLModelTwo.getXMLTree(),
+                                        selectedTwo)
+
+            MessageBox = QMessageBox()
+
+            parsed = str()
+
+            for difference in differences:
+                parsed += difference + '\n'
+
+            MessageBox.setWindowTitle("Result:")
+
+            if len(differences) != 0:
+                MessageBox.setStandardButtons(QMessageBox.Save | QMessageBox.Ok)
+                MessageBox.setText('There were ' + str(len(differences)) + ' differences.')
+                MessageBox.setDetailedText(parsed)
+            else:
+                MessageBox.setStandardButtons(QMessageBox.Ok)
+                MessageBox.setText('There was no differences.')
+
+            result = MessageBox.exec_()
+
+            if result == QMessageBox.Save:
+                path = QFileDialog.getSaveFileName(self)
+                if path[0] != '':
+                    csvSave(path[0],differences)
 
     def save(self):
         if self.XMLModelOne:

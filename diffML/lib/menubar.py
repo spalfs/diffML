@@ -26,7 +26,7 @@ class  menubar():
 
         editMenu = menubar.addMenu('&Edit')
 
-        compareButton = QAction('&Compare Selected Elements',view)
+        compareButton = QAction('&Compare Selected Elements Children',view)
         compareButton.triggered.connect(view.compare)
         editMenu.addAction(compareButton)
 
