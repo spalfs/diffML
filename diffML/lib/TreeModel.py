@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt, QAbstractItemModel, QModelIndex
 from PyQt5.QtGui import QBrush, QColor
-import xml.etree.ElementTree as ET
 from ast import literal_eval
+import xml.etree.ElementTree as ET
 
 from lib.CONSTANTS import NONE, HIERARCHY, CHANGED
 from lib.xmllib import find
@@ -164,7 +164,7 @@ class TreeModel(QAbstractItemModel):
         try:
             self.XMLTree.write(path)
         except:
-            print("save error (probs because attribute was not set correctly on editing..?)")
+            print("save error")
 
     def resetChanged(self, node=None):
         if node is None:
