@@ -1,6 +1,7 @@
 from PyQt5.QtCore import Qt, QAbstractItemModel, QModelIndex
 from PyQt5.QtGui import QBrush, QColor
 import xml.etree.ElementTree as ET
+from ast import literal_eval
 
 from lib.CONSTANTS import NONE, HIERARCHY, CHANGED
 from lib.xmllib import find
@@ -75,10 +76,13 @@ class TreeModel(QAbstractItemModel):
             elif index.column() == 1:
                 element.text = value
             elif index.column() == 2:
-                element.attrib = value
+                dValue = literal_eval(value)
+                for key in dValue:
+                    element.set(key,dValue[key])
 
             item.setData(value,index.column())
             return True
+
         except:
             return False
 

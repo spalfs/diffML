@@ -28,10 +28,11 @@ class TreeItem(object):
             return None
 
     def setData(self, data, column):
-        self.changed = True
         tmp = list(self.itemData)
-        tmp[column] = data
-        self.itemData = tuple(tmp)
+        if tmp[column] != data:
+            self.changed = True
+            tmp[column] = data
+            self.itemData = tuple(tmp)
 
     def resetChanged(self):
         self.changed = False
