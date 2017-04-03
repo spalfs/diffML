@@ -134,7 +134,7 @@ class TreeModel(QAbstractItemModel):
         self.XMLTree = ET.parse(self.path)
         XMLRoot = self.XMLTree.getroot()
 
-        base = TreeItem((self.path,'',''),self.rootItem)
+        base = TreeItem((self.path.split('/')[-1],'',''),self.rootItem)
         self.rootItem.appendChild(base)
 
         self.setupModelRecursive(base,XMLRoot)
@@ -142,7 +142,10 @@ class TreeModel(QAbstractItemModel):
     def setupModelRecursive(self, node, XMLNode, depth=0):
         depth = depth + 1
         for element in XMLNode:
-            child = TreeItem((str(element.tag),str(element.text),str(element.attrib)), node, depth)
+            text = str(element.text)
+            if text == "None":
+                text = ""
+            child = TreeItem((str(element.tag), text, str(element.attrib)), node, depth)
             node.appendChild(child)
             self.setupModelRecursive(child,element,depth)
 

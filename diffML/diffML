@@ -4,13 +4,13 @@ from PyQt5.QtWidgets import QApplication, QFileDialog, QInputDialog, QMainWindow
 from PyQt5.QtGui import QCursor
 import sys
 
-from pprint import pprint
 from lib.TreeModel import TreeModel
 from lib.TreeView import TreeView
 from lib.menubar import menubar
 from lib.xmllib import compareXML
 from lib.csvlib import csvSave
 from lib.CONSTANTS import NONE
+from lib.editDialog import editDialog
 
 class diffML(QMainWindow):
     def __init__(self):
@@ -41,36 +41,45 @@ class diffML(QMainWindow):
     def rightClickMenu(self, view):
         menu = QMenu()
 
-        hideButton = QAction('&Hide element', self)
-
-        if view.num == 1:
-            index = self.XMLViewOne.selectedIndexes()[0]
+        hideButton = QAction('&Hide Element', self)
+        
+        index = False
+        if view.num == 1 and self.XMLModelOne:
+            index = self.XMLViewOne.selectedIndexes()
+            hideButton.triggered.connect(lambda : self.XMLViewOne.setRowHidden(index[0].row(), index[0].parent(), True))
             self.hidden.append({'index' : index, 'view' : 1})
-            hideButton.triggered.connect(lambda : self.XMLViewOne.setRowHidden(index.row(), index.parent(), True))
-        else:
-            index = self.XMLViewTwo.selectedIndexes()[0]
+        elif view.num == 2 and self.XMLModelTwo:
+            index = self.XMLViewTwo.selectedIndexes()
+            hideButton.triggered.connect(lambda : self.XMLViewTwo.setRowHidden(index[0].row(), index[0].parent(), True))
             self.hidden.append({'index' : index, 'view' : 2})
-            hideButton.triggered.connect(lambda : self.XMLViewTwo.setRowHidden(index.row(), index.parent(), True))
 
-        menu.addAction(hideButton)
+        if index:
+            menu.addAction(hideButton)
+        
+            editButton = QAction('&Edit Element', self)
+            editButton.triggered.connect(lambda : self.editElement(index))
+            menu.addAction(editButton)
 
-        collapseButton = QAction('&Collapse All', self)
-        collapseButton.triggered.connect(lambda : view.collapseAll())
-        menu.addAction(collapseButton)
+            collapseButton = QAction('&Collapse All', self)
+            collapseButton.triggered.connect(lambda : view.collapseAll())
+            menu.addAction(collapseButton)
 
-        expandButton = QAction('&Expand All', self)
-        expandButton.triggered.connect(lambda : view.expandAll())
-        menu.addAction(expandButton)
+            expandButton = QAction('&Expand All', self)
+            expandButton.triggered.connect(lambda : view.expandAll())
+            menu.addAction(expandButton)
 
-        position = view.viewport().mapFromGlobal(QCursor.pos()) 
-        menu.exec_(view.viewport().mapToGlobal(position))
+            position = view.viewport().mapFromGlobal(QCursor.pos()) 
+            menu.exec_(view.viewport().mapToGlobal(position))
+    
+    def editElement(self,index):
+        editDialog(index)
 
     def reveal(self):
         for element in self.hidden:
             if element['view'] == 1:
-                self.XMLViewOne.setRowHidden(element['index'].row(), element['index'].parent(), False)
+                self.XMLViewOne.setRowHidden(element['index'][0].row(), element['index'][0].parent(), False)
             else:
-                self.XMLViewTwo.setRowHidden(element['index'].row(), element['index'].parent(), False)
+                self.XMLViewTwo.setRowHidden(element['index'][0].row(), element['index'][0].parent(), False)
 
         self.hidden = []
  
