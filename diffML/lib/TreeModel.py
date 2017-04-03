@@ -172,5 +172,3 @@ class TreeModel(QAbstractItemModel):
         for i in range(node.childCount()):
             node.child(i).resetChanged()
             self.resetChanged(node.child(i))
-
-

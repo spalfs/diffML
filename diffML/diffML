@@ -21,10 +21,10 @@ class diffML(QMainWindow):
 
         menubar(self) 
 
-        self.XMLViewOne = TreeView(self)
+        self.XMLViewOne = TreeView(self, 1)
         self.frame.addWidget(self.XMLViewOne)
 
-        self.XMLViewTwo = TreeView(self)
+        self.XMLViewTwo = TreeView(self, 2)
         self.frame.addWidget(self.XMLViewTwo)
         self.XMLViewTwo.hide()
         self.hasViewTwo = False
@@ -34,10 +34,26 @@ class diffML(QMainWindow):
 
         self.colorState = NONE
 
+        self.hidden = []
+
         self.show()
     
     def rightClickMenu(self, view):
         menu = QMenu()
+
+        hideButton = QAction('&Hide element', self)
+
+        if view.num == 1:
+            index = self.XMLViewOne.selectedIndexes()[0]
+            self.hidden.append({'index' : index, 'view' : 1})
+            hideButton.triggered.connect(lambda : self.XMLViewOne.setRowHidden(index.row(), index.parent(), True))
+        else:
+            index = self.XMLViewTwo.selectedIndexes()[0]
+            self.hidden.append({'index' : index, 'view' : 2})
+            hideButton.triggered.connect(lambda : self.XMLViewTwo.setRowHidden(index.row(), index.parent(), True))
+
+        menu.addAction(hideButton)
+
         collapseButton = QAction('&Collapse All', self)
         collapseButton.triggered.connect(lambda : view.collapseAll())
         menu.addAction(collapseButton)
@@ -48,7 +64,16 @@ class diffML(QMainWindow):
 
         position = view.viewport().mapFromGlobal(QCursor.pos()) 
         menu.exec_(view.viewport().mapToGlobal(position))
-  
+
+    def reveal(self):
+        for element in self.hidden:
+            if element['view'] == 1:
+                self.XMLViewOne.setRowHidden(element['index'].row(), element['index'].parent(), False)
+            else:
+                self.XMLViewTwo.setRowHidden(element['index'].row(), element['index'].parent(), False)
+
+        self.hidden = []
+ 
     def toggleViewTwo(self):
         if  self.hasViewTwo:
             self.hasViewTwo = False

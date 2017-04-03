@@ -32,6 +32,10 @@ class  menubar():
 
         viewMenu = menubar.addMenu('&View')
 
+        revealButton = QAction('&Reveal hidden elements',view)
+        revealButton.triggered.connect(view.reveal)
+        viewMenu.addAction(revealButton)
+
         addViewButton = QAction('&Enable Second Workspace',view)
         addViewButton.setCheckable(True)
         addViewButton.triggered.connect(view.toggleViewTwo)
