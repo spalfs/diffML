@@ -17,27 +17,27 @@ def compareXML(matching, treeOne, selectedOne, treeTwo, selectedTwo):
         found = False
         for eB in elementTwo:
             if matching == "Tag":
-                if str(eA.tag) == str(eB.tag):
+                if eA.tag == eB.tag:
                     found = True
-                    if str(eA.text) != str(eB.text):
+                    if eA.text != eB.text:
                         difference = str(eA.tag) + " , " + str(eA.text) + " , " + str(eB.text) + '.'
-                    if str(eA.attrib) != str(eB.attrib):
+                    if eA.attrib != eB.attrib:
                         difference += str(eA.tag) + " , " + str(eA.attrib) + " , " + str(eB.attrib)
 
             elif matching == "Attribute":
-                if str(eA.attrib) == str(eB.attrib):
+                if eA.attrib == eB.attrib:
                     found = True
-                    if str(eA.text) != str(eB.text):
+                    if eA.text != eB.text:
                         difference = str(eA.attrib) + " , " + str(eA.text) + " , " + str(eB.text) + '.'
-                    if str(eA.tag) != str(eB.tag):
+                    if eA.tag != eB.tag:
                         difference += str(eA.attrib) + " , " + str(eA.tag) + " , " + str(eB.tag)
 
             elif matching == "Text":
-                if str(eA.text) == str(eB.text):
+                if eA.text == eB.text:
                     found = True
-                    if str(eA.attrib) != str(eB.attrib):
+                    if eA.attrib != eB.attrib:
                         difference = str(eA.text) + " , " + str(eA.attrib) + " , " + str(eB.attrib) + '.'
-                    if str(eA.tag) != str(eB.tag):
+                    if eA.tag != eB.tag:
                         difference += str(eA.text) + " , " + str(eA.tag) + " , " + str(eB.tag)
 
         if difference.count(',') == 4:
@@ -62,13 +62,13 @@ def compareXML(matching, treeOne, selectedOne, treeTwo, selectedTwo):
         found = False
         for eB in elementOne:
             if matching == "Tag":
-                if str(eA.tag) == str(eB.tag):
+                if eA.tag == eB.tag:
                     found = True
             elif matching == "Attribute":
-                if str(eA.attrib) == str(eB.attrib):
+                if eA.attrib == eB.attrib:
                     found = True
             elif matching == "Text":
-                if str(eA.text) == str(eB.text):
+                if eA.text == eB.text:
                     found = True
 
         if not found:

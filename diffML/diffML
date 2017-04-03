@@ -67,9 +67,8 @@ class diffML(QMainWindow):
             self.XMLViewTwo.setFocus()
     
     def compare(self):
-        choice = QInputDialog.getItem(self, 'Compare Selected Elements Children', 'What to match with?', ("Tag","Text","Attribute"))
-
         if self.XMLModelOne:
+            choice = QInputDialog.getItem(self, 'Compare Selected Elements Children', 'What to match with?', ("Tag","Text","Attribute"))
             selectedOne = self.XMLViewOne.selectedIndexes()
         if self.XMLModelTwo:
             selectedTwo = self.XMLViewTwo.selectedIndexes()
