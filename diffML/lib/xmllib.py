@@ -1,6 +1,9 @@
 def find(root, tag, text, attrib):
     for element in root.iter(tag):
-        if str(element.text) == text and str(element.attrib) == attrib:
+        tryText = str(element.text)
+        if tryText == "None":
+            tryText = ''
+        if tryText == text and str(element.attrib) == attrib:
             return element
 
 def compareXML(matching, treeOne, selectedOne, treeTwo, selectedTwo):

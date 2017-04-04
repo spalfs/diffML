@@ -76,6 +76,8 @@ class TreeModel(QAbstractItemModel):
             elif index.column() == 1:
                 element.text = value
             elif index.column() == 2:
+                for key in list(element.attrib):
+                    del element.attrib[key]
                 dValue = literal_eval(value)
                 for key in dValue:
                     element.set(key,dValue[key])
