@@ -145,7 +145,7 @@ class TreeModel(QAbstractItemModel):
             print("Unable to open.")
 
     def setupModelRecursive(self, node, XMLNode, depth=0):
-        depth = depth + 1
+        depth += 1
         for element in XMLNode:
             text = str(element.text)
             if text == "None":

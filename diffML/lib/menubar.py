@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import qApp, QAction, QActionGroup
 
-from lib.CONSTANTS import NONE, HIERARCHY, CHANGED
+from lib.CONSTANTS import NONE, HIERARCHY, CHANGED, FIELD, ORDER
 
 class  menubar():
     def __init__(self, view):
@@ -8,9 +8,13 @@ class  menubar():
 
         fileMenu = menubar.addMenu('&File')
 
-        openXMLButton = QAction('&Open',view)
+        openXMLButton = QAction('&Open', view)
         openXMLButton.triggered.connect(view.open)
         fileMenu.addAction(openXMLButton)
+
+        exportButton = QAction('&Export as CSV', view)
+        exportButton.triggered.connect(view.export)
+        fileMenu.addAction(exportButton)
 
         saveButton = QAction('&Save',view)
         saveButton.triggered.connect(view.save)
@@ -27,11 +31,11 @@ class  menubar():
         editMenu = menubar.addMenu('&Edit')
 
         matchingFieldButton = QAction('&Compare selected by matching fields', view)
-        matchingFieldButton.triggered.connect(view.matchingField)
+        matchingFieldButton.triggered.connect(lambda : view.matching(FIELD))
         editMenu.addAction(matchingFieldButton)
 
         matchingOrderButton = QAction('&Compare selected by matching order', view)
-        matchingOrderButton.triggered.connect(view.matchingOrder)
+        matchingOrderButton.triggered.connect(lambda : view.matching(ORDER))
         editMenu.addAction(matchingOrderButton)
 
         viewMenu = menubar.addMenu('&View')
