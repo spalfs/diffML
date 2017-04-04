@@ -26,9 +26,13 @@ class  menubar():
 
         editMenu = menubar.addMenu('&Edit')
 
-        compareButton = QAction('&Compare Selected Elements Children',view)
-        compareButton.triggered.connect(view.compare)
-        editMenu.addAction(compareButton)
+        matchingFieldButton = QAction('&Compare selected by matching fields', view)
+        matchingFieldButton.triggered.connect(view.matchingField)
+        editMenu.addAction(matchingFieldButton)
+
+        matchingOrderButton = QAction('&Compare selected by matching order', view)
+        matchingOrderButton.triggered.connect(view.matchingOrder)
+        editMenu.addAction(matchingOrderButton)
 
         viewMenu = menubar.addMenu('&View')
 
@@ -40,6 +44,11 @@ class  menubar():
         addViewButton.setCheckable(True)
         addViewButton.triggered.connect(view.toggleViewTwo)
         viewMenu.addAction(addViewButton)
+
+        syncButton = QAction('&Enable Syncronized Scrolling',view)
+        syncButton.setCheckable(True)
+        syncButton.triggered.connect(view.toggleSync)
+        viewMenu.addAction(syncButton)
 
         colorizeButton = viewMenu.addMenu('&Colorize')
         colorizeGroup = QActionGroup(view)

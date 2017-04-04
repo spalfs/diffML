@@ -7,7 +7,7 @@ import sys
 from lib.TreeModel import TreeModel
 from lib.TreeView import TreeView
 from lib.menubar import menubar
-from lib.xmllib import compareXML
+from lib.xmllib import matchField, matchOrder
 from lib.csvlib import csvSave
 from lib.CONSTANTS import NONE
 from lib.editDialog import editDialog
@@ -33,6 +33,10 @@ class diffML(QMainWindow):
         self.XMLModelTwo = False
 
         self.colorState = NONE
+
+        self.syncScrolled = False
+        self.XMLViewOne.verticalScrollBar().valueChanged.connect(lambda : self.syncScroll(1))
+        self.XMLViewTwo.verticalScrollBar().valueChanged.connect(lambda : self.syncScroll(2))
 
         self.hidden = []
 
@@ -103,42 +107,59 @@ class diffML(QMainWindow):
         if self.XMLModelTwo:
             self.XMLModelTwo.setColor(color)
             self.XMLViewTwo.setFocus()
-    
-    def compare(self):
-        if self.XMLModelOne:
-            choice = QInputDialog.getItem(self, 'Compare Selected Elements Children', 'What to match with?', ("Tag","Text","Attribute"))
+
+    def matchingOrder(self):
+        if self.XMLModelOne and self.XMLModelTwo: 
             selectedOne = self.XMLViewOne.selectedIndexes()
-        if self.XMLModelTwo:
             selectedTwo = self.XMLViewTwo.selectedIndexes()
-            differences = compareXML(   choice[0],
-                                        self.XMLModelOne.getXMLTree(),
+
+            differences = matchOrder(   self.XMLModelOne.getXMLTree(),
                                         selectedOne,
                                         self.XMLModelTwo.getXMLTree(),
                                         selectedTwo)
 
-            MessageBox = QMessageBox()
+            self.resultMessage(differences) 
 
-            parsed = str()
+    def matchingField(self):
+        if self.XMLModelOne and self.XMLModelTwo:
+            choice = QInputDialog.getItem(self, 'Compare selected by matching fields', 'What field to match with?', ("Tag","Text","Attribute"))
 
-            for difference in differences:
-                parsed += difference + '\n'
+            selectedOne = self.XMLViewOne.selectedIndexes()
+            selectedTwo = self.XMLViewTwo.selectedIndexes()
 
-            MessageBox.setWindowTitle("Result:")
+            differences = matchField(   choice[0],
+                                        self.XMLModelOne.getXMLTree(),
+                                        selectedOne,
+                                        self.XMLModelTwo.getXMLTree(),
+                                        selectedTwo)
+            
+            self.resultMessage(differences)
 
-            if len(differences) != 0:
-                MessageBox.setStandardButtons(QMessageBox.Save | QMessageBox.Ok)
-                MessageBox.setText('There were ' + str(len(differences)) + ' differences.')
-                MessageBox.setDetailedText(parsed)
-            else:
-                MessageBox.setStandardButtons(QMessageBox.Ok)
-                MessageBox.setText('There was no differences.')
+            
+    def resultMessage(self, differences):
+        MessageBox = QMessageBox()
 
-            result = MessageBox.exec_()
+        parsed = str()
 
-            if result == QMessageBox.Save:
-                path = QFileDialog.getSaveFileName(self)
-                if path[0] != '':
-                    csvSave(path[0],differences)
+        for difference in differences:
+            parsed += difference + '\n'
+
+        MessageBox.setWindowTitle("Result:")
+
+        if len(differences) != 0:
+            MessageBox.setStandardButtons(QMessageBox.Save | QMessageBox.Ok)
+            MessageBox.setText('There were ' + str(len(differences)) + ' differences.')
+            MessageBox.setDetailedText(parsed)
+        else:
+            MessageBox.setStandardButtons(QMessageBox.Ok)
+            MessageBox.setText('There was no differences.')
+
+        result = MessageBox.exec_()
+
+        if result == QMessageBox.Save:
+            path = QFileDialog.getSaveFileName(self)
+            if path[0] != '':
+                csvSave(path[0],differences)
 
     def save(self):
         if self.XMLModelOne:
@@ -182,7 +203,6 @@ class diffML(QMainWindow):
                     model = TreeModel(path[0])
                     self.XMLModelTwo = model
                     self.XMLViewTwo.setModel(model)
-                
 
             else:
                 self.XMLModelOne = model
@@ -190,6 +210,17 @@ class diffML(QMainWindow):
 
         self.setColor(self.colorState)
 
+    def toggleSync(self):
+        self.syncScrolled = not self.syncScrolled
+
+    def syncScroll(self, num):
+        if self.syncScrolled:
+            if num == 1:
+                sliderValue = self.XMLViewOne.verticalScrollBar().value()
+                self.XMLViewTwo.verticalScrollBar().setValue(sliderValue)
+            else:
+                sliderValue = self.XMLViewTwo.verticalScrollBar().value()
+                self.XMLViewOne.verticalScrollBar().setValue(sliderValue)
 
 app = QApplication(sys.argv)
 

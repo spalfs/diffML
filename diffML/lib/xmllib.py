@@ -6,7 +6,7 @@ def find(root, tag, text, attrib):
         if tryText == text and str(element.attrib) == attrib:
             return element
 
-def compareXML(matching, treeOne, selectedOne, treeTwo, selectedTwo):
+def matchField(matching, treeOne, selectedOne, treeTwo, selectedTwo):
     rootOne = treeOne.getroot()
     rootTwo = treeTwo.getroot()
 
@@ -84,5 +84,36 @@ def compareXML(matching, treeOne, selectedOne, treeTwo, selectedTwo):
 
         if difference != "":
             differences.append(difference)
+
+    return differences
+
+def matchOrder(treeOne, selectedOne, treeTwo, selectedTwo):
+    rootOne = treeOne.getroot()
+    rootTwo = treeTwo.getroot()
+
+    elementOne = find(rootOne, selectedOne[0].data(), selectedOne[1].data(), selectedOne[2].data())
+    elementTwo = find(rootTwo, selectedTwo[0].data(), selectedTwo[1].data(), selectedTwo[2].data())
+
+    differences = []
+
+    l = len(elementOne)
+    if l > len(elementTwo):
+        l = len(elementTwo)
+
+    for i in range(l):
+        difference = str()
+
+        if elementOne[i].tag != elementTwo[i].tag:
+            difference = str(i) + "," + elementOne[i].tag + "," + elementTwo[i].tag + "."
+        if elementOne[i].text != elementTwo[i].text:
+            difference += str(i) + "," + str(elementOne[i].text) + "," + str(elementTwo[i].text) + "."
+        if elementOne[i].attrib != elementTwo[i].attrib:
+            difference += str(i) + "," + str(elementOne[i].attrib) + "," + str(elementTwo[i].attrib) + "."
+
+        if difference != "":
+            while difference.find(".") != -1:
+                n = difference.find(".")
+                differences.append(difference[:n])
+                difference = difference[n+1:]
 
     return differences

@@ -25,6 +25,7 @@ class editDialog(QDialog):
 
         self.attribs = []
         attribs = literal_eval(index[2].data())
+        i = 0
         for i, key in enumerate(attribs):
             left = QLineEdit(key, self)
             layout.addWidget(left, i+2, 1)

@@ -133,13 +133,16 @@ class TreeModel(QAbstractItemModel):
         return parentItem.childCount()
 
     def setupModel(self):
-        self.XMLTree = ET.parse(self.path)
-        XMLRoot = self.XMLTree.getroot()
+        try:
+            self.XMLTree = ET.parse(self.path)
+            XMLRoot = self.XMLTree.getroot()
 
-        base = TreeItem((self.path.split('/')[-1],'',''),self.rootItem)
-        self.rootItem.appendChild(base)
+            base = TreeItem((self.path.split('/')[-1],'',''),self.rootItem)
+            self.rootItem.appendChild(base)
 
-        self.setupModelRecursive(base,XMLRoot)
+            self.setupModelRecursive(base,XMLRoot)
+        except:
+            print("Unable to open.")
 
     def setupModelRecursive(self, node, XMLNode, depth=0):
         depth = depth + 1
