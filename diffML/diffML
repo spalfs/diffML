@@ -21,22 +21,27 @@ class diffML(QMainWindow):
 
         menubar(self) 
 
-        self.XMLViewOne = TreeView(self, 1)
-        self.frame.addWidget(self.XMLViewOne)
+        self.View = {}
 
-        self.XMLViewTwo = TreeView(self, 2)
-        self.frame.addWidget(self.XMLViewTwo)
-        self.XMLViewTwo.hide()
+        self.View['1'] = TreeView(self, '1')
+        self.frame.addWidget(self.View['1'])
+
+        self.View['2'] = TreeView(self, '2')
+        self.frame.addWidget(self.View['2'])
+        self.View['2'].hide()
+
         self.hasViewTwo = False
 
-        self.XMLModelOne = False
-        self.XMLModelTwo = False
+        self.Model = {}
+
+        self.Model['1'] = False
+        self.Model['2'] = False
 
         self.colorState = NONE
 
         self.syncScrolled = False
-        self.XMLViewOne.verticalScrollBar().valueChanged.connect(lambda : self.syncScroll(1))
-        self.XMLViewTwo.verticalScrollBar().valueChanged.connect(lambda : self.syncScroll(2))
+        self.View['1'].verticalScrollBar().valueChanged.connect(lambda : self.syncScroll('1'))
+        self.View['2'].verticalScrollBar().valueChanged.connect(lambda : self.syncScroll('2'))
 
         self.hidden = []
 
@@ -48,14 +53,10 @@ class diffML(QMainWindow):
         hideButton = QAction('&Hide Element', self)
         
         index = False
-        if view.num == 1 and self.XMLModelOne:
-            index = self.XMLViewOne.selectedIndexes()
-            hideButton.triggered.connect(lambda : self.XMLViewOne.setRowHidden(index[0].row(), index[0].parent(), True))
-            self.hidden.append({'index' : index, 'view' : 1})
-        elif view.num == 2 and self.XMLModelTwo:
-            index = self.XMLViewTwo.selectedIndexes()
-            hideButton.triggered.connect(lambda : self.XMLViewTwo.setRowHidden(index[0].row(), index[0].parent(), True))
-            self.hidden.append({'index' : index, 'view' : 2})
+        if self.Model[view.num]:
+            index = self.View[view.num].selectedIndexes()
+            hideButton.triggered.connect(lambda : self.View[view.num].setRowHidden(index[0].row(), index[0].parent(), True))
+            self.hidden.append({'index' : index, 'view' : view.num})
 
         if index:
             menu.addAction(hideButton)
@@ -77,60 +78,49 @@ class diffML(QMainWindow):
     
     def editElement(self,index,num):
         result = editDialog.getInfo(index)
-        if num == 1 and result:
-            self.XMLModelOne.setData(index[0], result['tag'], 2)
-            self.XMLModelOne.setData(index[1], result['text'], 2)
-            self.XMLModelOne.setData(index[2], str(result['attribs']), 2)
-        elif num == 2 and result:
-            self.XMLModelTwo.setData(index[0], result['tag'], 2)
-            self.XMLModelTwo.setData(index[1], result['text'], 2)
-            self.XMLModelTwo.setData(index[2], str(result['attribs']), 2)
-
+        if result:
+            self.Model[num].setData(index[0], result['tag'], 2)
+            self.Model[num].setData(index[1], result['text'], 2)
+            self.Model[num].setData(index[2], str(result['attribs']), 2)
 
     def reveal(self):
         for element in self.hidden:
-            if element['view'] == 1:
-                self.XMLViewOne.setRowHidden(element['index'][0].row(), element['index'][0].parent(), False)
-            else:
-                self.XMLViewTwo.setRowHidden(element['index'][0].row(), element['index'][0].parent(), False)
+            self.View[element['view']].setRowHidden(element['index'][0].row(), element['index'][0].parent(), False)
 
         self.hidden = []
  
     def toggleViewTwo(self):
-        if  self.hasViewTwo:
-            self.hasViewTwo = False
-            self.XMLViewTwo.hide()
+        if self.hasViewTwo:
+            self.View['2'].hide()
         else:
-            self.hasViewTwo = True
-            self.XMLViewTwo.show()
+            self.View['2'].show()
+        self.hasViewTwo = not self.hasViewTwo
     
     def setColor(self, color):
         self.colorState = color
-        if self.XMLModelOne:
-            self.XMLModelOne.setColor(color)
-            self.XMLViewOne.setFocus()
-        if self.XMLModelTwo:
-            self.XMLModelTwo.setColor(color)
-            self.XMLViewTwo.setFocus()
+        if self.Model['1']:
+            self.Model['1'].setColor(color)
+            self.View['1'].setFocus()
+        
+        if self.Model['2']:
+            self.Model['2'].setColor(color)
+            self.View['2'].setFocus()
+
 
     def matching(self, n):
-        if self.XMLModelOne and self.XMLModelTwo: 
-
-            selectedOne = self.XMLViewOne.selectedIndexes()
-            selectedTwo = self.XMLViewTwo.selectedIndexes()
-
+        if self.Model['1'] and self.Model['2']: 
             if n == ORDER:
-                differences = matchOrder(   self.XMLModelOne.getXMLTree(),
-                                            selectedOne,
-                                            self.XMLModelTwo.getXMLTree(),
-                                            selectedTwo)
+                differences = matchOrder(   self.Model['1'].getXMLTree(),
+                                            self.View['1'].selectedIndexes(),
+                                            self.Model['2'].getXMLTree(),
+                                            self.View['2'].selectedIndexes())
             elif n == FIELD:
                 choice = QInputDialog.getItem(self, 'Compare selected by matching fields', 'What field to match with?', ('Tag','Text','Attribute'))
                 differences = matchField(   choice[0],
-                                            self.XMLModelOne.getXMLTree(),
-                                            selectedOne,
-                                            self.XMLModelTwo.getXMLTree(),
-                                            selectedTwo)
+                                            self.Model['1'].getXMLTree(),
+                                            self.View['1'].selectedIndexes(),
+                                            self.Model['2'].getXMLTree(),
+                                            self.View['2'].selectedIndexes())
 
             self.resultMessage(differences) 
             
@@ -160,67 +150,49 @@ class diffML(QMainWindow):
                 csvSave(path[0],differences)
 
     def save(self):
-        if self.XMLModelOne:
-            self.XMLModelOne.save()
-        if self.XMLModelTwo:
-            self.XMLModelTwo.save()
+        if self.Model['1']:
+            self.Model['1'].save()
+        if self.Model['2']:
+            self.Model['2'].save()
         
     def saveAs(self):
-        if self.XMLModelTwo:
+        if self.Model['2']:
             choice = QInputDialog.getItem(self, 'Save As', 'Workspace:', ("1","2"))
             path = QFileDialog.getSaveFileName(self)
             if path[0] != '':
-                if choice[0] == "1":
-                        self.XMLModelOne.save(path[0])
-                elif choice[0] == "2":
-                        self.XMLModelTwo.save(path[0])
+                self.Model[choice[0]].save(path[0])
 
-        elif self.XMLModelOne:
+        elif self.Model['1']:
                 path = QFileDialog.getSaveFileName(self)
                 if path[0] != '':
-                    self.XMLModelOne.save(path[0])
+                    self.Model['1'].save(path[0])
     
     def open(self):
         path = QFileDialog.getOpenFileName(self)
         if path[0]:
             model = TreeModel(path[0])
             if self.hasViewTwo:
-                choice = QInputDialog.getItem(self, 'Open', 'Workspace:', ("1","2","Both"))
-                if choice[0] == "1":
-                    self.XMLModelOne = model
-                    self.XMLViewOne.setModel(model)
-
-                elif choice[0] == "2":
-                    self.XMLModelTwo = model
-                    self.XMLViewTwo.setModel(model)
-
-                else:
-                    self.XMLModelOne = model
-                    self.XMLViewOne.setModel(model)
-                    
-                    model = TreeModel(path[0])
-                    self.XMLModelTwo = model
-                    self.XMLViewTwo.setModel(model)
+                choice = QInputDialog.getItem(self, 'Open', 'Workspace:', ("1","2"))
+                self.Model[choice[0]] = model
+                self.View[choice[0]].setModel(model)
 
             else:
-                self.XMLModelOne = model
-                self.XMLViewOne.setModel(model)
+                self.Model['1'] = model
+                self.View['1'].setModel(model)
 
         self.setColor(self.colorState)
 
     def export(self):
-        if self.XMLModelTwo:
+        if self.Model['2']:
             choice = QInputDialog.getItem(self, 'Export', 'Workspace:', ("1","2"))
             path = QFileDialog.getSaveFileName(self)
             if path[0] != '':
-                if choice[0] == "1":
-                    csvExport(path[0], self.XMLModelOne.getXMLTree())
-                elif choice[0] == "2":
-                    csvExport(path[0], self.XMLModelTwo.getXMLTree())
-        elif self.XMLModelOne:
+                csvExport(path[0], self.Model[choice[0]].getXMLTree())
+
+        elif self.Model['1']:
             path = QFileDialog.getSaveFileName(self)
             if path[0] != '':
-                csvExport(path[0], self.XMLModelOne.getXMLTree())
+                csvExport(path[0], self.Model['1'].getXMLTree())
 
 
     def toggleSync(self):
@@ -229,11 +201,11 @@ class diffML(QMainWindow):
     def syncScroll(self, num):
         if self.syncScrolled:
             if num == 1:
-                sliderValue = self.XMLViewOne.verticalScrollBar().value()
-                self.XMLViewTwo.verticalScrollBar().setValue(sliderValue)
+                sliderValue = self.View['1'].verticalScrollBar().value()
+                self.View['2'].verticalScrollBar().setValue(sliderValue)
             elif num == 2:
-                sliderValue = self.XMLViewTwo.verticalScrollBar().value()
-                self.XMLViewOne.verticalScrollBar().setValue(sliderValue)
+                sliderValue = self.View['2'].verticalScrollBar().value()
+                self.View['1'].verticalScrollBar().setValue(sliderValue)
 
 app = QApplication(sys.argv)
 
