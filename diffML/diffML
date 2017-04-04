@@ -57,7 +57,7 @@ class diffML(QMainWindow):
             menu.addAction(hideButton)
         
             editButton = QAction('&Edit Element', self)
-            editButton.triggered.connect(lambda : self.editElement(index))
+            editButton.triggered.connect(lambda : self.editElement(index,view.num))
             menu.addAction(editButton)
 
             collapseButton = QAction('&Collapse All', self)
@@ -71,8 +71,12 @@ class diffML(QMainWindow):
             position = view.viewport().mapFromGlobal(QCursor.pos()) 
             menu.exec_(view.viewport().mapToGlobal(position))
     
-    def editElement(self,index):
-        editDialog(index)
+    def editElement(self,index,num):
+        result = editDialog.getInfo(index)
+        if num == 1 and result:
+            self.XMLModelOne.setData(index[0], result['tag'], 2)
+            self.XMLModelOne.setData(index[1], result['text'], 2)
+            self.XMLModelOne.setData(index[2], str(result['attribs']), 2)
 
     def reveal(self):
         for element in self.hidden:
