@@ -1,0 +1,58 @@
+#!/usr/bin/python3
+
+from PyQt5.QtWidgets import QMainWindow, QApplication, QTableView, QGridLayout, QWidget, QFileDialog, QMessageBox, qApp
+import sys
+
+from lib.menubar import menubar
+from lib.TableModel import TableModel
+from lib.searchDialog import searchDialog
+
+class authLevels(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        menubar(self)
+
+        self.view = QTableView(self)
+        self.view.horizontalHeader().setStretchLastSection(True)
+        self.view.verticalHeader().hide()
+
+        self.setCentralWidget(self.view)
+
+        self.show()
+
+    def open(self):
+        search = searchDialog.getInfo()
+        if search:
+            path = QFileDialog.getOpenFileName(self)
+            if path[0]:
+                self.model = TableModel(path[0],search)
+                self.view.setModel(self.model)
+
+    def save(self):
+        self.model.save()
+
+    def saveAs(self):
+        path = QFileDialog.getSaveFileName(self)
+        if path[0]:
+            self.model.save(path[0])
+
+    def undo(self):
+        self.model.undo()
+
+    def closeEvent(self, event):
+        if self.model.isChanges():
+            response = QMessageBox.question(self,"Warning:","There are changes, do you want to save before exiting?", 
+                                            QMessageBox.Save | QMessageBox.Cancel)
+            if response == QMessageBox.Save:
+                self.model.save()
+
+        event.accept()
+
+
+
+app = QApplication(sys.argv)
+
+masterView = authLevels()
+
+sys.exit(app.exec_())
