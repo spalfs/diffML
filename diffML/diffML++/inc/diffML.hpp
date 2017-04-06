@@ -1,7 +1,14 @@
 #ifndef diffml_h
+#define diffml_h
 
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QPushButton>
+class diffML
+{
 
+
+
+
+
+
+};
 
 #endif
