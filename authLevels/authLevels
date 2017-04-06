@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
-from PyQt5.QtWidgets import QMainWindow, QApplication, QTableView, QGridLayout, QWidget, QFileDialog, QMessageBox, qApp
+from PyQt5.QtGui import QKeySequence
+from PyQt5.QtWidgets import QMainWindow, QApplication, QTableView, QGridLayout, QWidget, QFileDialog, QMessageBox, qApp, QShortcut
 import sys
 
 from lib.menubar import menubar
@@ -22,6 +23,8 @@ class authLevels(QMainWindow):
         self.setCentralWidget(self.view)
 
         self.model = False
+
+        QShortcut(QKeySequence("Ctrl+Z"), self).activated.connect(self.undo)
 
         self.show()
 
@@ -47,6 +50,8 @@ class authLevels(QMainWindow):
     def undo(self):
         if self.model:
             self.model.undo()
+            self.view.setFocus()
+            self.setFocus()
 
     def closeEvent(self, event):
         if self.model:

@@ -21,7 +21,7 @@ class TableModel(QAbstractTableModel):
 
         self.setupModel()
 
-def setupModel(self):
+    def setupModel(self):
         self.XMLTree = ET.parse(self.path)
         root = self.XMLTree.getroot()
 
