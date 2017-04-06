@@ -200,10 +200,10 @@ class diffML(QMainWindow):
 
     def syncScroll(self, num):
         if self.syncScrolled:
-            if num == 1:
+            if num == '1':
                 sliderValue = self.View['1'].verticalScrollBar().value()
                 self.View['2'].verticalScrollBar().setValue(sliderValue)
-            elif num == 2:
+            elif num == '2':
                 sliderValue = self.View['2'].verticalScrollBar().value()
                 self.View['1'].verticalScrollBar().setValue(sliderValue)
 
