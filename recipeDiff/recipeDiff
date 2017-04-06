@@ -9,7 +9,7 @@ from lib.datalib import diffRecipes
 from lib.xmllib import getXML
 from lib.csvlib import writeCSVVarsDiff
 
-class XMLDiffer(Frame):
+class recipeDiff(Frame):
     def __init__(self, master):
         self.master = master
 
@@ -131,6 +131,6 @@ class XMLDiffer(Frame):
         
 
 root = Tk()
-root.title("xmldiffer (for recipes) - thomas.barrett_ext@hoefliger.de")
-app = XMLDiffer(master = root)
+root.title("recipeDiff")
+app = recipeDiff(master = root)
 root.mainloop()
