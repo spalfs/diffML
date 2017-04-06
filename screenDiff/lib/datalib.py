@@ -1,4 +1,3 @@
-
 def diffScreens(data1, data2):
     diffData = {}
     diffData["data1missing"] = []
@@ -66,5 +65,3 @@ def diffAll(data1, data2):
         return False
 
     return diffData
-
-

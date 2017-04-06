@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from tkinter import Tk, Frame, Button, Listbox, OptionMenu, StringVar, Toplevel, Message, Listbox, END, Entry, ACTIVE, messagebox, ALL, DoubleVar
+from tkinter import Tk, Frame, Button, Listbox, OptionMenu, StringVar, Toplevel, Message, Listbox, END, Entry, ACTIVE, messagebox, DoubleVar
 from os import listdir
 
 from lib.xmllib import getXML

@@ -3,8 +3,6 @@
 from tkinter import Tk, Frame, Button, Listbox, OptionMenu, StringVar, Toplevel, Message, Listbox, END, Entry, ACTIVE, messagebox
 from os import listdir
 
-from pprint import pprint
-
 from lib.datalib import diffRecipes
 from lib.xmllib import getXML
 from lib.csvlib import writeCSVVarsDiff

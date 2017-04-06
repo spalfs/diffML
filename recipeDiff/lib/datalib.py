@@ -1,4 +1,3 @@
-
 def diffRecipes(data1, data2):
     diffData = {}
     diffData["data1missing"] = []
@@ -20,5 +19,3 @@ def diffRecipes(data1, data2):
             diffData["data1missing"].append(data2Screen['Variable'])
 
     return diffData
-
-
