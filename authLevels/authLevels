@@ -15,9 +15,13 @@ class authLevels(QMainWindow):
 
         self.view = QTableView(self)
         self.view.horizontalHeader().setStretchLastSection(True)
+        self.view.setAlternatingRowColors(True)
+        self.view.setSortingEnabled(True)
         self.view.verticalHeader().hide()
 
         self.setCentralWidget(self.view)
+
+        self.model = False
 
         self.show()
 
@@ -26,26 +30,31 @@ class authLevels(QMainWindow):
         if search:
             path = QFileDialog.getOpenFileName(self)
             if path[0]:
-                self.model = TableModel(path[0],search)
+                self.model = TableModel(self, path[0],search)
                 self.view.setModel(self.model)
+                self.view.resizeColumnsToContents()
 
     def save(self):
-        self.model.save()
+        if self.model:
+            self.model.save()
 
     def saveAs(self):
-        path = QFileDialog.getSaveFileName(self)
-        if path[0]:
-            self.model.save(path[0])
+        if self.model:
+            path = QFileDialog.getSaveFileName(self)
+            if path[0]:
+                self.model.save(path[0])
 
     def undo(self):
-        self.model.undo()
+        if self.model:
+            self.model.undo()
 
     def closeEvent(self, event):
-        if self.model.isChanges():
-            response = QMessageBox.question(self,"Warning:","There are changes, do you want to save before exiting?", 
-                                            QMessageBox.Save | QMessageBox.Cancel)
-            if response == QMessageBox.Save:
-                self.model.save()
+        if self.model:
+            if self.model.isChanges():
+                response = QMessageBox.question(self,"Warning:","There are changes, do you want to save before exiting?", 
+                                                QMessageBox.Save | QMessageBox.Cancel)
+                if response == QMessageBox.Save:
+                    self.model.save()
 
         event.accept()
 
