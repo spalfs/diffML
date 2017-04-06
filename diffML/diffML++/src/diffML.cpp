@@ -9,7 +9,18 @@ diffML::diffML(){
 
 void diffML::initMenu(){
         QMenu *file = menuBar()->addMenu("&File");
-        QMenu *edit = menuBar()->addMenu("&Edit");
-        QMenu *view = menuBar()->addMenu("&View");
-        QMenu *help = menuBar()->addMenu("&Help");
+
+        QAction *open = new QAction("&Open", this);
+        connect(open, &QAction::triggered, this, &diffML::open);
+        file->addAction(open);
+
+        //QMenu *edit = menuBar()->addMenu("&Edit");
+        //QMenu *view = menuBar()->addMenu("&View");
+        //QMenu *help = menuBar()->addMenu("&Help");
+}
+
+void diffML::open(){
+        QFileDialog FileDialog;
+        QString path = FileDialog.getOpenFileName(this);
+        TreeModel model(path);
 }

@@ -4,6 +4,9 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QFileDialog>
+
+#include "inc/treemodel.hpp"
 
 class diffML : public QMainWindow
 {
@@ -12,6 +15,7 @@ class diffML : public QMainWindow
         
         private:
                 void initMenu();
+                void open();
 };
 
 #endif

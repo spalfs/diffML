@@ -8,5 +8,6 @@ INCLUDEPATH += .
 QT += widgets
 
 # Input
-HEADERS += inc/diffML.hpp inc/main.hpp
-SOURCES += src/diffML.cpp src/main.cpp
+HEADERS += inc/diffML.hpp inc/main.hpp inc/treemodel.hpp
+SOURCES += src/diffML.cpp src/main.cpp src/treemodel.cpp
+
