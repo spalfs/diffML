@@ -1,10 +1,10 @@
 #include "inc/main.hpp"
 
 int main(int argc, char **argv){
+        QApplication app(argc, argv);
         
-        diffML app;
+        diffML diffml;
+        diffml.show();
 
-        //app.exec();
-
-        return 0;
+        return app.exec();
 }

@@ -1,7 +1,9 @@
 #ifndef diffml_h
 #define diffml_h
 
-class diffML
+#include <QtWidgets/QMainWindow>
+
+class diffML : public QMainWindow
 {
 
 
