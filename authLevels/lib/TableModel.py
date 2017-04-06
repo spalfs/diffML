@@ -1,8 +1,8 @@
-from PyQt5.QtCore import Qt, QAbstractTableModel, QModelIndex, QVariant
+from PyQt5.QtCore import Qt, QAbstractTableModel, QVariant
 from PyQt5.QtGui import QBrush, QColor
 from PyQt5.QtWidgets import QMessageBox
 from datetime import datetime
-from ast import literal_eval
+
 import xml.etree.ElementTree as ET
 
 class TableModel(QAbstractTableModel):

@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import QMainWindow, QApplication, QTableView, QGridLayout, QWidget, QFileDialog, QMessageBox, qApp, QShortcut
+from PyQt5.QtWidgets import QMainWindow, QApplication, QTableView, QFileDialog, QMessageBox, QShortcut
 import sys
 
 from lib.menubar import menubar
