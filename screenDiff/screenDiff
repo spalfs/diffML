@@ -7,7 +7,7 @@ from lib.xmllib import getXML
 from lib.csvlib import writeCSV, readCSV, writeCSVDiff, writeCSVScreensDiff
 from lib.datalib import diffScreens, diffAll, diffScreenVars
 
-class XMLDiffer(Frame):
+class screenDiff(Frame):
     def __init__(self, master):
         self.master = master
 
@@ -204,7 +204,7 @@ class XMLDiffer(Frame):
                 Button(top,text="Save to CSV",command=lambda: writeCSVDiff([diffData1,diffData2])).grid(row=1,column=0)
 
 root = Tk()
-root.title("xmldiffer (for screens) - thomas.barrett_ext@hoefliger.de")
+root.title("screenDiff")
 root.geometry("600x400")
 root.columnconfigure(0,weight=1)
 root.columnconfigure(1,weight=1)
@@ -215,5 +215,5 @@ root.rowconfigure(3,weight=1)
 root.rowconfigure(4,weight=1)
 root.rowconfigure(5,weight=1)
 root.rowconfigure(6,weight=1)
-app = XMLDiffer(master = root)
+app = screenDiff(master = root)
 root.mainloop()
