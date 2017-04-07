@@ -18,7 +18,9 @@ class searchDialog(QDialog):
             text = f.read()
             f.close()
         except:
-            text = "z_Input_NumericalValue,z_Table_CellInput"
+            text = "z_Input_NumericalValue,z_Table_CellInput,z_Input_StringValue,z_Table_CellInputCheckBox,z_Table_CellInputCheckBoxSmall,"
+            text += "z_Table_CellInputString,z_Button_SwitchIconText_Light,z_Switch_IconText_Light,z_Table_CellButtonSwitch,"
+            text += "z_Table_CellSwitch,z_Table_CellButton,z_Table_CellButtonSwitch,z_Button_Icon_Light,z_Button_IconText_Light"
 
         self.text = QTextEdit(text, self)
         layout.addWidget(self.text, 1, 0)

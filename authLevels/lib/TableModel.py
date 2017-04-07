@@ -2,6 +2,8 @@ from PyQt5.QtCore import Qt, QAbstractTableModel, QVariant
 from PyQt5.QtGui import QBrush, QColor
 from PyQt5.QtWidgets import QMessageBox
 from datetime import datetime
+import csv
+import chardet
 
 import xml.etree.ElementTree as ET
 
@@ -19,6 +21,8 @@ class TableModel(QAbstractTableModel):
 
         self.search = search
 
+        self.show = False
+
         self.setupModel()
 
     def setupModel(self):
@@ -27,6 +31,8 @@ class TableModel(QAbstractTableModel):
 
         for screen in root.iter("Picture"):
             if str(screen.attrib).find("Kopie") != -1 or str(screen.attrib).find("z_") != -1:
+                continue
+            if str(screen.attrib).find("p_") != -1 or str(screen.attrib).find("_Popup") != -1:
                 continue
             for i in range(100):
                 for element in screen.iter("Elements_"+str(i)):
@@ -40,25 +46,89 @@ class TableModel(QAbstractTableModel):
                         link = element.findall("LinkName")
                         if len(link) != 0:
                             if link[0].text == text:
-                                for j in range(10):
+                                for j in range(100):
                                     for prop in element.iter("ExpProps_"+str(j)):
                                         var = prop.findall("Name")[0].text
                                         find = var.find("Variable")
                                         if find != -1:
+                                            sTag = "<SymVarTagNr>"
+                                            eTag = sTag[0] + "/" + sTag[1:]
+                                            nTag = sTag[:-1] + "/" + sTag[-1]
+
                                             tmp = prop.findall("ExpPropValue")[0].text
-                                            tmp = tmp[tmp.find("<SymVarTagNr>")+len("<SymVarTagNr>"):tmp.find("</SymVarTagNr>")]
-                                            item['tag'] = tmp
+
+                                            if tmp.find(nTag) != -1:
+                                                continue
+                                            else:
+                                                item['tag'] = tmp[tmp.find(sTag)+len(sTag) : tmp.find(eTag)]
 
                                         var = prop.findall("Name")[0].text
                                         find = var.find("Passwordlevel")
                                         if find != -1:
+                                            sTag = "<Passwordlevel>"
+                                            eTag = sTag[0] + "/" + sTag[1:]
+                                            nTag = sTag[:-1] + "/" + sTag[-1]
+
                                             tmp = prop.findall("ExpPropValue")[0].text
-                                            tmp = tmp[tmp.find("<Passwordlevel>")+len("<Passwordlevel>"):tmp.find("</Passwordlevel>")]
+                                            tmp = tmp[tmp.find(sTag)+len(sTag):tmp.find(eTag)]
                                             item['plvl'] = tmp
 
                     item['element'] = element
                     if item['tag']:
+                        good = self.checkFormat(item['tag'])
+                        if good:
+                            item['format'] = True
+                        else:
+                            item['format'] = False
                         self.items.append(item)
+
+    def giveCSV(self, path, language):
+        if language[0] == "ZENONSTR.TXT":
+            col = 1
+        elif language[0] == "FR_FR.TXT":
+            col = 2
+        elif language[0] == "GB_EN.TXT":
+            col = 3
+
+        with open(path, 'rb') as f:
+            result = chardet.detect(f.read())
+
+        with open(path, encoding=result['encoding']) as csvfile:
+            reader = csv.reader(csvfile, delimiter='\t')
+            for item in self.items:
+                if item['format']:
+                    parts = item['tag'].split("@")
+                    for line in reader:
+                        if line[0] == parts[1]:
+                            first = line[col]
+                        if line[0] == parts[3]:
+                            third = line[col]
+                        if line[0] == parts[5]:
+                            fifth = line[col]
+
+                    item['tag'] = item['tag'].replace(parts[1], first)
+                    item['tag'] = item['tag'].replace(parts[3], third)
+                    item['tag'] = item['tag'].replace(parts[5], fifth)
+                    item['tag'] = item['tag'].replace("@","")
+
+    def toggleShow(self):
+        self.show = not self.show
+
+    def checkFormat(self, x):
+        tmp = x.split("@")
+
+        if len(tmp) != 6:
+            return False
+        if tmp[1][-1] != ".":
+            return False
+        if tmp[2][-1] != " ":
+            return False
+        if tmp[4] != ": ":
+            return False
+        if tmp[5].find("_") == -1:
+            return False
+
+        return True
 
     def save(self,path=None):
         if path is None:
@@ -102,6 +172,8 @@ class TableModel(QAbstractTableModel):
             return 'D'
         if x == '5':
             return 'E'
+        if x == '0':
+            return '0'
         return False
 
     def flipS(self, x):
@@ -115,6 +187,8 @@ class TableModel(QAbstractTableModel):
             return '4'
         if x == 'E':
             return '5'
+        if x == '0':
+            return '0'
         return False
 
     def columnCount(self, parent):
@@ -155,6 +229,8 @@ class TableModel(QAbstractTableModel):
         if role == Qt.BackgroundRole:
             if self.items[index.row()]['changed']:
                 return QBrush(Qt.red)
+            elif not self.items[index.row()]['format'] and self.show:
+                return QBrush(Qt.yellow)
             else:
                 return QBrush(Qt.transparent)
 
@@ -178,7 +254,7 @@ class TableModel(QAbstractTableModel):
         value = self.flipS(value)
 
         if not value:
-            QMessageBox.warning(self.masterView,"Error:","Only the values A, B, C, D or E are allowed.", QMessageBox.Ok)
+            QMessageBox.warning(self.masterView,"Error:","Only the values A, B, C, D, E or 0 are allowed.", QMessageBox.Ok)
             return False
 
 
@@ -190,7 +266,7 @@ class TableModel(QAbstractTableModel):
                 self.changes.append({'index' : index, 'before' : self.flipI(self.items[index.row()]['plvl']), 'after' : self.flipI(value)})
 
             self.items[index.row()]['plvl'] = value
-            for j in range(10):
+            for j in range(100):
                 for prop in self.items[index.row()]['element'].iter("ExpProps_"+str(j)):
                     var = prop.findall("Name")[0].text
                     find = var.find("Passwordlevel")

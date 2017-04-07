@@ -23,3 +23,13 @@ class  menubar():
         undoButton = QAction('&Undo', view)
         undoButton.triggered.connect(view.undo)
         editMenu.addAction(undoButton)
+
+        viewMenu = menubar.addMenu('&View')
+
+        showButton = QAction('&Show incorrect formating', view)
+        showButton.triggered.connect(view.toggleShow)
+        viewMenu.addAction(showButton)
+
+        csvButton = QAction('&Open CSV Language File', view)
+        csvButton.triggered.connect(view.openCSV)
+        viewMenu.addAction(csvButton)
