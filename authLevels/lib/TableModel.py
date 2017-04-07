@@ -46,6 +46,7 @@ class TableModel(QAbstractTableModel):
                         link = element.findall("LinkName")
                         if len(link) != 0:
                             if link[0].text == text:
+                                item['type'] = text
                                 for j in range(100):
                                     for prop in element.iter("ExpProps_"+str(j)):
                                         var = prop.findall("Name")[0].text
@@ -75,7 +76,7 @@ class TableModel(QAbstractTableModel):
 
                     item['element'] = element
                     if item['tag']:
-                        good = self.checkFormat(item['tag'])
+                        good = self.checkFormat(item)
                         if good:
                             item['format'] = True
                         else:
@@ -114,20 +115,44 @@ class TableModel(QAbstractTableModel):
     def toggleShow(self):
         self.show = not self.show
 
-    def checkFormat(self, x):
-        tmp = x.split("@")
+    def checkFormat(self, item):
+        tmp = item['tag'].split("@")
 
-        if len(tmp) != 6:
-            return False
-        if tmp[1][-1] != ".":
-            return False
-        if tmp[2][-1] != " ":
-            return False
-        if tmp[4] != ": ":
-            return False
-        if tmp[5].find("_") == -1:
+        if tmp[1] != 'General_St.':
             return False
 
+        if tmp[2].find(item['screen'][2:5]) == -1:
+            if item['screen'][2:5] != "ner" and tmp[2].find("000") == -1:
+                return False
+
+        if tmp[2][-1] != ' ':
+            return False
+
+        if item['type'] == "z_Table_CellInput":
+            if not self.checkFormatTable(item):
+                return False
+
+
+
+        return True
+
+
+    def checkFormatTable(self, item):
+        tmp = item['tag'].split("@")
+
+        root = self.XMLTree.getroot()
+        for screen in root.iter("Picture"):
+            if str(screen.attrib).find(item['screen']) != -1:
+                for i in range(25):
+                    for element in screen.iter("Elements_"+str(i)):
+                        link = element.findall("LinkName")
+                        if len(link) == 1:
+                            link = link[0]
+                            if link.text == "z_Table_Label":
+                                prop = element.findall("ExpProps_0")[0]
+                                value = prop.findall("ExpPropValue")[0].text
+                                if value.find(tmp[3]) == -1:
+                                    return False
         return True
 
     def save(self,path=None):
