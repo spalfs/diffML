@@ -7,6 +7,9 @@ import chardet
 
 import xml.etree.ElementTree as ET
 
+MAX_ELEMENTS = 150
+MAX_EXPPROPS = 20
+
 class TableModel(QAbstractTableModel):
     def __init__(self, masterView, path, search, parent=None):
         super(TableModel, self).__init__(parent)
@@ -30,58 +33,65 @@ class TableModel(QAbstractTableModel):
         root = self.XMLTree.getroot()
 
         for screen in root.iter("Picture"):
-            if str(screen.attrib).find("Kopie") != -1 or str(screen.attrib).find("z_") != -1:
+
+            badScreens = ["Kopie", "z_", "p_", "_Popup"]
+            bad = False
+            for bS in badScreens:
+                if str(screen.attrib).find(bS) != -1:
+                    bad = True
+            if bad:
                 continue
-            if str(screen.attrib).find("p_") != -1 or str(screen.attrib).find("_Popup") != -1:
-                continue
-            for i in range(100):
+
+            for i in range(MAX_ELEMENTS):
                 for element in screen.iter("Elements_"+str(i)):
+
                     item = {}
-                    item['tag'] = False
-                    item['changed'] = False
-                    tmp = str(screen.attrib)
-                    tmp = tmp[tmp.find(":")+3:-2]
-                    item['screen'] = tmp
-                    for text in self.search:
-                        link = element.findall("LinkName")
-                        if len(link) != 0:
-                            if link[0].text == text:
-                                item['type'] = text
-                                for j in range(100):
-                                    for prop in element.iter("ExpProps_"+str(j)):
-                                        var = prop.findall("Name")[0].text
-                                        find = var.find("Variable")
-                                        if find != -1:
-                                            sTag = "<SymVarTagNr>"
-                                            eTag = sTag[0] + "/" + sTag[1:]
-                                            nTag = sTag[:-1] + "/" + sTag[-1]
 
-                                            tmp = prop.findall("ExpPropValue")[0].text
+                    item['tag'] = self.searchElement(element, "Variable")
 
-                                            if tmp.find(nTag) != -1:
-                                                continue
-                                            else:
-                                                item['tag'] = tmp[tmp.find(sTag)+len(sTag) : tmp.find(eTag)]
-
-                                        var = prop.findall("Name")[0].text
-                                        find = var.find("Passwordlevel")
-                                        if find != -1:
-                                            sTag = "<Passwordlevel>"
-                                            eTag = sTag[0] + "/" + sTag[1:]
-                                            nTag = sTag[:-1] + "/" + sTag[-1]
-
-                                            tmp = prop.findall("ExpPropValue")[0].text
-                                            tmp = tmp[tmp.find(sTag)+len(sTag):tmp.find(eTag)]
-                                            item['plvl'] = tmp
-
-                    item['element'] = element
                     if item['tag']:
-                        good = self.checkFormat(item)
-                        if good:
-                            item['format'] = True
-                        else:
-                            item['format'] = False
+                        item['plvl'] = self.searchElement(element, "Passwordlevel")
+                        item['type'] = self.searchElement(element, "Type")
+                        item['changed'] = False
+                        item['name'] = element.findall("Name")[0].text
+                        item['element'] = element
+                        tmp = str(screen.attrib)
+                        item['screen'] = tmp[tmp.find(":")+3:-2]
+
+                        item = self.checkFormat(item)
                         self.items.append(item)
+
+    def searchElement(self, element, tag):
+        for text in self.search:
+            link = element.findall("LinkName")
+            if len(link) != 0:
+                if link[0].text == text:
+                    if tag == "Type":
+                        return text
+                    for j in range(MAX_EXPPROPS):
+                        for prop in element.iter("ExpProps_"+str(j)):
+                            var = prop.findall("Name")[0].text
+                            find = var.find(tag)
+
+                            if find != -1:
+                                if tag == "Passwordlevel":
+                                    xmlTag = "<Passwordlevel>"
+                                else:
+                                    xmlTag = "<SymVarTagNr>"
+
+                                sTag = xmlTag
+                                nTag = sTag[:-1] + "/" + sTag[-1]
+
+                                tmp = prop.findall("ExpPropValue")[0].text
+
+                                if tmp.find(nTag) != -1:
+                                    continue
+                                else:
+                                    eTag = sTag[0] + "/" + sTag[1:]
+                                    tmp = tmp[tmp.find(sTag)+len(sTag):tmp.find(eTag)]
+                                    return tmp
+
+        return False
 
     def giveCSV(self, path, language):
         if language[0] == "ZENONSTR.TXT":
@@ -97,7 +107,7 @@ class TableModel(QAbstractTableModel):
         with open(path, encoding=result['encoding']) as csvfile:
             reader = csv.reader(csvfile, delimiter='\t')
             for item in self.items:
-                if item['format']:
+                if item['desired'] == item['tag']:
                     parts = item['tag'].split("@")
                     for line in reader:
                         if line[0] == parts[1]:
@@ -116,44 +126,87 @@ class TableModel(QAbstractTableModel):
         self.show = not self.show
 
     def checkFormat(self, item):
-        tmp = item['tag'].split("@")
 
-        if tmp[1] != 'General_St.':
-            return False
+        item['desired'] = "@General_St.@"
 
-        if tmp[2].find(item['screen'][2:5]) == -1:
-            if item['screen'][2:5] != "ner" and tmp[2].find("000") == -1:
-                return False
+        item['desired'] += item['screen'][2:5]
 
-        if tmp[2][-1] != ' ':
-            return False
+        item['desired'] += " "
 
-        if item['type'] == "z_Table_CellInput":
-            if not self.checkFormatTable(item):
-                return False
+        tableTypes = ["z_Table_CellInput", "z_Table_CellButtonSwitch", "z_Table_CellSwitch", "z_Table_CellSwitch", "z_Table_CellInputString"]
 
+        if item['type'] in tableTypes:
+            item = self.checkFormatTable(item)
 
-
-        return True
-
+        return item
 
     def checkFormatTable(self, item):
-        tmp = item['tag'].split("@")
+
+        desired = [' ',' ',' ']
 
         root = self.XMLTree.getroot()
         for screen in root.iter("Picture"):
             if str(screen.attrib).find(item['screen']) != -1:
-                for i in range(25):
+                for i in range(MAX_ELEMENTS):
                     for element in screen.iter("Elements_"+str(i)):
                         link = element.findall("LinkName")
-                        if len(link) == 1:
+                        if len(link) != 0:
                             link = link[0]
                             if link.text == "z_Table_Label":
-                                prop = element.findall("ExpProps_0")[0]
-                                value = prop.findall("ExpPropValue")[0].text
-                                if value.find(tmp[3]) == -1:
-                                    return False
-        return True
+                                name = element.findall("Name")[0].text.split("_")
+                                itemName = item['name'].split("_")
+
+                                if len(itemName) == 3 and len(name) == 2:
+                                    if itemName[0] == name[0]:
+                                        desired[0] = self.getValue(element)
+
+                                if len(itemName) == 4 and len(name) == 3:
+                                    if itemName[0] == name[0] and itemName[-1] == name[-1]:
+                                        desired[0] = self.getValue(element)
+
+                            elif link.text == "z_Table_RowHeader":
+                                name = element.findall("Name")[0].text.split("_")
+                                itemName = item['name'].split("_")
+
+                                if len(itemName) == 3 and len(name) == 3:
+                                    if itemName[0] == name[0] and itemName[1] == name[1]:
+                                        desired[1] = self.getValue(element)
+
+                                if len(itemName) == 4 and len(name) == 4:
+                                    if itemName[0] == name[0] and itemName[-1] == name[-1] and itemName[1] == name[1]:
+                                        desired[1] = self.getValue(element)
+
+                            elif link.text == "z_Table_ColumnHeader":
+                                name = element.findall("Name")[0].text.split("_")
+                                itemName = item['name'].split("_")
+
+                                if len(itemName) == 3 and len(name) == 2:
+                                    if itemName[0] == name[0] and itemName[2][-1] == name[1][-1]:
+                                        desired[2] = self.getValue(element)
+
+                                if len(itemName) == 4 and len(name) == 3:
+                                    if itemName[0] == name[0] and itemName[-1] == name[-1] and itemName[2][-1] == name[1][-1]:
+                                        desired[2] = self.getValue(element)
+
+        for i in range(len(desired)-1):
+            if desired[i][0] != '@' and desired[i][-1] != '@':
+                desired[i] = '@' + desired[i] + '@'
+            if desired[i][0] == '@' and desired[i][-1] != '@':
+                desired[i] += '@'
+
+        desired[0] += ": "
+        desired[1] += " "
+
+        item['desired'] += ''.join(desired)
+
+        return item
+
+    def getValue(self, element):
+        prop = element.findall("ExpProps_0")[0]
+        value = prop.findall("ExpPropValue")[0].text
+        value = value.replace("<Text>","")
+        value = value.replace("</Text>","")
+        return value
 
     def save(self,path=None):
         if path is None:
@@ -217,7 +270,7 @@ class TableModel(QAbstractTableModel):
         return False
 
     def columnCount(self, parent):
-        return 3
+        return 4
 
     def rowCount(self, parent):
         return len(self.items)
@@ -228,8 +281,10 @@ class TableModel(QAbstractTableModel):
                 return "Tag"
             elif section == 1:
                 return "Password Level"
-            else:
+            elif section == 2:
                 return "Screen"
+            else:
+                return "Standard"
 
         return None
 
@@ -252,9 +307,9 @@ class TableModel(QAbstractTableModel):
         text = self.flipI(self.items[row]['plvl'])
 
         if role == Qt.BackgroundRole:
-            if self.items[index.row()]['changed']:
+            if self.items[row]['changed']:
                 return QBrush(Qt.red)
-            elif not self.items[index.row()]['format'] and self.show:
+            elif self.items[row]['desired'] != self.items[row]['tag'] and self.show:
                 return QBrush(Qt.yellow)
             else:
                 return QBrush(Qt.transparent)
@@ -271,6 +326,8 @@ class TableModel(QAbstractTableModel):
             return QVariant(text)
         elif column == 2:
             return QVariant(self.items[row]['screen'])
+        elif column == 3:
+            return QVariant(self.items[row]['desired'])
 
         return QVariant()
 
