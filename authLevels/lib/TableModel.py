@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt, QAbstractTableModel, QVariant
 from PyQt5.QtGui import QBrush, QColor
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QProgressDialog, QApplication
 from datetime import datetime
 from math import sqrt
 import csv
@@ -176,6 +176,9 @@ class TableModel(QAbstractTableModel):
 
     def generateFormat(self):
 
+        pb = QProgressDialog("Generating...", "Cancel", 0, len(self.items), self.masterView)
+        i = 0
+        pb.setValue(i)
         for item in self.items:
 
             item['desired'] = "@General_St.@"
@@ -190,6 +193,10 @@ class TableModel(QAbstractTableModel):
                 item = self.checkFormatTable(item)
             else:
                 item = self.checkFormatGroup(item)
+
+            i += 1
+            pb.setValue(i)
+            QApplication.processEvents()
 
     def checkFormatGroup(self, item):
         groupBoxes = self.getGroupBoxes(item)
