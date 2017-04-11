@@ -5,6 +5,7 @@
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QFileDialog>
+#include <QtWidgets/QTreeView>
 
 #include "inc/treemodel.hpp"
 

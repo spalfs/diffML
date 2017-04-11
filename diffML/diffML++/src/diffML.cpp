@@ -23,4 +23,8 @@ void diffML::open(){
         QFileDialog FileDialog;
         QString path = FileDialog.getOpenFileName(this);
         TreeModel model(path);
+
+        QTreeView view;
+        view.setModel(&model);
+        view.show();
 }
