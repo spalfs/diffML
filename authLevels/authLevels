@@ -28,6 +28,10 @@ class authLevels(QMainWindow):
 
         self.show()
 
+    def generate(self):
+        if self.model:
+            self.model.generateFormat()
+
     def open(self):
         search = searchDialog.getInfo()
         if search:

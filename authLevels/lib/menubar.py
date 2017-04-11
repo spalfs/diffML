@@ -26,7 +26,11 @@ class  menubar():
 
         viewMenu = menubar.addMenu('&View')
 
-        showButton = QAction('&Show incorrect formating', view)
+        generateButton = QAction('&Generate correct formatting', view)
+        generateButton.triggered.connect(view.generate)
+        viewMenu.addAction(generateButton)
+
+        showButton = QAction('&Highlight incorrect formating', view)
         showButton.triggered.connect(view.toggleShow)
         viewMenu.addAction(showButton)
 
