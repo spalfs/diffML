@@ -1,11 +1,11 @@
 #ifndef diffml_h
 #define diffml_h
 
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QSplitter>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QTreeView>
+#include <QMainWindow>
+#include <QSplitter>
+#include <QMenuBar>
+#include <QFileDialog>
+#include <QTreeView>
 
 #include "inc/treemodel.hpp"
 

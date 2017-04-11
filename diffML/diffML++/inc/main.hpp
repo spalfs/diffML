@@ -1,7 +1,7 @@
 #ifndef main_h
 #define main_h
 
-#include <QtWidgets/QApplication>
+#include <QApplication>
 
 #include "inc/diffML.hpp"
 

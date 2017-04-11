@@ -1,7 +1,7 @@
 #ifndef treemodel_h
 #define treemodel_h
 
-#include <QtCore/QAbstractItemModel>
+#include <QAbstractItemModel>
 
 #include "inc/treeitem.hpp"
 
