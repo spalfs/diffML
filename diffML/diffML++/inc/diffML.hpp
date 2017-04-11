@@ -11,12 +11,17 @@
 
 class diffML : public QMainWindow
 {
+        Q_OBJECT
         public:
                 diffML();
         
         private:
                 void initMenu();
                 void open();
+
+                QSplitter splitter;
+                QTreeView view;
+                TreeModel* model;
 };
 
 #endif

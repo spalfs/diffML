@@ -3,10 +3,11 @@
 TreeModel::TreeModel(const QString &path, QObject *parent) : QAbstractItemModel(parent)
 {
         QList<QVariant> rootData;
-        rootData << "Title" << "Summary";
+        rootData << "Tag" << "Text" << "Attributes";
         rootItem = new TreeItem(rootData);
+
         
-        //setupModelData(data.split(QString("\n")), rootItem);
+        setupModelData(path, rootItem);
 }
 
 TreeModel::~TreeModel()
@@ -84,7 +85,8 @@ int TreeModel::rowCount(const QModelIndex &parent) const
 
         if (!parent.isValid())
                 parentItem = rootItem;
-        else parentItem = static_cast<TreeItem*>(parent.internalPointer());
+        else 
+                parentItem = static_cast<TreeItem*>(parent.internalPointer());
 
         return parentItem->childCount();
 }
@@ -97,7 +99,15 @@ int TreeModel::columnCount(const QModelIndex &parent) const
                 return rootItem->columnCount();
 }
 
-void TreeModel::setupModelData(const QStringList &line, TreeItem *parent)
+void TreeModel::setupModelData(const QString &path, TreeItem *parent)
 {
+        QList<QVariant> columnData;
 
+        columnData << "zz" << "aa" << "zz";
+
+        TreeItem* child = new TreeItem(columnData, parent);
+        parent->appendChild(child);
+
+        TreeItem* childtwo = new TreeItem(columnData, child);
+        child->appendChild(childtwo);
 }

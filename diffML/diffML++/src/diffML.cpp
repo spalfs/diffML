@@ -1,10 +1,12 @@
 #include "inc/diffML.hpp"
 
 diffML::diffML(){
-        QSplitter Splitter; 
-        setCentralWidget(&Splitter);
+        setCentralWidget(&splitter);
 
         initMenu();
+        splitter.addWidget(&view);
+
+        this->show();
 }
 
 void diffML::initMenu(){
@@ -22,9 +24,7 @@ void diffML::initMenu(){
 void diffML::open(){
         QFileDialog FileDialog;
         QString path = FileDialog.getOpenFileName(this);
-        TreeModel model(path);
 
-        QTreeView view;
-        view.setModel(&model);
-        view.show();
+        model = new TreeModel(path);
+        view.setModel(model);
 }

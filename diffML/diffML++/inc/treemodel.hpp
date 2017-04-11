@@ -21,7 +21,7 @@ class TreeModel : public QAbstractItemModel
                 int             columnCount(const QModelIndex &parent = QModelIndex())                          const override;
 
         private:
-                void setupModelData(const QStringList &line, TreeItem *parent);
+                void setupModelData(const QString &path, TreeItem *parent);
 
                 TreeItem *rootItem;
 };
