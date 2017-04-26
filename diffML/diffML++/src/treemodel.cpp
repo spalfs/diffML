@@ -101,13 +101,52 @@ int TreeModel::columnCount(const QModelIndex &parent) const
 
 void TreeModel::setupModelData(const QString &path, TreeItem *parent)
 {
-        QList<QVariant> columnData;
+        QByteArray ba = path.toLatin1();
+        char * cp = ba.data();
 
-        columnData << "zz" << "aa" << "zz";
+        xmlDoc  *xmlDoc = xmlReadFile(cp, NULL, 0);
+        xmlNode *xmlRoot= xmlDocGetRootElement(xmlDoc);
 
-        TreeItem* child = new TreeItem(columnData, parent);
-        parent->appendChild(child);
+        setupModelDataRecursive(xmlRoot, parent);
 
-        TreeItem* childtwo = new TreeItem(columnData, child);
-        child->appendChild(childtwo);
+        xmlFreeDoc(xmlDoc);  
+
+        xmlCleanupParser();
+}
+
+void TreeModel::setupModelDataRecursive(xmlNode* element, TreeItem* parent, int depth){
+        depth++;
+        xmlNode* i;
+
+        for( i = element; i; i = i->next ){
+                if (i->type == XML_ELEMENT_NODE) { 
+                        QList<QVariant> columnData;
+
+                        columnData << (char*)i->name;
+
+                        char* content = (char*)xmlNodeGetContent(i);
+                        if (strlen(content) < MAX_CONTENT)
+                                columnData << content;
+                        else
+                                columnData << "";
+
+                        xmlAttr* j;
+                        QString attribs;
+                        for ( j = i->properties; j; j = j->next){
+                                attribs.append('{');
+                                attribs.append((char*)j->name);
+                                attribs.append(':');
+                                attribs.append((char*)xmlNodeListGetString(i->doc, j->children, 1));
+                                attribs.append('}');
+                        }
+
+                        columnData << attribs;
+
+
+                        TreeItem* element = new TreeItem(columnData, parent);
+                        parent->appendChild(element);
+
+                        setupModelDataRecursive(i->children, element, depth);
+                }
+        }
 }

@@ -6,7 +6,10 @@ TEMPLATE = app
 TARGET = diffML++
 INCLUDEPATH += .
 QT += widgets
+LIBS += -lxml2
+OBJECTS_DIR = tmp
+MOC_DIR = tmp
 
 # Input
-HEADERS += inc/diffML.hpp inc/main.hpp inc/treeitem.hpp inc/treemodel.hpp
-SOURCES += src/diffML.cpp src/main.cpp src/treeitem.cpp src/treemodel.cpp
+HEADERS += inc/*
+SOURCES += src/*

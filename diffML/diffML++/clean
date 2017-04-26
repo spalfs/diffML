@@ -1,5 +1,0 @@
-#!/bin/bash
-rm *.o
-rm Makefile
-rm diffML++
-rm *moc*

@@ -2,8 +2,11 @@
 #define treemodel_h
 
 #include <QAbstractItemModel>
+#include <libxml/xmlreader.h>
 
 #include "inc/treeitem.hpp"
+
+#define MAX_CONTENT 25
 
 class TreeModel : public QAbstractItemModel
 {
@@ -22,6 +25,7 @@ class TreeModel : public QAbstractItemModel
 
         private:
                 void setupModelData(const QString &path, TreeItem *parent);
+                void setupModelDataRecursive(xmlNode* element, TreeItem* parent, int depth = 0);
 
                 TreeItem *rootItem;
 };
