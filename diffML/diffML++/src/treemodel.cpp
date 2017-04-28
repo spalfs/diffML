@@ -6,7 +6,6 @@ TreeModel::TreeModel(const QString &path, QObject *parent) : QAbstractItemModel(
         rootData << "Tag" << "Text" << "Attributes";
         rootItem = new TreeItem(rootData);
 
-        
         setupModelData(path, rootItem);
 }
 
@@ -39,10 +38,29 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
         if (!index.isValid())
                 return QVariant();
 
+        TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
+
+        if (role == Qt::BackgroundRole){
+                if (item->getColorState() == NONE)
+                        return QBrush(Qt::transparent);
+                else if (item->getColorState() == HIERARCHY){
+                        if (item->getDepth() == 1)
+                                return QBrush(QColor(157,159,85));
+                        else if (item->getDepth() == 2)
+                                return QBrush(QColor(85,157,159));
+                        else if (item->getDepth() == 3)
+                                return QBrush(QColor(85,120,159));
+                        else if (item->getDepth() == 4)
+                                return QBrush(QColor(159,87,85));
+                        else if (item->getDepth() == 5)
+                                return QBrush(QColor(120,159,85));
+                        else if (item->getDepth() == 6)
+                                return QBrush(QColor(159,85,120));
+                }
+        }
+
         if (role != Qt::DisplayRole)
                 return QVariant();
-
-        TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
 
         return item->data(index.column());
 }
@@ -109,9 +127,9 @@ void TreeModel::setupModelData(const QString &path, TreeItem *parent)
 
         setupModelDataRecursive(xmlRoot, parent);
 
-        xmlFreeDoc(xmlDoc);  
+        //xmlFreeDoc(xmlDoc);  
 
-        xmlCleanupParser();
+        //xmlCleanupParser();
 }
 
 void TreeModel::setupModelDataRecursive(xmlNode* element, TreeItem* parent, int depth){
@@ -142,11 +160,22 @@ void TreeModel::setupModelDataRecursive(xmlNode* element, TreeItem* parent, int 
 
                         columnData << attribs;
 
-
-                        TreeItem* element = new TreeItem(columnData, parent);
+                        TreeItem* element = new TreeItem(columnData, depth, parent);
                         parent->appendChild(element);
 
                         setupModelDataRecursive(i->children, element, depth);
                 }
+        }
+}
+
+void TreeModel::setColorState(int colorState){
+        setColorState(colorState, rootItem);
+}
+
+void TreeModel::setColorState(int colorState, TreeItem* node){
+        int i;
+        for(i = 0; i < node->childCount(); i++){
+                node->child(i)->setColorState(colorState);
+                setColorState(colorState, node->child(i));
         }
 }

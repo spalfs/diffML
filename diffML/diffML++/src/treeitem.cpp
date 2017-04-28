@@ -1,9 +1,10 @@
 #include "inc/treeitem.hpp"
 
-TreeItem::TreeItem(const QList<QVariant> &data, TreeItem *parent)
+TreeItem::TreeItem(const QList<QVariant> &data, int d, TreeItem *parent)
 {
         m_parentItem = parent;
         m_itemData = data;
+        depth = d;
 }
 
 TreeItem::~TreeItem()
@@ -47,4 +48,8 @@ QVariant TreeItem::data(int column) const
 TreeItem *TreeItem::parentItem()
 {
         return m_parentItem;
+}
+
+void TreeItem::setColorState(int colorS){
+        colorState = colorS;
 }

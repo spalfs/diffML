@@ -8,6 +8,7 @@
 #include <QTreeView>
 
 #include "inc/treemodel.hpp"
+#include "inc/constants.hpp"
 
 class diffML : public QMainWindow
 {
@@ -18,6 +19,7 @@ class diffML : public QMainWindow
         private:
                 void initMenu();
                 void open();
+                void setColorState(int colorState);
 
                 QSplitter splitter;
                 QTreeView view;

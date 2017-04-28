@@ -2,11 +2,11 @@
 #define treemodel_h
 
 #include <QAbstractItemModel>
+#include <QBrush>
 #include <libxml/xmlreader.h>
 
 #include "inc/treeitem.hpp"
-
-#define MAX_CONTENT 25
+#include "inc/constants.hpp"
 
 class TreeModel : public QAbstractItemModel
 {
@@ -23,11 +23,14 @@ class TreeModel : public QAbstractItemModel
                 int             rowCount(const QModelIndex &parent = QModelIndex())                             const override;
                 int             columnCount(const QModelIndex &parent = QModelIndex())                          const override;
 
+                void            setColorState(int color);
+                void            setColorState(int color, TreeItem* node);
+
         private:
                 void setupModelData(const QString &path, TreeItem *parent);
                 void setupModelDataRecursive(xmlNode* element, TreeItem* parent, int depth = 0);
 
-                TreeItem *rootItem;
+                TreeItem* rootItem;
 };
 
 #endif
