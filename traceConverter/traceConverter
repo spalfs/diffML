@@ -21,7 +21,7 @@ for traceVariable in root.iter("TraceVariable"):
     tmp['times'] = traceVariable.findall("Timestamps")[0].text.split(',')
     traceVariables.append(tmp)
 
-with open('out.csv', 'w') as csvFile:
+with open(argv[1][:argv[1].find('.')] + '.csv', 'w') as csvFile:
     writer = csv.writer(csvFile)
 
     row = []
