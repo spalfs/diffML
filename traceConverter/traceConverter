@@ -1,0 +1,41 @@
+#!/usr/bin/python3
+
+from sys import argv, exit
+from progressbar import ProgressBar
+import xml.etree.ElementTree as ET
+import csv
+
+if len(argv) != 2:
+    print("./traceConverter example.trace")
+    exit()
+
+tree = ET.parse(argv[1])
+root = tree.getroot()
+
+traceVariables = []
+
+for traceVariable in root.iter("TraceVariable"):
+    tmp = {}
+    tmp['title'] = traceVariable.attrib['VarName']
+    tmp['values'] = traceVariable.findall("Values")[0].text.split(',')
+    tmp['times'] = traceVariable.findall("Timestamps")[0].text.split(',')
+    traceVariables.append(tmp)
+
+with open('out.csv', 'w') as csvFile:
+    writer = csv.writer(csvFile)
+
+    row = []
+    for traceVariable in traceVariables:
+        row.append(traceVariable['title'])
+        row.append('')
+
+    writer.writerow(row)
+    
+    bar = ProgressBar()
+
+    for i in bar(range(len(traceVariables[0]['values']))):
+        row = []
+        for traceVariable in traceVariables:
+            row.append(traceVariable['values'][i])
+            row.append(traceVariable['times'][i])
+        writer.writerow(row)
