@@ -231,7 +231,7 @@ class TableModel(QAbstractTableModel):
             if str(variable.attrib).find(str(link)) != -1:
                 return variable.findall("Recourceslabel")[0].text
 
-        return "not found"
+        return ""
 
     def distance(self, xy1, xy2):
         return sqrt((xy2[0] - xy1[0])**2 + (xy2[1] - xy1[1])**2)

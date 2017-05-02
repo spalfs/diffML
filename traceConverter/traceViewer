@@ -1,0 +1,84 @@
+#!/usr/bin/python3 
+from PyQt5.QtWidgets import QApplication, QMainWindow, QSplitter, QAction, QListWidget, QListWidgetItem, QFileDialog
+from PyQt5.QtCore import Qt
+
+import xml.etree.ElementTree as ET
+import pyqtgraph as pg
+import sys
+
+class TraceViewer(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        menu = self.menuBar()
+        fileMenu = menu.addMenu('&File')
+        openButton = QAction('&Open', self)
+        openButton.triggered.connect(self.open)
+        fileMenu.addAction(openButton)
+        
+        frame = QSplitter()
+        self.setCentralWidget(frame)
+
+        self.selection = QListWidget()
+        self.selection.setEnabled(False)
+        self.selection.itemDoubleClicked.connect(self.change)
+        frame.addWidget(self.selection)
+
+        self.plot = pg.PlotWidget()
+        self.legend = pg.LegendItem()
+        self.legend.setParentItem(self.plot.getPlotItem())
+        frame.addWidget(self.plot)
+
+        self.show()
+
+    def open(self):
+        path = QFileDialog.getOpenFileName(self)
+        if path[0]:
+            tree = ET.parse(path[0])
+            root = tree.getroot()
+            self.traceVariables = []
+            for i, traceVariable in enumerate(root.iter("TraceVariable")):
+                times = list(map(int, traceVariable.findall("Timestamps")[0].text.split(',')))
+                for j in range(len(times)):
+                    times[j] = times[j] - times[0]
+                    times[j] = int(str(times[j])[0:4])
+                values = list(map(float, traceVariable.findall("Values")[0].text.split(',')))
+                tmp = {}
+                tmp['title'] = traceVariable.attrib['VarName']
+                tmp['plot'] = pg.PlotDataItem(times, values, name = tmp['title'], pen = (i, 10))
+                self.traceVariables.append(tmp)
+            
+            self.selection.clear()
+            self.plot.clear()
+
+            if len(self.traceVariables) > 0:
+                self.selection.setEnabled(True)
+                for traceVariable in self.traceVariables:
+                    item = QListWidgetItem(traceVariable['title'], self.selection)
+                    item.setCheckState(Qt.Unchecked)
+
+                self.change(self.selection.item(0))
+
+            else:
+                self.selection.setEnabled(False)
+
+    def change(self, item):
+        if item.checkState() == Qt.Unchecked:
+            for traceVariable in self.traceVariables:
+                if traceVariable['title'] == item.data(0):
+                    self.plot.addItem(traceVariable['plot'])
+                    self.legend.addItem(traceVariable['plot'], item.data(0))
+            item.setCheckState(Qt.Checked)
+        else:
+            item.setCheckState(Qt.Unchecked)
+            for traceVariable in self.traceVariables:
+                if traceVariable['title'] == item.data(0):
+                    self.plot.removeItem(traceVariable['plot'])
+                    self.legend.removeItem(item.data(0))
+
+
+app = QApplication(sys.argv)
+
+masterView = TraceViewer()
+
+sys.exit(app.exec_())
