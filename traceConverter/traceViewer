@@ -1,7 +1,7 @@
 #!/usr/bin/python3 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSplitter, QAction, QListWidgetItem, QFileDialog
 from PyQt5.QtWidgets import QGridLayout, QDialog, QDialogButtonBox, QListWidget, QLabel, QLineEdit
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 
 import xml.etree.ElementTree as ET
 import pyqtgraph as pg
@@ -55,6 +55,12 @@ class TraceViewer(QMainWindow):
         openButton.triggered.connect(self.open)
         fileMenu.addAction(openButton)
 
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update)
+        self.timer.start(50)
+
+        self.status = self.statusBar()
+
         viewMenu = menu.addMenu('&View')
         autoButton = QAction('&Auto Axis', self)
         autoButton.triggered.connect(self.auto)
@@ -63,6 +69,12 @@ class TraceViewer(QMainWindow):
         setButton = QAction('&Set Axis...', self)
         setButton.triggered.connect(self.set)
         viewMenu.addAction(setButton)
+
+        self.regionButton = QAction('&Toggle Region', self)
+        self.regionButton.triggered.connect(self.region)
+        self.regionButton.setCheckable(True)
+        self.regionButton.setChecked(False)
+        viewMenu.addAction(self.regionButton)
         
         frame = QSplitter()
         self.setCentralWidget(frame)
@@ -76,6 +88,8 @@ class TraceViewer(QMainWindow):
         self.legend = pg.LegendItem()
         self.legend.setParentItem(self.plot.getPlotItem())
         frame.addWidget(self.plot)
+
+        self.region = pg.LinearRegionItem()
 
         self.show()
 
@@ -131,6 +145,28 @@ class TraceViewer(QMainWindow):
         r = setDialog.getInfo()
         if r:
             self.plot.setRange(xRange=r[0:2], yRange=r[2:4])
+
+    def region(self):
+        if not self.regionButton.isChecked():
+            self.regionButton.setChecked(False)
+            self.plot.removeItem(self.region)
+        else:
+            self.regionButton.setChecked(True)
+            xr = self.plot.viewRange()[0]
+            w = xr[1] - xr[0]
+            w = w / 2
+            s = xr[0] + w/2
+            e = xr[0] + w
+            self.region.setRegion([s, e])
+            self.plot.addItem(self.region)
+
+    def update(self):
+        if self.regionButton.isChecked():
+            tmp = self.region.getRegion()
+            tmp = "delta = " + str(tmp[1]-tmp[0])
+            self.status.showMessage(tmp)
+        else:
+            self.status.showMessage(" ")
 
 app = QApplication(sys.argv)
 
