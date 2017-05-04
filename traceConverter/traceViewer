@@ -103,11 +103,12 @@ class TraceViewer(QMainWindow):
                 times = list(map(int, traceVariable.findall("Timestamps")[0].text.split(',')))
                 for j in range(len(times)):
                     times[j] = times[j] - times[0]
-                    times[j] = int(str(times[j])[0:4])
+                    times[j] = int(str(times[j])[0:5])
                 values = list(map(float, traceVariable.findall("Values")[0].text.split(',')))
                 tmp = {}
                 tmp['title'] = traceVariable.attrib['VarName']
                 tmp['plot'] = pg.PlotDataItem(times, values, name = tmp['title'], pen = (i, 10))
+                tmp['tnv'] = [times, values]
                 self.traceVariables.append(tmp)
             
             self.selection.clear()
@@ -165,8 +166,26 @@ class TraceViewer(QMainWindow):
             tmp = self.region.getRegion()
             tmp = "delta = " + str(tmp[1]-tmp[0])
             self.status.showMessage(tmp)
+            for i in range(self.selection.count()):
+                item = self.selection.item(i)
+                if item.checkState() == Qt.Checked:
+                    points = self.region.getRegion()
+                    findex = min(range(len(self.traceVariables[i]['tnv'][0])),
+                            key = lambda x :abs(self.traceVariables[i]['tnv'][0][x] - points[0]))
+                    sindex = min(range(len(self.traceVariables[i]['tnv'][0])),
+                            key = lambda x :abs(self.traceVariables[i]['tnv'][0][x] - points[1]))
+
+                    display = " (" + str(self.traceVariables[i]['tnv'][1][findex]) + ','
+                    display += str(self.traceVariables[i]['tnv'][1][sindex]) + ')'
+
+                    item.setData(Qt.DisplayRole, self.traceVariables[i]['title'] + display)
+                else:
+                    item.setData(Qt.DisplayRole, self.traceVariables[i]['title'])
         else:
             self.status.showMessage(" ")
+            for i in range(self.selection.count()):
+                item = self.selection.item(i)
+                item.setData(Qt.DisplayRole, self.traceVariables[i]['title'])
 
 app = QApplication(sys.argv)
 
