@@ -1,6 +1,6 @@
 #!/usr/bin/python3 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSplitter, QAction, QListWidgetItem, QFileDialog
-from PyQt5.QtWidgets import QGridLayout, QDialog, QDialogButtonBox, QListWidget, QLabel, QLineEdit
+from PyQt5.QtWidgets import QGridLayout, QDialog, QDialogButtonBox, QListWidget, QLabel, QLineEdit, QFrame
 from PyQt5.QtCore import Qt, QTimer
 
 import xml.etree.ElementTree as ET
@@ -70,6 +70,12 @@ class TraceViewer(QMainWindow):
         setButton.triggered.connect(self.set)
         viewMenu.addAction(setButton)
 
+        self.splitButton = QAction('&Split Axis', self)
+        self.splitButton.triggered.connect(self.split)
+        self.splitButton.setCheckable(True)
+        self.splitButton.setChecked(False)
+        viewMenu.addAction(self.splitButton)
+
         self.regionButton = QAction('&Toggle Region', self)
         self.regionButton.triggered.connect(self.region)
         self.regionButton.setCheckable(True)
@@ -84,12 +90,22 @@ class TraceViewer(QMainWindow):
         self.selection.itemDoubleClicked.connect(self.change)
         frame.addWidget(self.selection)
 
+        self.rightGrid = QGridLayout()
+        rightFrame = QFrame()
+        rightFrame.setLayout(self.rightGrid)
+
         self.plot = pg.PlotWidget()
         self.legend = pg.LegendItem()
         self.legend.setParentItem(self.plot.getPlotItem())
-        frame.addWidget(self.plot)
+        self.rightGrid.addWidget(self.plot)
+
+        frame.addWidget(rightFrame)
 
         self.region = pg.LinearRegionItem()
+        
+        self.traceVariables = []
+        self.plots = []
+        self.legends = []
 
         self.show()
 
@@ -98,7 +114,6 @@ class TraceViewer(QMainWindow):
         if path[0]:
             tree = ET.parse(path[0])
             root = tree.getroot()
-            self.traceVariables = []
             for i, traceVariable in enumerate(root.iter("TraceVariable")):
                 times = list(map(int, traceVariable.findall("Timestamps")[0].text.split(',')))
                 for j in range(len(times)):
@@ -108,6 +123,7 @@ class TraceViewer(QMainWindow):
                 tmp = {}
                 tmp['title'] = traceVariable.attrib['VarName']
                 tmp['plot'] = pg.PlotDataItem(times, values, name = tmp['title'], pen = (i, 10))
+                tmp['plots'] = pg.PlotDataItem(times, values, name = tmp['title'], pen = (i, 10))
                 tmp['tnv'] = [times, values]
                 self.traceVariables.append(tmp)
             
@@ -126,18 +142,51 @@ class TraceViewer(QMainWindow):
                 self.selection.setEnabled(False)
 
     def change(self, item):
-        if item.checkState() == Qt.Unchecked:
-            for traceVariable in self.traceVariables:
-                if traceVariable['title'] == item.data(0):
-                    self.plot.addItem(traceVariable['plot'])
-                    self.legend.addItem(traceVariable['plot'], item.data(0))
-            item.setCheckState(Qt.Checked)
+        if not self.splitButton.isChecked():
+            if item.checkState() == Qt.Unchecked:
+                self.add(item)
+                item.setCheckState(Qt.Checked)
+            else:
+                self.remove(item)
+                item.setCheckState(Qt.Unchecked)
         else:
-            item.setCheckState(Qt.Unchecked)
-            for traceVariable in self.traceVariables:
-                if traceVariable['title'] == item.data(0):
-                    self.plot.removeItem(traceVariable['plot'])
-                    self.legend.removeItem(item.data(0))
+            if item.checkState() == Qt.Unchecked:
+                self.add(item, False)
+                item.setCheckState(Qt.Checked)
+            else:
+                self.remove(item)
+                item.setCheckState(Qt.Unchecked)
+
+    def add(self, item, hide = True):
+        for i, traceVariable in enumerate(self.traceVariables):
+            if traceVariable['title'] == item.data(0):
+                self.plot.addItem(traceVariable['plot'])
+                self.legend.addItem(traceVariable['plot'], item.data(0))
+
+                p = pg.PlotWidget()
+                if hide:
+                    p.hide()
+                l = pg.LegendItem()
+                l.setParentItem(p.getPlotItem())
+                l.addItem(traceVariable['plots'], item.data(0))
+                p.addItem(traceVariable['plots'])
+                self.plots.append([p, i])
+                self.legends.append(l)
+                self.rightGrid.addWidget(p)
+                break
+
+    def remove(self, item):
+        for i, traceVariable in enumerate(self.traceVariables):
+            if traceVariable['title'] == item.data(0):
+                self.plot.removeItem(traceVariable['plot'])
+                self.legend.removeItem(item.data(0))
+
+                for plot in self.plots[:]:
+                    if plot[1] == i:
+                        plot[0].hide()
+                        self.plots.remove(plot)
+
+                break
 
     def auto(self):
         self.plot.autoRange()
@@ -145,7 +194,11 @@ class TraceViewer(QMainWindow):
     def set(self):
         r = setDialog.getInfo()
         if r:
-            self.plot.setRange(xRange=r[0:2], yRange=r[2:4])
+            if not self.splitButton.isChecked():
+                self.plot.setRange(xRange=r[0:2], yRange=r[2:4])
+            else:
+                for plot in self.plots:
+                    plot[0].setRange(xRange=r[0:2], yRange=r[2:4])
 
     def region(self):
         if not self.regionButton.isChecked():
@@ -186,6 +239,21 @@ class TraceViewer(QMainWindow):
             for i in range(self.selection.count()):
                 item = self.selection.item(i)
                 item.setData(Qt.DisplayRole, self.traceVariables[i]['title'])
+
+    def split(self):
+        if self.splitButton.isChecked():
+            self.plot.hide()
+            for plot in self.plots:
+                plot[0].show()
+
+            self.splitButton.setChecked(True)
+
+        else:
+            for plot in self.plots:
+                plot[0].hide()
+            self.plot.show()
+
+            self.splitButton.setChecked(False)
 
 app = QApplication(sys.argv)
 
