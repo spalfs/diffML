@@ -76,6 +76,14 @@ class TraceViewer(QMainWindow):
         self.splitButton.setChecked(False)
         viewMenu.addAction(self.splitButton)
 
+        self.syncButton = QAction('&Sync Split Axis', self)
+        self.syncButton.triggered.connect(self.syncToggle)
+        self.syncButton.setCheckable(True)
+        self.syncButton.setEnabled(False)
+        self.syncButton.setChecked(False)
+        viewMenu.addAction(self.syncButton)
+        self.sync = False
+
         self.regionButton = QAction('&Toggle Region', self)
         self.regionButton.triggered.connect(self.region)
         self.regionButton.setCheckable(True)
@@ -87,7 +95,7 @@ class TraceViewer(QMainWindow):
 
         self.selection = QListWidget()
         self.selection.setEnabled(False)
-        self.selection.itemDoubleClicked.connect(self.change)
+        self.selection.itemClicked.connect(self.change)
         frame.addWidget(self.selection)
 
         self.rightGrid = QGridLayout()
@@ -134,6 +142,7 @@ class TraceViewer(QMainWindow):
                 self.selection.setEnabled(True)
                 for traceVariable in self.traceVariables:
                     item = QListWidgetItem(traceVariable['title'], self.selection)
+                    item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
                     item.setCheckState(Qt.Unchecked)
 
                 self.change(self.selection.item(0))
@@ -167,12 +176,15 @@ class TraceViewer(QMainWindow):
                 if hide:
                     p.hide()
                 l = pg.LegendItem()
-                l.setParentItem(p.getPlotItem())
+                i = p.getPlotItem()
+                l.setParentItem(i)
+                i.sigRangeChanged.connect(self.syncAxis)
                 l.addItem(traceVariable['plots'], item.data(0))
                 p.addItem(traceVariable['plots'])
                 self.plots.append([p, i])
                 self.legends.append(l)
                 self.rightGrid.addWidget(p)
+
                 break
 
     def remove(self, item):
@@ -242,6 +254,7 @@ class TraceViewer(QMainWindow):
 
     def split(self):
         if self.splitButton.isChecked():
+            self.syncButton.setEnabled(True)
             self.plot.hide()
             for plot in self.plots:
                 plot[0].show()
@@ -249,11 +262,26 @@ class TraceViewer(QMainWindow):
             self.splitButton.setChecked(True)
 
         else:
+            self.syncButton.setEnabled(False)
             for plot in self.plots:
                 plot[0].hide()
             self.plot.show()
 
             self.splitButton.setChecked(False)
+
+    def syncToggle(self):
+        self.sync = not self.sync
+
+    def syncAxis(self, item):
+        if self.sync:
+            item.blockSignals(True)
+            for plot in self.plots:
+                r = item.viewRange()
+                if r != plot[0].viewRange():
+                    plot[0].getPlotItem().blockSignals(True)
+                    plot[0].setRange(xRange=r[0], yRange=r[1])
+                    plot[0].getPlotItem().blockSignals(False)
+            item.blockSignals(False)
 
 app = QApplication(sys.argv)
 
