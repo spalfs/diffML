@@ -19,6 +19,14 @@ class faultViewer(QMainWindow):
         exportButton.triggered.connect(self.export)
         fileMenu.addAction(exportButton)
 
+        viewMenu = menu.addMenu('&View')
+        self.hideButton = QAction('&Hide Generated', self)
+        self.hideButton.setEnabled(False)
+        self.hideButton.setCheckable(True)
+        self.hideButton.setChecked(False)
+        self.hideButton.triggered.connect(self.hide)
+        viewMenu.addAction(self.hideButton)
+
         self.list = QTreeWidget()
         self.list.setHeaderLabels(['Fault Number','Catagory','Text'])
 
@@ -29,10 +37,28 @@ class faultViewer(QMainWindow):
     def export(self):
         path = QFileDialog.getSaveFileName(self)
         if path[0]:
-            with open(path[0]+'.csv', 'w') as csvFile:
+            with open(path[0]+'.csv', 'w', newline = '') as csvFile:
                 writer = csv.writer(csvFile)
                 for d in self.data:
                     writer.writerow(d)
+
+    def hide(self):
+        if not self.hideButton.isChecked():
+            root = self.list.invisibleRootItem()
+            count = root.childCount()
+            for i in range(count):
+                child = root.child(i)
+                if child.text(0) == child.text(2):
+                    child.setHidden(False)
+            self.hideButton.setChecked(False)
+        else:
+            root = self.list.invisibleRootItem()
+            count = root.childCount()
+            for i in range(count):
+                child = root.child(i)
+                if child.text(0) == child.text(2):
+                    child.setHidden(True)
+            self.hideButton.setChecked(True)
 
     def open(self):
         path = QFileDialog.getOpenFileName(self)
@@ -103,7 +129,6 @@ class faultViewer(QMainWindow):
                 if self.data[i][2] == "":
                     self.data[i][2] = self.data[i][0]
 
-
             for d in self.data:
                 item = QTreeWidgetItem(self.list)
                 item.setText(0, d[0])
@@ -111,6 +136,7 @@ class faultViewer(QMainWindow):
                 if len(d) == 3:
                     item.setText(2, d[2])
 
+            self.hideButton.setEnabled(True)
 
 app = QApplication(sys.argv)
 

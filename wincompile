@@ -1,2 +1,5 @@
 pyinstaller -w -F C:\Users\tom\Downloads\
+
+--paths C:\Users\tom\AppData\Local\Programs\Python\Python35\Lib\site-packages\PyQt5\Qt\bin Downloads\faultViewer
+
 pip install --proxy=hoefliger\barrettt:pass@hhwsg4.hoefliger.de:8080 package
