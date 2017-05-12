@@ -1,0 +1,119 @@
+#!/usr/bin/python3
+
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidget, QGridLayout, QAction, QFileDialog, QTreeWidgetItem
+import xml.etree.ElementTree as ET
+import csv
+import sys
+
+class faultViewer(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        menu = self.menuBar()
+        fileMenu = menu.addMenu('&File')
+        openButton = QAction('&Open', self)
+        openButton.triggered.connect(self.open)
+        fileMenu.addAction(openButton)
+
+        exportButton = QAction('&Export CSV', self)
+        exportButton.triggered.connect(self.export)
+        fileMenu.addAction(exportButton)
+
+        self.list = QTreeWidget()
+        self.list.setHeaderLabels(['Fault Number','Catagory','Text'])
+
+        self.setCentralWidget(self.list)
+
+        self.show()
+
+    def export(self):
+        path = QFileDialog.getSaveFileName(self)
+        if path[0]:
+            with open(path[0]+'.csv', 'w') as csvFile:
+                writer = csv.writer(csvFile)
+                for d in self.data:
+                    writer.writerow(d)
+
+    def open(self):
+        path = QFileDialog.getOpenFileName(self)
+        if path[0]:
+            XMLTree = ET.parse(path[0])
+            root = XMLTree.getroot()
+
+            self.data = []
+
+            for rung in root.iter("Rung"):
+                textElement = str(rung.findall("Text")[0].text)
+                f = textElement.find("AOI_Fault_Set_Reset")
+
+                tmp = []
+
+                if f != -1:
+                    commentElement = rung.findall("Comment")
+                    if commentElement:
+                        commentElement = commentElement[0].text
+
+                    textElement = textElement[f:]
+                    p = textElement.find(')')
+                    textElement = textElement[:p].split(',')[2:4]
+                    tmp.append(textElement[0])
+                    tmp.append(textElement[1])
+
+                    if commentElement:
+                        commentElement = commentElement.split('\n')[2]
+                        tmp.append(commentElement)
+                    else:
+                        tmp.append("")
+
+                    self.data.append(tmp)
+
+            for i in range(len(self.data)):
+                    self.data[i][0] = int(self.data[i][0])
+
+            self.data = sorted(self.data, key=lambda x:x[0])
+
+            for i in range(1000):
+                if len(self.data) <= i:
+                    self.data.append([i, "", ""])
+                elif self.data[i][0] != i:
+                    self.data.insert(i, [i, "", ""])
+
+            for i in range(len(self.data)):
+                    self.data[i][0] = int(self.data[i][0])
+
+            self.data = sorted(self.data, key=lambda x:x[0])
+                
+
+            for i in range(len(self.data)):
+                if self.data[i][1].find("Warning") != -1:
+                    self.data[i][1] = "M"
+                if self.data[i][1].find("Stop") != -1:
+                    self.data[i][1] = "C"
+                if self.data[i][1].find("Abort") != -1:
+                    self.data[i][1] = "I"
+
+            for i in range(len(self.data)):
+                n = str(self.data[i][0])
+                if len(n) == 1:
+                    self.data[i][0] = "Fault_00" + n
+                if len(n) == 2:
+                    self.data[i][0] = "Fault_0" + n
+                if len(n) == 3:
+                    self.data[i][0] = "Fault_" + n
+                if self.data[i][2] == "":
+                    self.data[i][2] = self.data[i][0]
+
+
+            for d in self.data:
+                item = QTreeWidgetItem(self.list)
+                item.setText(0, d[0])
+                item.setText(1, d[1])
+                if len(d) == 3:
+                    item.setText(2, d[2])
+
+
+app = QApplication(sys.argv)
+
+masterView = faultViewer()
+
+sys.exit(app.exec_())
