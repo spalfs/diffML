@@ -68,30 +68,48 @@ class faultViewer(QMainWindow):
 
             self.data = []
 
-            for rung in root.iter("Rung"):
-                textElement = str(rung.findall("Text")[0].text)
-                f = textElement.find("AOI_Fault_Set_Reset")
+            for program in root.iter("Program"):
+                for rung in program.iter("Rung"):
+                    textElement = str(rung.findall("Text")[0].text)
+                    f = textElement.find("AOI_Fault_Set_Reset")
 
-                tmp = []
+                    tmp = []
 
-                if f != -1:
-                    commentElement = rung.findall("Comment")
-                    if commentElement:
-                        commentElement = commentElement[0].text
+                    if f != -1:
+                        commentElement = rung.findall("Comment")
+                        if commentElement:
+                            commentElement = commentElement[0].text
 
-                    textElement = textElement[f:]
-                    p = textElement.find(')')
-                    textElement = textElement[:p].split(',')[2:4]
-                    tmp.append(textElement[0])
-                    tmp.append(textElement[1])
+                        textElement = textElement[f:]
+                        p = textElement.find(')')
+                        textElement = textElement[:p].split(',')[2:4]
+                        tmp.append(textElement[0])
+                        tmp.append(textElement[1])
 
-                    if commentElement:
-                        commentElement = commentElement.split('\n')[2]
-                        tmp.append(commentElement)
-                    else:
-                        tmp.append("")
+                        if commentElement:
+                            commentElement = commentElement.split('\n')[2]
+                            if len(commentElement.split(':')) >= 2:
+                                commentElement = commentElement.split(':')[1]
+                            
+                            name = program.attrib['Name'].split("_")[1]
+                            mtn = name[:3]
+                            stn = name[3:]
+                            #if stn == "":
+                            #    stn = "G3"
+                            if mtn[0] == '5':
+                                loop = "07"
+                            elif mtn[0] == '6':
+                                loop = "08"
+                            elif mtn[0] == '7':
+                                loop = "09"
+                            else:
+                                loop = "10"
 
-                    self.data.append(tmp)
+                            tmp.append(loop + mtn + "_" + stn + ":" + commentElement)
+                        else:
+                            tmp.append("")
+
+                        self.data.append(tmp)
 
             for i in range(len(self.data)):
                     self.data[i][0] = int(self.data[i][0])
@@ -109,7 +127,6 @@ class faultViewer(QMainWindow):
 
             self.data = sorted(self.data, key=lambda x:x[0])
                 
-
             for i in range(len(self.data)):
                 if self.data[i][1].find("Warning") != -1:
                     self.data[i][1] = "M"
