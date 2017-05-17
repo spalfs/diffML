@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidget, QGridLayout, QAction, QFileDialog, QTreeWidgetItem
 import xml.etree.ElementTree as ET
 import csv
@@ -26,6 +27,13 @@ class faultViewer(QMainWindow):
         self.hideButton.setChecked(False)
         self.hideButton.triggered.connect(self.hide)
         viewMenu.addAction(self.hideButton)
+
+        self.highlightButton = QAction('&Highlight Duplicates', self)
+        self.highlightButton.setEnabled(False)
+        self.highlightButton.setCheckable(True)
+        self.highlightButton.setChecked(False)
+        self.highlightButton.triggered.connect(self.highlight)
+        viewMenu.addAction(self.highlightButton)
 
         self.list = QTreeWidget()
         self.list.setHeaderLabels(['Fault Number','Catagory','Text'])
@@ -60,6 +68,27 @@ class faultViewer(QMainWindow):
                     child.setHidden(True)
             self.hideButton.setChecked(True)
 
+    def highlight(self):
+        if not self.highlightButton.isChecked():
+            root = self.list.invisibleRootItem()
+            count = root.childCount()
+
+            tmp = [x[0] for x in self.data]
+            for i in range(count):
+                child = root.child(i)
+                child.setBackground(0, Qt.white)
+            self.highlightButton.setChecked(False)
+        else:
+            root = self.list.invisibleRootItem()
+            count = root.childCount()
+            tmp = [x[0] for x in self.data]
+            for i in range(count):
+                child = root.child(i)
+                if tmp.count(child.text(0)) != 1:
+                    child.setBackground(0, Qt.red)
+
+            self.highlightButton.setChecked(True)
+
     def open(self):
         path = QFileDialog.getOpenFileName(self)
         if path[0]:
@@ -88,8 +117,10 @@ class faultViewer(QMainWindow):
 
                         if commentElement:
                             commentElement = commentElement.split('\n')[2]
-                            if len(commentElement.split(':')) >= 2:
+                            if len(commentElement.split(':')) == 2:
                                 commentElement = commentElement.split(':')[1]
+                            elif len(commentElement.split(':')) == 3:
+                                commentElement = commentElement.split(':')[1] + commentElement.split(':')[2]
                             
                             name = program.attrib['Name'].split("_")[1]
                             mtn = name[:3]
@@ -120,6 +151,9 @@ class faultViewer(QMainWindow):
                 if len(self.data) <= i:
                     self.data.append([i, "", ""])
                 elif self.data[i][0] != i:
+                    if self.data[i][0] == i - 1:
+                        i -= 1
+                        continue
                     self.data.insert(i, [i, "", ""])
 
             for i in range(len(self.data)):
@@ -154,6 +188,7 @@ class faultViewer(QMainWindow):
                     item.setText(2, d[2])
 
             self.hideButton.setEnabled(True)
+            self.highlightButton.setEnabled(True)
 
 app = QApplication(sys.argv)
 
