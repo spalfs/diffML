@@ -2,6 +2,8 @@
 
 TreeView::TreeView()
 {
+        setUniformRowHeights(true);
+
         expandAction = new QAction(tr("&Expand All"), this);
         connect(expandAction, &QAction::triggered, this, &TreeView::expand);
 

@@ -9,6 +9,7 @@
 
 #include "inc/treemodel.hpp"
 #include "inc/treeview.hpp"
+#include "inc/filter.hpp"
 #include "inc/constants.hpp"
 
 class diffML : public QMainWindow
@@ -21,10 +22,13 @@ class diffML : public QMainWindow
                 void initMenu();
                 void open();
                 void setColorState(int colorState);
+                void update();
 
-                QSplitter splitter;
-                TreeView view;
-                TreeModel* model;
+                QSplitter*      splitter;
+                TreeView*       view;
+                TreeModel*      model;
+                Filter*         filter;
+                QLineEdit*      filterText;
 };
 
 #endif

@@ -1,12 +1,25 @@
 #include "inc/diffML.hpp"
 
 diffML::diffML(){
-        setCentralWidget(&splitter);
+        QSplitter*      splitter = new QSplitter;
+        QWidget*        frame = new QWidget;
+        QGridLayout*    grid = new QGridLayout;
+
+        view            = new TreeView;
+        filterText      = new QLineEdit;
+        model           = NULL;
+
+        setCentralWidget(splitter);
 
         initMenu();
-        splitter.addWidget(&view);
 
-        model = NULL;
+        connect(filterText, &QLineEdit::textChanged, this, &diffML::update);
+
+        frame->setLayout(grid);
+        grid->addWidget(filterText);
+        grid->addWidget(view);
+
+        splitter->addWidget(frame);
 
         this->show();
 }
@@ -20,9 +33,9 @@ void diffML::initMenu(){
 
         //QMenu *edit = menuBar()->addMenu("&Edit");
 
-        QMenu *view = menuBar()->addMenu("&View");
+        QMenu *viewMenu = menuBar()->addMenu("&View");
 
-        QMenu *colorMenu = view->addMenu("&Color");
+        QMenu *colorMenu = viewMenu->addMenu("&Color");
         QActionGroup *colorGroup = new QActionGroup(this);
         colorGroup->setExclusive(true);
 
@@ -47,10 +60,21 @@ void diffML::open(){
         QString path = FileDialog.getOpenFileName(this);
 
         model = new TreeModel(path);
-        view.setModel(model);
+
+        filter = new Filter(this);
+
+        filter->setSourceModel(model);
+
+        view->setModel(filter);
 }
 
 void diffML::setColorState(int colorState){
-        if (model)
+        if (model){
                 model->setColorState(colorState);
+        } 
+}
+
+void diffML::update(){
+        QString text(filterText->text());
+        filter->setFilterWildcard(text);
 }
