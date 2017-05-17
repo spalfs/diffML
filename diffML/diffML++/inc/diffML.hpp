@@ -24,6 +24,7 @@ class diffML : public QMainWindow
                 void setColorState(int colorState);
                 void update();
 
+                int             colorState = 0;
                 QSplitter*      splitter;
                 TreeView*       view;
                 TreeModel*      model;

@@ -13,7 +13,7 @@ diffML::diffML(){
 
         initMenu();
 
-        connect(filterText, &QLineEdit::textChanged, this, &diffML::update);
+        connect(filterText, &QLineEdit::returnPressed, this, &diffML::update);
 
         frame->setLayout(grid);
         grid->addWidget(filterText);
@@ -60,6 +60,7 @@ void diffML::open(){
         QString path = FileDialog.getOpenFileName(this);
 
         model = new TreeModel(path);
+        model->setColorState(colorState);
 
         filter = new Filter(this);
 
@@ -69,6 +70,7 @@ void diffML::open(){
 }
 
 void diffML::setColorState(int colorState){
+        this->colorState = colorState;
         if (model){
                 model->setColorState(colorState);
         } 
@@ -76,5 +78,5 @@ void diffML::setColorState(int colorState){
 
 void diffML::update(){
         QString text(filterText->text());
-        filter->setFilterWildcard(text);
+        filter->setFilterFixedString(text);
 }
