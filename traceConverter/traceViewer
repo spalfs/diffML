@@ -176,9 +176,9 @@ class TraceViewer(QMainWindow):
                 if hide:
                     p.hide()
                 l = pg.LegendItem()
-                i = p.getPlotItem()
-                l.setParentItem(i)
-                i.sigRangeChanged.connect(self.syncAxis)
+                j = p.getPlotItem()
+                l.setParentItem(j)
+                j.sigRangeChanged.connect(self.syncAxis)
                 l.addItem(traceVariable['plots'], item.data(0))
                 p.addItem(traceVariable['plots'])
                 self.plots.append([p, i])
@@ -193,7 +193,7 @@ class TraceViewer(QMainWindow):
                 self.plot.removeItem(traceVariable['plot'])
                 self.legend.removeItem(item.data(0))
 
-                for plot in self.plots[:]:
+                for plot in self.plots:
                     if plot[1] == i:
                         plot[0].hide()
                         self.plots.remove(plot)
