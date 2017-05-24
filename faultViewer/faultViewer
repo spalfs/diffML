@@ -36,8 +36,10 @@ class faultViewer(QMainWindow):
         self.highlightButton.triggered.connect(self.highlight)
         viewMenu.addAction(self.highlightButton)
 
-        self.fixButton = QAction('&Fix first 100 (use with care)', self)
+        self.fixButton = QAction('&Fix first 100', self)
         self.fixButton.setEnabled(False)
+        self.fixButton.setCheckable(True)
+        self.fixButton.setChecked(False)
         self.fixButton.triggered.connect(self.fix)
         viewMenu.addAction(self.fixButton)
 
@@ -66,7 +68,7 @@ class faultViewer(QMainWindow):
             count = root.childCount()
             for i in range(count):
                 child = root.child(i)
-                if child.text(0) == child.text(2):
+                if child.text(1) == "":
                     child.setHidden(False)
             self.hideButton.setChecked(False)
         else:
@@ -74,7 +76,7 @@ class faultViewer(QMainWindow):
             count = root.childCount()
             for i in range(count):
                 child = root.child(i)
-                if child.text(0) == child.text(2):
+                if child.text(1) == "":
                     child.setHidden(True)
             self.hideButton.setChecked(True)
 
@@ -83,7 +85,6 @@ class faultViewer(QMainWindow):
             root = self.list.invisibleRootItem()
             count = root.childCount()
 
-            tmp = [x[0] for x in self.data]
             for i in range(count):
                 child = root.child(i)
                 child.setBackground(0, Qt.white)
@@ -127,7 +128,7 @@ class faultViewer(QMainWindow):
                         textElement = textElement[f:]
                         p = textElement.find(')')
                         textElement = textElement[:p].split(',')[2:4]
-                        tmp.append(textElement[0])
+                        tmp.append(int(textElement[0]))
                         tmp.append(textElement[1])
 
                         if commentElement:
@@ -140,8 +141,8 @@ class faultViewer(QMainWindow):
                             name = program.attrib['Name'].split("_")[1]
                             mtn = name[:3]
                             stn = name[3:]
-                            #if stn == "":
-                            #    stn = "G3"
+                            if stn == "":
+                                stn = "G3"
                             if mtn[0] == '5':
                                 loop = "07"
                             elif mtn[0] == '6':
@@ -151,15 +152,17 @@ class faultViewer(QMainWindow):
                             else:
                                 loop = "10"
 
-                            tmp.append(loop + mtn + "_" + stn + ":" + commentElement)
+                            f = commentElement[1:].find(" ") + 1
+
+                            sensor = commentElement[1:f]
+
+                            commentElement = commentElement[f:]
+
+                            tmp.append(loop + mtn + "_" + stn + "_" + sensor + ":" + commentElement)
                         else:
                             tmp.append("")
 
                         self.data.append(tmp)
-
-
-            for i in range(len(self.data)):
-                    self.data[i][0] = int(self.data[i][0])
 
             self.data = sorted(self.data, key=lambda x:x[0])
 
@@ -196,127 +199,74 @@ class faultViewer(QMainWindow):
                 if self.data[i][2] == "":
                     self.data[i][2] = self.data[i][0]
 
-            for d in self.data:
-                item = QTreeWidgetItem(self.list)
-                item.setText(0, d[0])
-                item.setText(1, d[1])
-                if len(d) == 3:
-                    item.setText(2, d[2])
+            self.draw()
 
             self.hideButton.setEnabled(True)
             self.highlightButton.setEnabled(True)
             self.fixButton.setEnabled(True)
 
     def fix(self):
-        self.list.clear()
+        if not self.fixButton.isChecked():
+            self.list.clear()
+            self.quickEdit(False)
+            self.draw()
+            self.colorFix(False)
+            self.hideButton.setChecked(False)
 
-        self.quickEdit()
+        else:
+            self.list.clear()
+            self.quickEdit(True)
+            self.draw()
+            self.colorFix(True)
+            self.hideButton.setChecked(True)
 
+        self.highlightButton.setChecked(False)
+        self.hideButton.setChecked(False)
+
+    def draw(self):
         for d in self.data:
             item = QTreeWidgetItem(self.list)
             item.setText(0, d[0])
             item.setText(1, d[1])
             if len(d) == 3:
                 item.setText(2, d[2])
-        
-            self.highlightButton.setChecked(False)
-            self.hideButton.setChecked(False)
 
-    def quickEdit(self):
-        for i in range(100):
-            tmp = self.data[i][2]
-            if tmp.find("Consecutive Faults are switched off") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "G3_G001" + tmp[tmp.find(":"):]
-            elif tmp.find("test via HMI") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "G3_G001" + tmp[tmp.find(":"):]
-            elif tmp.find("Boot") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_K001" + tmp[tmp.find(":"):]
-            elif tmp.find("Motion") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_K001: Boot Cycle Group NOT finished"
-            elif tmp.find("any minor") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_K001: PLC Minor Fault"
-            elif tmp.find("in CPU installed") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_K001: PLC Forces Installed"
-            elif tmp.find("in CPU active") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_K001: PLC Forces Active"
-            elif tmp.find("Task overlap") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_K001: PLC Task Overrun"
-            elif tmp.find("Abort Stop") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_S003" + tmp[tmp.find(":"):]
-            elif tmp.find("Stop button") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_S003" + tmp[tmp.find(":"):]
-            elif tmp.find("Temperature too high") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_S001" + tmp[tmp.find(":"):]
-            elif tmp.find("B001PS Main Air not present") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_B003: Main Air Pressure not present"
-            elif tmp.find("Main Air generic") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_M002/3: Fault Main Air Valve"
-            elif tmp.find("B001PS Main Air still present") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_B003: Main Air Pressure not dropped"
-            elif tmp.find("Safety is not ok") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_K625: Safety NOT ok"
-            elif tmp.find("Safety diagnosis present") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_K625: Safety Diagnosis present -> check diagnostic screen"
-            elif tmp.find("Emergency stop activated") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")-2] + "G5_S625" + tmp[tmp.find(":"):]
-            elif tmp.find("Emergency stop Operator Panel") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")-2] + "G4_S004" + tmp[tmp.find(":"):]
-            elif tmp.find("Fault messages for guard doors") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_K625: Guard opened"
-            elif tmp.find("At least one fuse in ") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_FXXX" + tmp[tmp.find(":"):]
-            elif tmp.find("At least one motor protection") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_FXXX" + tmp[tmp.find(":"):]
-            elif tmp.find("No communication to") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")-2] + "G3_K001" + tmp[tmp.find(":"):]
-            elif tmp.find("Stratix") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_K060" + tmp[tmp.find(":"):]
-            elif tmp.find("Cube 67") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_K090" + tmp[tmp.find(":"):]
-            elif tmp.find("Point I/O") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_K020" + tmp[tmp.find(":"):]
-            elif tmp.find("CPX") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "_K070" + tmp[tmp.find(":"):]
-            elif tmp.find("purging activated") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "G3_K001: Purge Active"
-            elif tmp.find("Reject activated") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "G3_K001: Purge Over Reject Active"
-            elif tmp.find("Machine is empty and no ") != -1:
-                self.data[i][2] = tmp[:tmp.find(":")] + "G3_K001" + tmp[tmp.find(":"):]
+    def quickEdit(self, forwards):
+        if forwards:
+            self.data[31][2] = self.data[31][2].replace("G6","G5")
+            self.data[32][2] = self.data[32][2].replace("G6","G5")
+            self.data[34][2] = self.data[34][2].replace("G6","G5")
+            self.data[35][2] = self.data[35][2].replace("G6","G4")
+            self.data[40][2] = self.data[40][2].replace("G6","G5")
+            self.data[70][2] = self.data[70][2].replace("G9","G3")
+            self.data[71][2] = self.data[71][2].replace("G9","G3")
+
+        else:
+            self.data[31][2] = self.data[31][2].replace("G5","G6")
+            self.data[32][2] = self.data[32][2].replace("G5","G6")
+            self.data[34][2] = self.data[34][2].replace("G5","G6")
+            self.data[35][2] = self.data[35][2].replace("G4","G6")
+            self.data[40][2] = self.data[40][2].replace("G5","G6")
+            self.data[70][2] = self.data[70][2].replace("G3","G9")
+            self.data[71][2] = self.data[71][2].replace("G3","G9")
+
+    def colorFix(self, color):
+        children = []
+        root = self.list.invisibleRootItem()
+        children.append(root.child(31))
+        children.append(root.child(32))
+        children.append(root.child(34))
+        children.append(root.child(35))
+        children.append(root.child(40))
+        children.append(root.child(70))
+        children.append(root.child(71))
+
+        for child in children:
+            if color:
+                child.setBackground(2, Qt.green)
             else:
-                ntmp = self.data[40][2]
-                if tmp.find("041") != -1:
-                    self.data[i][2] = ntmp[:ntmp.find(":")-5] + "_B001: Guard Door 1 opened"
-                elif tmp.find("042") != -1:
-                    self.data[i][2] = ntmp[:ntmp.find(":")-5] + "_B002: Guard Door 2 opened"
-                elif tmp.find("043") != -1:
-                    self.data[i][2] = ntmp[:ntmp.find(":")-5] + "_B003: Guard Door 3 opened"
-                elif tmp.find("041") != -1:
-                    self.data[i][2] = ntmp[:ntmp.find(":")-5] + "_B004: Guard Door 4 opened"
-                elif tmp.find("044") != -1:
-                    self.data[i][2] = ntmp[:ntmp.find(":")-5] + "_B005: Guard Door 5 opened"
-                elif tmp.find("045") != -1:
-                    self.data[i][2] = ntmp[:ntmp.find(":")-5] + "_B006: Guard Door 6 opened"
-                elif tmp.find("046") != -1:
-                    self.data[i][2] = ntmp[:ntmp.find(":")-5] + "_B007: Guard Door 7 opened"
-                elif tmp.find("047") != -1:
-                    self.data[i][2] = ntmp[:ntmp.find(":")-5] + "_B008: Guard Door 8 opened"
-                elif tmp.find("047") != -1:
-                    self.data[i][2] = ntmp[:ntmp.find(":")-5] + "_B008: Guard Door 8 opened"
-                elif tmp.find("048") != -1:
-                    self.data[i][2] = ntmp[:ntmp.find(":")-5] + "_B009: Protective Flap Infeed opened"
-                elif tmp.find("049") != -1:
-                    self.data[i][2] = ntmp[:ntmp.find(":")-5] + "_B010: Protective Flap Outfeed opened"
-                elif tmp.find("050") != -1:
-                    self.data[i][2] = ntmp[:ntmp.find(":")-5] + "_B011: Safety Switch 1 Machine Room opened"
-                elif tmp.find("051") != -1:
-                    self.data[i][2] = ntmp[:ntmp.find(":")-5] + "_B012: Safety Switch 2 Machine Room opened"
-                elif tmp.find("052") != -1:
-                    self.data[i][2] = ntmp[:ntmp.find(":")-5] + "_B013: Safety Switch 3 Machine Room opened"
-                elif tmp.find("053") != -1:
-                    self.data[i][2] = ntmp[:ntmp.find(":")-5] + "_B014: Safety Switch 4 Machine Room opened"
-                elif tmp.find("053") != -1:
-                    self.data[i][2] = ntmp[:ntmp.find(":")-5] + "_B014: Safety Switch 4 Machine Room opened"
+                child.setBackground(2, Qt.white)
+
 
 app = QApplication(sys.argv)
 
