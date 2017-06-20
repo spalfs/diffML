@@ -1,0 +1,114 @@
+#!/usr/bin/python3
+
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidget, QTreeWidgetItem, QAction, QFileDialog
+
+import xml.etree.ElementTree as ET
+import sys
+from sys import argv
+from pprint import pprint
+
+
+class hardware5000(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        self.TreeWidget = QTreeWidget()
+        self.TreeWidget.setHeaderLabels(['Tag', 'Comment', 'Hardware', 'Hardware Comment'])
+        self.TreeWidget.setAlternatingRowColors(True)
+        self.setCentralWidget(self.TreeWidget)
+
+        menu = self.menuBar()
+        fileMenu = menu.addMenu('&File')
+        openButton = QAction("&Open", self)
+        openButton.triggered.connect(self.open)
+        fileMenu.addAction(openButton)
+
+        self.show()
+
+    def open(self):
+        path = QFileDialog.getOpenFileName(self)[0]
+        if path:
+            tree = ET.parse(path)
+            self.root = tree.getroot()
+
+            elements = self.getParameters()
+            elements = [self.getComment(e) for e in elements]
+            elements = [self.getHardwareComment(e) for e in elements]
+
+            for e in elements:
+                if "hardwareComment" in e:
+                    item = QTreeWidgetItem(self.TreeWidget)
+                    item.setText(0, e['tag'])
+                    if "comment" in e:
+                        item.setText(1, e['comment'])
+                    item.setText(2, ":".join(e['hw']))
+                    item.setText(3, e['hardwareComment'])
+
+            for i in range(4):
+                self.TreeWidget.resizeColumnToContents(i)
+            
+    def getParameters(self):
+        parameters = []
+        for parameter in self.root.iter("ParameterConnection"):
+            e1 = parameter.attrib['EndPoint1']
+            e2 = parameter.attrib['EndPoint2']
+
+            if e1[0] == "\\":
+                hw = e2
+                tag= e1
+            else:
+                hw = e1
+                tag= e2
+
+            parameters.append({'tag' : tag, 'hw' : hw.split(":")})
+
+        return parameters
+
+    def getComment(self, parameter):
+        programName = parameter['tag'].split('.')[0][1:]
+        tagName = parameter['tag'].split('.')[1]
+
+        for program in self.root.iter("Program"):
+            if program.attrib['Name'] == programName:
+                for tag in program.iter("Tag"):
+                    if tag.attrib['Name'] == tagName:
+                        for e in tag:
+                            potential = tag.findall("Description")
+                            if len(potential):
+                                parameter['comment'] = potential[0].text
+
+
+        return parameter
+
+    def getHardwareComment(self, parameter):
+        hw = parameter['hw'][0]
+        xput = parameter['hw'][-1][0]
+
+        for module in self.root.iter("Module"):
+            if module.attrib['Name'] == hw:
+                if xput == "I":
+                    xput = "Input"
+                else:
+                    xput = "Output"
+
+                comments = module.findall("./Communications/Connections/Connection/"+xput+"Tag/Comments/")
+                if len(comments):
+                    for comment in comments:
+                        location = parameter['hw'][1][1:].upper()
+                        if location == comment.attrib['Operand']:
+                            parameter['hardwareComment'] = comment.text
+
+                else:
+                    x = xput.replace("put", "")
+                    comments = module.findall("./Communications/Connections/RackConnection/"+x+"AliasTag/Comments/")
+                    location = parameter['hw'][-1][1:]
+                    for comment in comments:
+                        if location == comment.attrib['Operand']:
+                            parameter['hardwareComment'] = comment.text
+
+        return parameter 
+
+app = QApplication(argv)
+masterView = hardware5000()
+sys.exit(app.exec_())
