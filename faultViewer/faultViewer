@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidget, QGridLayout, QAction, QFileDialog, QTreeWidgetItem
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTreeWidget, QAction, QFileDialog, QTreeWidgetItem
 import xml.etree.ElementTree as ET
 import csv
 import sys
