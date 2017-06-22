@@ -134,38 +134,22 @@ class faultViewer(QMainWindow):
             with open(path[0]+'.csv', 'w', newline = '') as csvFile:
                 writer = csv.writer(csvFile, )
                 for fault in self.faults:
-                    if "literal" in fault:
-                        writer.writerow([fault['number'], fault['catagory'], fault['text'], fault['literal']])
+                    writer.writerow([fault['number'], fault['catagory'], fault['text'], fault['literal']])
 
+    def getFaultComment(self, program, rung):
 
-    def getFault(self, program, rung):
-        fault = {}
+        comment = {}
 
-        commentElement = rung.findall("Comment")
-        textElement = str(rung.findall("Text")[0].text)
+        literal = rung.findall("Comment")
 
-        f = textElement.find("AOI_Fault_Set_Reset")
-        if f == -1:
-            return False
+        if literal:
+            literal = literal[0].text
+            comment['literal'] = literal.split('\n')[2]
 
-        if commentElement:
-            commentElement = commentElement[0].text
-            fault['literal'] = commentElement.split('\n')[2]
-        else:
-            fault['literal'] = ""
-
-        textElement = textElement[f:]
-        p = textElement.find(')')
-        textElement = textElement[:p].split(',')[2:4]
-        fault['number'] = int(textElement[0])
-        fault['catagory'] = textElement[1]
-
-        if commentElement:
-            commentElement = commentElement.split('\n')[2]
-            if len(commentElement.split(':')) == 2:
-                commentElement = commentElement.split(':')[1]
-            elif len(commentElement.split(':')) == 3:
-                commentElement = commentElement.split(':')[1] + commentElement.split(':')[2]
+            if len(comment['literal'].split(':')) == 2:
+                comment['text'] = comment['literal'].split(':')[1]
+            elif len(comment['literal'].split(':')) == 3:
+                comment['text'] = comment['literal'].split(':')[1] + comment['literal'].split(':')[2]
 
             name = program.attrib['Name'].split("_")[1]
             mtn = name[:3]
@@ -181,15 +165,35 @@ class faultViewer(QMainWindow):
             else:
                 loop = "10"
 
-            f = commentElement[1:].find(" ") + 1
+            f = comment['text'][1:].find(" ") + 1
 
-            sensor = commentElement[1:f]
+            sensor = comment['text'][1:f]
 
-            commentElement = commentElement[f:]
+            comment['text'] = comment['text'][f:]
 
-            fault['text'] = (loop + mtn + "_" + stn + "_" + sensor + ":" + commentElement)
-        else:
-            fault['text'] = ""
+            comment['text'] = loop + mtn + "_" + stn + "_" + sensor + ":" + comment['text']
+
+        return comment
+
+    def getFault(self, program, rung):
+        fault = {   'number'    : "",
+                    'catagory'  : "",
+                    'text'      : "",
+                    'literal'   : ""}
+
+        textElement = str(rung.findall("Text")[0].text)
+
+        f = textElement.find("AOI_Fault_Set_Reset")
+        if f == -1:
+            return False
+
+        textElement = textElement[f:]
+        p = textElement.find(')')
+        textElement = textElement[:p].split(',')[2:4]
+        fault['number'] = int(textElement[0])
+        fault['catagory'] = textElement[1]
+
+        fault.update(self.getFaultComment(program, rung))
 
         return fault
 
@@ -232,14 +236,14 @@ class faultViewer(QMainWindow):
     def fix100(self):
         if not self.fix100Button.isChecked():
             self.treewidget.clear()
-            self.catagoryFix100(False)
+            self.textFix100(False)
             self.draw()
             self.colorFix100(False)
             self.hideButton.setChecked(False)
 
         else:
             self.treewidget.clear()
-            self.catagoryFix100(True)
+            self.textFix100(True)
             self.draw()
             self.colorFix100(True)
             self.hideButton.setChecked(True)
@@ -259,24 +263,24 @@ class faultViewer(QMainWindow):
         for i in range(4):
             self.treewidget.resizeColumnToContents(i)
 
-    def catagoryFix100(self, forwards):
+    def textFix100(self, forwards):
         if forwards:
-            self.faults[31]['catagory'] = self.faults[31]['catagory'].replace("G6","G5")
-            self.faults[32]['catagory'] = self.faults[32]['catagory'].replace("G6","G5")
-            self.faults[34]['catagory'] = self.faults[34]['catagory'].replace("G6","G5")
-            self.faults[35]['catagory'] = self.faults[35]['catagory'].replace("G6","G4")
-            self.faults[40]['catagory'] = self.faults[40]['catagory'].replace("G6","G5")
-            self.faults[70]['catagory'] = self.faults[70]['catagory'].replace("G9","G3")
-            self.faults[71]['catagory'] = self.faults[71]['catagory'].replace("G9","G3")
+            self.faults[31]['text'] = self.faults[31]['text'].replace("G6","G5")
+            self.faults[32]['text'] = self.faults[32]['text'].replace("G6","G5")
+            self.faults[34]['text'] = self.faults[34]['text'].replace("G6","G5")
+            self.faults[35]['text'] = self.faults[35]['text'].replace("G6","G4")
+            self.faults[40]['text'] = self.faults[40]['text'].replace("G6","G5")
+            self.faults[70]['text'] = self.faults[70]['text'].replace("G9","G3")
+            self.faults[71]['text'] = self.faults[71]['text'].replace("G9","G3")
 
         else:
-            self.faults[31]['catagory'] = self.faults[31]['catagory'].replace("G5","G6")
-            self.faults[32]['catagory'] = self.faults[32]['catagory'].replace("G5","G6")
-            self.faults[34]['catagory'] = self.faults[34]['catagory'].replace("G5","G6")
-            self.faults[35]['catagory'] = self.faults[35]['catagory'].replace("G4","G6")
-            self.faults[40]['catagory'] = self.faults[40]['catagory'].replace("G5","G6")
-            self.faults[70]['catagory'] = self.faults[70]['catagory'].replace("G3","G9")
-            self.faults[71]['catagory'] = self.faults[71]['catagory'].replace("G3","G9")
+            self.faults[31]['text'] = self.faults[31]['text'].replace("G5","G6")
+            self.faults[32]['text'] = self.faults[32]['text'].replace("G5","G6")
+            self.faults[34]['text'] = self.faults[34]['text'].replace("G5","G6")
+            self.faults[35]['text'] = self.faults[35]['text'].replace("G4","G6")
+            self.faults[40]['text'] = self.faults[40]['text'].replace("G5","G6")
+            self.faults[70]['text'] = self.faults[70]['text'].replace("G3","G9")
+            self.faults[71]['text'] = self.faults[71]['text'].replace("G3","G9")
 
     def colorFix100(self, color):
         children = []
@@ -294,7 +298,6 @@ class faultViewer(QMainWindow):
                 child.setBackground(2, Qt.green)
             else:
                 child.setBackground(2, Qt.white)
-
 
 app = QApplication(sys.argv)
 
