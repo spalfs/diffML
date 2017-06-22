@@ -10,7 +10,20 @@ class faultViewer(QMainWindow):
     def __init__(self):
 
         super().__init__()
+        
+        self.menuInit()
 
+        self.treewidget = QTreeWidget()
+        self.treewidget.setAlternatingRowColors(True)
+        self.treewidget.setHeaderLabels(['Fault Number','Catagory','Suggested Text','Literal'])
+        self.setCentralWidget(self.treewidget)
+
+        if len(sys.argv) == 2:
+            self.open(sys.argv[1])
+
+        self.show()
+
+    def menuInit(self):
         menu = self.menuBar()
         fileMenu = menu.addMenu('&File')
         openButton = QAction('&Open', self)
@@ -36,70 +49,13 @@ class faultViewer(QMainWindow):
         self.highlightButton.triggered.connect(self.highlight)
         viewMenu.addAction(self.highlightButton)
 
-        self.fixButton = QAction('&Fix first 100', self)
-        self.fixButton.setEnabled(False)
-        self.fixButton.setCheckable(True)
-        self.fixButton.setChecked(False)
-        self.fixButton.triggered.connect(self.fix)
-        viewMenu.addAction(self.fixButton)
+        self.fix100Button = QAction('&Fix first 100', self)
+        self.fix100Button.setEnabled(False)
+        self.fix100Button.setCheckable(True)
+        self.fix100Button.setChecked(False)
+        self.fix100Button.triggered.connect(self.fix100)
+        viewMenu.addAction(self.fix100Button)
 
-        self.list = QTreeWidget()
-        self.list.setAlternatingRowColors(True)
-        self.list.setHeaderLabels(['Fault Number','Catagory','Text'])
-
-        self.setCentralWidget(self.list)
-
-        if len(sys.argv) == 2:
-            self.open(sys.argv[1])
-
-        self.show()
-
-    def export(self):
-        path = QFileDialog.getSaveFileName(self)
-        if path[0]:
-            with open(path[0]+'.csv', 'w', newline = '') as csvFile:
-                writer = csv.writer(csvFile)
-                for d in self.data:
-                    writer.writerow(d)
-
-    def hide(self):
-        if not self.hideButton.isChecked():
-            root = self.list.invisibleRootItem()
-            count = root.childCount()
-            for i in range(count):
-                child = root.child(i)
-                if child.text(1) == "":
-                    child.setHidden(False)
-            self.hideButton.setChecked(False)
-        else:
-            root = self.list.invisibleRootItem()
-            count = root.childCount()
-            for i in range(count):
-                child = root.child(i)
-                if child.text(1) == "":
-                    child.setHidden(True)
-            self.hideButton.setChecked(True)
-
-    def highlight(self):
-        if not self.highlightButton.isChecked():
-            root = self.list.invisibleRootItem()
-            count = root.childCount()
-
-            for i in range(count):
-                child = root.child(i)
-                child.setBackground(0, Qt.white)
-
-            self.highlightButton.setChecked(False)
-        else:
-            root = self.list.invisibleRootItem()
-            count = root.childCount()
-            tmp = [x[0] for x in self.data]
-            for i in range(count):
-                child = root.child(i)
-                if tmp.count(child.text(0)) != 1:
-                    child.setBackground(0, Qt.red)
-
-            self.highlightButton.setChecked(True)
 
     def open(self, f = None):
         if not f:
@@ -111,148 +67,220 @@ class faultViewer(QMainWindow):
             XMLTree = ET.parse(path)
             root = XMLTree.getroot()
 
-            self.data = []
+            self.faults = []
 
             for program in root.iter("Program"):
                 for rung in program.iter("Rung"):
-                    textElement = str(rung.findall("Text")[0].text)
-                    f = textElement.find("AOI_Fault_Set_Reset")
+                    fault = self.getFault(program, rung)
+                    if fault:
+                        self.faults.append(fault)
 
-                    tmp = []
+            self.faults = sorted(self.faults, key=lambda fault : fault['number'])
 
-                    if f != -1:
-                        commentElement = rung.findall("Comment")
-                        if commentElement:
-                            commentElement = commentElement[0].text
+            self.faults = self.genEmptyFaults(self.faults)
 
-                        textElement = textElement[f:]
-                        p = textElement.find(')')
-                        textElement = textElement[:p].split(',')[2:4]
-                        tmp.append(int(textElement[0]))
-                        tmp.append(textElement[1])
+            self.faults = [self.catagoryFix(fault) for fault in self.faults]
 
-                        if commentElement:
-                            commentElement = commentElement.split('\n')[2]
-                            if len(commentElement.split(':')) == 2:
-                                commentElement = commentElement.split(':')[1]
-                            elif len(commentElement.split(':')) == 3:
-                                commentElement = commentElement.split(':')[1] + commentElement.split(':')[2]
-                            
-                            name = program.attrib['Name'].split("_")[1]
-                            mtn = name[:3]
-                            stn = name[3:]
-                            if stn == "":
-                                stn = "G3"
-                            if mtn[0] == '5':
-                                loop = "07"
-                            elif mtn[0] == '6':
-                                loop = "08"
-                            elif mtn[0] == '7':
-                                loop = "09"
-                            else:
-                                loop = "10"
-
-                            f = commentElement[1:].find(" ") + 1
-
-                            sensor = commentElement[1:f]
-
-                            commentElement = commentElement[f:]
-
-                            tmp.append(loop + mtn + "_" + stn + "_" + sensor + ":" + commentElement)
-                        else:
-                            tmp.append("")
-
-                        self.data.append(tmp)
-
-            self.data = sorted(self.data, key=lambda x:x[0])
-
-            for i in range(1000):
-                if len(self.data) <= i:
-                    self.data.append([i, "", ""])
-                elif self.data[i][0] != i:
-                    if self.data[i][0] == i - 1:
-                        i -= 1
-                        continue
-                    self.data.insert(i, [i, "", ""])
-
-            for i in range(len(self.data)):
-                    self.data[i][0] = int(self.data[i][0])
-
-            self.data = sorted(self.data, key=lambda x:x[0])
-                
-            for i in range(len(self.data)):
-                if self.data[i][1].find("Warning") != -1:
-                    self.data[i][1] = "M"
-                if self.data[i][1].find("Stop") != -1:
-                    self.data[i][1] = "C"
-                if self.data[i][1].find("Abort") != -1:
-                    self.data[i][1] = "I"
-
-            for i in range(len(self.data)):
-                n = str(self.data[i][0])
-                if len(n) == 1:
-                    self.data[i][0] = "Fault_00" + n
-                if len(n) == 2:
-                    self.data[i][0] = "Fault_0" + n
-                if len(n) == 3:
-                    self.data[i][0] = "Fault_" + n
-                if self.data[i][2] == "":
-                    self.data[i][2] = self.data[i][0]
+            self.faults = [self.numberFix(fault) for fault in self.faults]
 
             self.draw()
 
             self.hideButton.setEnabled(True)
             self.highlightButton.setEnabled(True)
-            self.fixButton.setEnabled(True)
+            self.fix100Button.setEnabled(True)
 
-    def fix(self):
-        if not self.fixButton.isChecked():
-            self.list.clear()
-            self.quickEdit(False)
+    def hide(self):
+        if not self.hideButton.isChecked():
+            root = self.treewidget.invisibleRootItem()
+            count = root.childCount()
+            for i in range(count):
+                child = root.child(i)
+                if child.text(1) == "":
+                    child.setHidden(False)
+            self.hideButton.setChecked(False)
+        else:
+            root = self.treewidget.invisibleRootItem()
+            count = root.childCount()
+            for i in range(count):
+                child = root.child(i)
+                if child.text(1) == "":
+                    child.setHidden(True)
+            self.hideButton.setChecked(True)
+
+    def highlight(self):
+        if not self.highlightButton.isChecked():
+            root = self.treewidget.invisibleRootItem()
+            count = root.childCount()
+
+            for i in range(count):
+                child = root.child(i)
+                child.setBackground(0, Qt.white)
+
+            self.highlightButton.setChecked(False)
+        else:
+            root = self.treewidget.invisibleRootItem()
+            count = root.childCount()
+            tmp = [x['number'] for x in self.faults]
+            for i in range(count):
+                child = root.child(i)
+                if tmp.count(child.text(0)) != 1:
+                    child.setBackground(0, Qt.red)
+
+            self.highlightButton.setChecked(True)
+
+    def export(self):
+        path = QFileDialog.getSaveFileName(self)
+        if path[0]:
+            with open(path[0]+'.csv', 'w', newline = '') as csvFile:
+                writer = csv.writer(csvFile, )
+                for fault in self.faults:
+                    if "literal" in fault:
+                        writer.writerow([fault['number'], fault['catagory'], fault['text'], fault['literal']])
+
+
+    def getFault(self, program, rung):
+        fault = {}
+
+        commentElement = rung.findall("Comment")
+        textElement = str(rung.findall("Text")[0].text)
+
+        f = textElement.find("AOI_Fault_Set_Reset")
+        if f == -1:
+            return False
+
+        if commentElement:
+            commentElement = commentElement[0].text
+            fault['literal'] = commentElement.split('\n')[2]
+        else:
+            fault['literal'] = ""
+
+        textElement = textElement[f:]
+        p = textElement.find(')')
+        textElement = textElement[:p].split(',')[2:4]
+        fault['number'] = int(textElement[0])
+        fault['catagory'] = textElement[1]
+
+        if commentElement:
+            commentElement = commentElement.split('\n')[2]
+            if len(commentElement.split(':')) == 2:
+                commentElement = commentElement.split(':')[1]
+            elif len(commentElement.split(':')) == 3:
+                commentElement = commentElement.split(':')[1] + commentElement.split(':')[2]
+
+            name = program.attrib['Name'].split("_")[1]
+            mtn = name[:3]
+            stn = name[3:]
+            if stn == "":
+                stn = "G3"
+            if mtn[0] == '5':
+                loop = "07"
+            elif mtn[0] == '6':
+                loop = "08"
+            elif mtn[0] == '7':
+                loop = "09"
+            else:
+                loop = "10"
+
+            f = commentElement[1:].find(" ") + 1
+
+            sensor = commentElement[1:f]
+
+            commentElement = commentElement[f:]
+
+            fault['text'] = (loop + mtn + "_" + stn + "_" + sensor + ":" + commentElement)
+        else:
+            fault['text'] = ""
+
+        return fault
+
+    def genEmptyFaults(self, faults):
+        emptyfaults = []
+        for i in list(range(1000)):
+            fault = {   'number'    : i,
+                        'catagory'  : "",
+                        'text'      : "",
+                        'literal'   : ""}
+
+            emptyfaults.append(fault)
+        
+        for fault in faults:
+            emptyfaults[fault['number']] = fault
+
+        return emptyfaults
+
+    def catagoryFix(self, fault):
+        if fault['catagory'].find("Warning") != -1:
+            fault['catagory'] = "M"
+        elif fault['catagory'].find("Stop") != -1:
+            fault['catagory'] = "C"
+        elif fault['catagory'].find("Abort") != -1:
+            fault['catagory'] = "I"
+        return fault
+    
+    def numberFix(self, fault):
+        n = str(fault['number'])
+        if len(n) == 1:
+            fault['number'] = "Fault_00" + n
+        if len(n) == 2:
+            fault['number'] = "Fault_0" + n
+        if len(n) == 3:
+            fault['number'] = "Fault_" + n
+        if fault['text'] == "":
+            fault['text'] = fault['number']
+        return fault
+
+    def fix100(self):
+        if not self.fix100Button.isChecked():
+            self.treewidget.clear()
+            self.catagoryFix100(False)
             self.draw()
-            self.colorFix(False)
+            self.colorFix100(False)
             self.hideButton.setChecked(False)
 
         else:
-            self.list.clear()
-            self.quickEdit(True)
+            self.treewidget.clear()
+            self.catagoryFix100(True)
             self.draw()
-            self.colorFix(True)
+            self.colorFix100(True)
             self.hideButton.setChecked(True)
 
         self.highlightButton.setChecked(False)
         self.hideButton.setChecked(False)
 
     def draw(self):
-        for d in self.data:
-            item = QTreeWidgetItem(self.list)
-            item.setText(0, d[0])
-            item.setText(1, d[1])
-            if len(d) == 3:
-                item.setText(2, d[2])
+        for d in self.faults:
+            item = QTreeWidgetItem(self.treewidget)
+            item.setText(0, d['number'])
+            item.setText(1, d['catagory'])
+            if "text" in d:
+                item.setText(2, d['text'])
+            if "literal" in d:
+                item.setText(3, d['literal'])
+        for i in range(4):
+            self.treewidget.resizeColumnToContents(i)
 
-    def quickEdit(self, forwards):
+    def catagoryFix100(self, forwards):
         if forwards:
-            self.data[31][2] = self.data[31][2].replace("G6","G5")
-            self.data[32][2] = self.data[32][2].replace("G6","G5")
-            self.data[34][2] = self.data[34][2].replace("G6","G5")
-            self.data[35][2] = self.data[35][2].replace("G6","G4")
-            self.data[40][2] = self.data[40][2].replace("G6","G5")
-            self.data[70][2] = self.data[70][2].replace("G9","G3")
-            self.data[71][2] = self.data[71][2].replace("G9","G3")
+            self.faults[31]['catagory'] = self.faults[31]['catagory'].replace("G6","G5")
+            self.faults[32]['catagory'] = self.faults[32]['catagory'].replace("G6","G5")
+            self.faults[34]['catagory'] = self.faults[34]['catagory'].replace("G6","G5")
+            self.faults[35]['catagory'] = self.faults[35]['catagory'].replace("G6","G4")
+            self.faults[40]['catagory'] = self.faults[40]['catagory'].replace("G6","G5")
+            self.faults[70]['catagory'] = self.faults[70]['catagory'].replace("G9","G3")
+            self.faults[71]['catagory'] = self.faults[71]['catagory'].replace("G9","G3")
 
         else:
-            self.data[31][2] = self.data[31][2].replace("G5","G6")
-            self.data[32][2] = self.data[32][2].replace("G5","G6")
-            self.data[34][2] = self.data[34][2].replace("G5","G6")
-            self.data[35][2] = self.data[35][2].replace("G4","G6")
-            self.data[40][2] = self.data[40][2].replace("G5","G6")
-            self.data[70][2] = self.data[70][2].replace("G3","G9")
-            self.data[71][2] = self.data[71][2].replace("G3","G9")
+            self.faults[31]['catagory'] = self.faults[31]['catagory'].replace("G5","G6")
+            self.faults[32]['catagory'] = self.faults[32]['catagory'].replace("G5","G6")
+            self.faults[34]['catagory'] = self.faults[34]['catagory'].replace("G5","G6")
+            self.faults[35]['catagory'] = self.faults[35]['catagory'].replace("G4","G6")
+            self.faults[40]['catagory'] = self.faults[40]['catagory'].replace("G5","G6")
+            self.faults[70]['catagory'] = self.faults[70]['catagory'].replace("G3","G9")
+            self.faults[71]['catagory'] = self.faults[71]['catagory'].replace("G3","G9")
 
-    def colorFix(self, color):
+    def colorFix100(self, color):
         children = []
-        root = self.list.invisibleRootItem()
+        root = self.treewidget.invisibleRootItem()
         children.append(root.child(31))
         children.append(root.child(32))
         children.append(root.child(34))
